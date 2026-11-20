@@ -1,0 +1,4146 @@
+{
+  "schema_version": "1.0",
+  "project": "BShop",
+  "report_type": "FAULT_DETECTION_REPORT",
+  "reporter": "BShop Fault Detection Report",
+  "source_type": "REAL_EXECUTION",
+  "inputs": {
+    "validation_file_sha256": "1cbc8c4509dc2f606ad9c93d8c4a70c7dbaf9d72e79c80f3a755a2935d766436",
+    "validation_sources": {
+      "test_cases": "887e28c7f97fad8bbe6936e9658e94bf2fab5a17bd7ef62d33fee7f12d2b25ef",
+      "test_execution_results": "daf2f4382df55a87549400ddc65b74fbae1a8cdae455521a56b019c4b30cdee3",
+      "efsm_model": "b5ae83972566f29944be134ddc1e467c9e3c61826801f1a13f70a6372b0583e9",
+      "security_rules": "51d64c626ad765c6ace3b29095f4e95d812fa4eb0bb18f54c199747349856745"
+    },
+    "files_sha256": {
+      "test_cases.json": "887e28c7f97fad8bbe6936e9658e94bf2fab5a17bd7ef62d33fee7f12d2b25ef",
+      "efsm_model.json": "b5ae83972566f29944be134ddc1e467c9e3c61826801f1a13f70a6372b0583e9",
+      "security_rules.json": "51d64c626ad765c6ace3b29095f4e95d812fa4eb0bb18f54c199747349856745",
+      "test_paths.json": "adc0c1e5e6154febeda1baaac90db97a2a18070d69e0e9673d7ef4f8ad11e666",
+      "test_path_coverage.json": "8f2c466a9ece6f8fa0851100f658aaae15fe08fa2f93ec045f23670f69968864",
+      "test_execution_results.json": "daf2f4382df55a87549400ddc65b74fbae1a8cdae455521a56b019c4b30cdee3"
+    }
+  },
+  "summary": {
+    "total_test_cases": 171,
+    "passed": 122,
+    "failed": 0,
+    "skipped": 49,
+    "inconclusive": 0,
+    "by_test_type": {
+      "POSITIVE": {
+        "PASS": 102,
+        "SKIPPED": 49
+      },
+      "NEGATIVE": {
+        "PASS": 20
+      }
+    },
+    "assertions": {
+      "total": 6431,
+      "evaluated": 6431,
+      "passed": 6431,
+      "failed": 0,
+      "not_evaluable": 0
+    },
+    "total_findings": 0,
+    "fault_metrics": {
+      "failed_assertions": 0,
+      "failed_test_cases": 0,
+      "distinct_findings": 0,
+      "note": "ba chỉ số khác nhau: số assertion FAIL, số test case FAIL, số finding sau khi gộp trùng lặp; root_cause_clusters (trong summary) đếm theo transition/negative transition"
+    },
+    "findings_by_source": {},
+    "root_cause_clusters": 0
+  },
+  "fault_categories": {
+    "LIMITS_AUTHORIZATION": 0,
+    "STATE_RESOURCE_LIFECYCLE": 0,
+    "UNCLASSIFIED": 0
+  },
+  "severity_counts": {
+    "CRITICAL": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0,
+    "INFO": 0,
+    "UNDETERMINED": 0
+  },
+  "validator_categories": {},
+  "authorization_scope_note": "BShop không triển khai xác thực/phân quyền theo người dùng (quy tắc BSR-AUTH-01 bị loại khỏi phạm vi: không áp dụng). Vì vậy nhóm LIMITS_AUTHORIZATION chỉ phản ánh giới hạn và ràng buộc nghiệp vụ; không có finding nào được gắn nhãn lỗi ownership hay authentication.",
+  "findings": [],
+  "coverage": {
+    "test_cases": {
+      "total": 171,
+      "executed": 122,
+      "not_executed": 49,
+      "inconclusive": 0,
+      "executed_by_type": {
+        "POSITIVE": 102,
+        "NEGATIVE": 20
+      },
+      "not_executed_by_reason": {
+        "NO_FEASIBLE_DATA_FOUND": 49
+      }
+    },
+    "structural": {
+      "states": {
+        "total": 5,
+        "reachable": 5,
+        "unreachable": [],
+        "covered_structural": 5,
+        "covered_feasible": 5,
+        "structural_ratio": 1.0,
+        "feasible_ratio": 1.0,
+        "uncovered_structural": [],
+        "uncovered_feasible": []
+      },
+      "positive_transitions": {
+        "total": 10,
+        "reachable": 10,
+        "covered_structural": 10,
+        "covered_feasible": 10,
+        "structural_ratio": 1.0,
+        "feasible_ratio": 1.0,
+        "uncovered_structural": [],
+        "uncovered_feasible": []
+      },
+      "transition_pairs": {
+        "possible": 28,
+        "covered_structural": 28,
+        "covered_feasible": 14,
+        "structural_ratio": 1.0,
+        "uncovered_structural": []
+      },
+      "negative_transitions": {
+        "total": 20,
+        "with_generated_path": 20,
+        "with_feasible_path": 20,
+        "structural_ratio": 1.0,
+        "feasible_ratio": 1.0,
+        "without_path": [],
+        "not_feasible": [],
+        "not_api_reachable": [
+          "NT04"
+        ]
+      }
+    },
+    "path_planning": {
+      "paths_total": 171,
+      "paths_by_feasibility": {
+        "positive": {
+          "FEASIBLE": 32,
+          "INFEASIBLE": 119
+        },
+        "negative": {
+          "FEASIBLE": 20
+        }
+      }
+    },
+    "executed": {
+      "states": {
+        "total": 5,
+        "reached": [
+          "CANCELLED",
+          "CART",
+          "CONFIRMED",
+          "PAID",
+          "PENDING_CONFIRMATION"
+        ],
+        "not_reached": []
+      },
+      "transitions": {
+        "total": 10,
+        "executed": [
+          "T01",
+          "T02",
+          "T03",
+          "T04",
+          "T05",
+          "T06",
+          "T07",
+          "T08",
+          "T09",
+          "T10"
+        ],
+        "not_executed": [],
+        "ratio": 1.0
+      },
+      "negative_transitions": {
+        "total": 20,
+        "executed": [
+          "NT01",
+          "NT02",
+          "NT03",
+          "NT04",
+          "NT05",
+          "NT06",
+          "NT07",
+          "NT08",
+          "NT09",
+          "NT10",
+          "NT11",
+          "NT12",
+          "NT13",
+          "NT14",
+          "NT15",
+          "NT16",
+          "NT17",
+          "NT18",
+          "NT19",
+          "NT20"
+        ],
+        "not_executed": [],
+        "ratio": 1.0
+      },
+      "transition_pairs": {
+        "possible_by_model": 28,
+        "executed": 21,
+        "ratio_of_possible": 0.75,
+        "feasible_reference": 14,
+        "not_executed": [
+          "T01>T10",
+          "T02>T10",
+          "T03>T10",
+          "T10>T02",
+          "T10>T03",
+          "T10>T04",
+          "T10>T10"
+        ]
+      }
+    },
+    "verified": {
+      "transitions_with_pass_and_no_fail": [
+        "NT01",
+        "NT02",
+        "NT03",
+        "NT04",
+        "NT05",
+        "NT06",
+        "NT07",
+        "NT08",
+        "NT09",
+        "NT10",
+        "NT11",
+        "NT12",
+        "NT13",
+        "NT14",
+        "NT15",
+        "NT16",
+        "NT17",
+        "NT18",
+        "NT19",
+        "NT20",
+        "T01",
+        "T02",
+        "T03",
+        "T04",
+        "T05",
+        "T06",
+        "T07",
+        "T08",
+        "T09",
+        "T10"
+      ],
+      "transitions_with_fail": [],
+      "rules": {
+        "implemented_total": 26,
+        "verified_by_pass": [
+          "BSR-CANCEL-01",
+          "BSR-CANCEL-02",
+          "BSR-CANCEL-03",
+          "BSR-CART-01",
+          "BSR-CART-02",
+          "BSR-CART-03",
+          "BSR-CART-04",
+          "BSR-CART-05",
+          "BSR-ORDER-01",
+          "BSR-ORDER-02",
+          "BSR-ORDER-03",
+          "BSR-ORDER-04",
+          "BSR-ORDER-05",
+          "BSR-ORDER-06",
+          "BSR-PAYMENT-01",
+          "BSR-PAYMENT-02",
+          "BSR-PAYMENT-03",
+          "BSR-PAYMENT-04",
+          "BSR-PAYMENT-05",
+          "BSR-PAYMENT-06",
+          "BSR-PAYMENT-07",
+          "BSR-STOCK-01",
+          "BSR-STOCK-02",
+          "BSR-STOCK-03",
+          "BSR-STOCK-04",
+          "BSR-STOCK-05"
+        ],
+        "with_fail": [],
+        "executed": [
+          "BSR-CANCEL-01",
+          "BSR-CANCEL-02",
+          "BSR-CANCEL-03",
+          "BSR-CART-01",
+          "BSR-CART-02",
+          "BSR-CART-03",
+          "BSR-CART-04",
+          "BSR-CART-05",
+          "BSR-ORDER-01",
+          "BSR-ORDER-02",
+          "BSR-ORDER-03",
+          "BSR-ORDER-04",
+          "BSR-ORDER-05",
+          "BSR-ORDER-06",
+          "BSR-PAYMENT-01",
+          "BSR-PAYMENT-02",
+          "BSR-PAYMENT-03",
+          "BSR-PAYMENT-04",
+          "BSR-PAYMENT-05",
+          "BSR-PAYMENT-06",
+          "BSR-PAYMENT-07",
+          "BSR-STOCK-01",
+          "BSR-STOCK-02",
+          "BSR-STOCK-03",
+          "BSR-STOCK-04",
+          "BSR-STOCK-05"
+        ],
+        "not_verified": [],
+        "ratio_verified": 1.0
+      }
+    },
+    "unverified_areas": {
+      "not_executed_paths": [
+        {
+          "path_id": "P029",
+          "path_key": "T01>T10>T04>T05>T06",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P030",
+          "path_key": "T01>T10>T04>T05>T07>T06",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P031",
+          "path_key": "T01>T10>T04>T05>T07>T07>T06",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P032",
+          "path_key": "T01>T10>T04>T05>T07>T07>T09",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P033",
+          "path_key": "T01>T10>T04>T05>T07>T09",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P034",
+          "path_key": "T01>T10>T04>T05>T09",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P035",
+          "path_key": "T01>T10>T04>T08",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P061",
+          "path_key": "T02>T10>T04>T05>T06",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P062",
+          "path_key": "T02>T10>T04>T05>T07>T06",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P063",
+          "path_key": "T02>T10>T04>T05>T07>T07>T06",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P064",
+          "path_key": "T02>T10>T04>T05>T07>T07>T09",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P065",
+          "path_key": "T02>T10>T04>T05>T07>T09",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P066",
+          "path_key": "T02>T10>T04>T05>T09",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P067",
+          "path_key": "T02>T10>T04>T08",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P096",
+          "path_key": "T03>T10>T04>T05>T06",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P097",
+          "path_key": "T03>T10>T04>T05>T07>T06",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P098",
+          "path_key": "T03>T10>T04>T05>T07>T07>T06",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P099",
+          "path_key": "T03>T10>T04>T05>T07>T07>T09",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P100",
+          "path_key": "T03>T10>T04>T05>T07>T09",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P101",
+          "path_key": "T03>T10>T04>T05>T09",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P102",
+          "path_key": "T03>T10>T04>T08",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P117",
+          "path_key": "T10>T02>T04>T05>T06",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "không có bước nào khả thi"
+          }
+        },
+        {
+          "path_id": "P118",
+          "path_key": "T10>T02>T04>T05>T07>T06",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "không có bước nào khả thi"
+          }
+        },
+        {
+          "path_id": "P119",
+          "path_key": "T10>T02>T04>T05>T07>T07>T06",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "không có bước nào khả thi"
+          }
+        },
+        {
+          "path_id": "P120",
+          "path_key": "T10>T02>T04>T05>T07>T07>T09",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "không có bước nào khả thi"
+          }
+        },
+        {
+          "path_id": "P121",
+          "path_key": "T10>T02>T04>T05>T07>T09",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "không có bước nào khả thi"
+          }
+        },
+        {
+          "path_id": "P122",
+          "path_key": "T10>T02>T04>T05>T09",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "không có bước nào khả thi"
+          }
+        },
+        {
+          "path_id": "P123",
+          "path_key": "T10>T02>T04>T08",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "không có bước nào khả thi"
+          }
+        },
+        {
+          "path_id": "P124",
+          "path_key": "T10>T03>T04>T05>T06",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "không có bước nào khả thi"
+          }
+        },
+        {
+          "path_id": "P125",
+          "path_key": "T10>T03>T04>T05>T07>T06",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "không có bước nào khả thi"
+          }
+        },
+        {
+          "path_id": "P126",
+          "path_key": "T10>T03>T04>T05>T07>T07>T06",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "không có bước nào khả thi"
+          }
+        },
+        {
+          "path_id": "P127",
+          "path_key": "T10>T03>T04>T05>T07>T07>T09",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "không có bước nào khả thi"
+          }
+        },
+        {
+          "path_id": "P128",
+          "path_key": "T10>T03>T04>T05>T07>T09",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "không có bước nào khả thi"
+          }
+        },
+        {
+          "path_id": "P129",
+          "path_key": "T10>T03>T04>T05>T09",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "không có bước nào khả thi"
+          }
+        },
+        {
+          "path_id": "P130",
+          "path_key": "T10>T03>T04>T08",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "không có bước nào khả thi"
+          }
+        },
+        {
+          "path_id": "P131",
+          "path_key": "T10>T10>T04>T05>T06",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P132",
+          "path_key": "T10>T10>T04>T05>T07>T06",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P133",
+          "path_key": "T10>T10>T04>T05>T07>T07>T06",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P134",
+          "path_key": "T10>T10>T04>T05>T07>T07>T09",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P135",
+          "path_key": "T10>T10>T04>T05>T07>T09",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P136",
+          "path_key": "T10>T10>T04>T05>T09",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P137",
+          "path_key": "T10>T10>T04>T08",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P138",
+          "path_key": "T10>T04>T05>T06",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 2 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P139",
+          "path_key": "T10>T04>T05>T07>T06",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 2 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P140",
+          "path_key": "T10>T04>T05>T07>T07>T06",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 2 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P141",
+          "path_key": "T10>T04>T05>T07>T07>T09",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 2 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P142",
+          "path_key": "T10>T04>T05>T07>T09",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 2 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P143",
+          "path_key": "T10>T04>T05>T09",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 2 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        },
+        {
+          "path_id": "P144",
+          "path_key": "T10>T04>T08",
+          "reason": {
+            "code": "NO_FEASIBLE_DATA_FOUND",
+            "message": "bước 2 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)"
+          }
+        }
+      ],
+      "inconclusive_cases": [],
+      "notes": [
+        "Độ bao phủ cấu trúc (structural) khác độ bao phủ khả thi (feasible) và khác độ bao phủ thực thi (executed).",
+        "Bao phủ 100% transition không đồng nghĩa với 100% bảo mật nghiệp vụ."
+      ]
+    }
+  },
+  "data_errors": [],
+  "conclusion": {
+    "has_findings": false,
+    "statement": "Không phát hiện sai lệch logic nghiệp vụ trong phạm vi các trường hợp đã thực thi và xác minh.",
+    "scope_caveat": "Phạm vi: 122 test case đã thực thi; 49 chưa thực thi, 0 chưa kết luận được. PASS không có nghĩa hệ thống an toàn tuyệt đối."
+  },
+  "synthetic_fault_injection": {
+    "source_type": "SYNTHETIC_INJECTION",
+    "disclaimer": "Lỗi cài đặt có chủ đích vào bản sao dữ liệu thực thi; KHÔNG phải lỗ hổng của BShop.",
+    "scenarios": [
+      {
+        "scenario_id": "FI01",
+        "title": "Hủy đơn đã thanh toán (PAID → CANCELLED)",
+        "source_type": "SYNTHETIC_INJECTION",
+        "test_case_id": "TC110",
+        "negative_transition_id": "NT08",
+        "validation_status": "FAIL",
+        "detected": true,
+        "expected_category": "INVALID_STATE_TRANSITION",
+        "expected_group": "STATE_RESOURCE_LIFECYCLE",
+        "category_matched": true,
+        "group_matched": true,
+        "failed_assertions": 5,
+        "findings": [
+          {
+            "finding_id": "FI01-001",
+            "source_type": "SYNTHETIC_INJECTION",
+            "title": "HTTP_STATUS_MISMATCH tại NT08 (order_status == PAID): HTTP",
+            "group": "STATE_RESOURCE_LIFECYCLE",
+            "sub_class": "INTERFACE",
+            "classification_basis": "negative_category=INVALID_STATE_TRANSITION",
+            "validator_category": "HTTP_STATUS_MISMATCH",
+            "severity": "LOW",
+            "severity_score": 2,
+            "severity_criteria": {
+              "unauthorized_operation_accepted": 0,
+              "impact": 0,
+              "impact_domain": "INTERFACE_ONLY",
+              "rule_severity": 2,
+              "persisted_state_or_data_change": 0,
+              "reproducible_in_multiple_cases": 0
+            },
+            "severity_reason": "tổng điểm = unauthorized_operation_accepted:0 + impact:0 + rule_severity:2 + persisted_state_or_data_change:0 + reproducible_in_multiple_cases:0",
+            "confidence": "MEDIUM",
+            "transition_id": "T08",
+            "negative_transition_id": "NT08",
+            "endpoint": {
+              "method": "POST",
+              "path": "/api/orders/{order_id}/cancel"
+            },
+            "violated_field": "HTTP",
+            "rules": [
+              {
+                "rule_id": "BSR-CANCEL-01",
+                "name": "Cancellation Allowed Only in Defined States",
+                "category": "CANCEL",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-CANCEL-02",
+                "name": "Paid Order Cancellation Prevention",
+                "category": "CANCEL",
+                "severity": "HIGH"
+              }
+            ],
+            "rule_refs_source": "assertion",
+            "counts": {
+              "failed_assertions": 1,
+              "failed_test_cases": 1
+            },
+            "test_case_ids": [
+              "TC110"
+            ],
+            "path_ids": [
+              "N008"
+            ],
+            "occurrences": [
+              {
+                "test_case_id": "TC110",
+                "path_id": "N008",
+                "path_key": "T01>T04>T05>T06>!NT08",
+                "step_no": 5,
+                "assertion_id": "S5.HTTP",
+                "expected": 409,
+                "actual": 200,
+                "expected_source": "efsm_model.negative_transitions[NT08].expected.http_status"
+              }
+            ],
+            "evidence": {
+              "source_files": [
+                "test_validation_results.json",
+                "test_execution_results.json"
+              ],
+              "assertion_id": "S5.HTTP",
+              "test_case_id": "TC110",
+              "evidence_step_no": 5,
+              "request": {
+                "method": "POST",
+                "url": "/api/orders/1/cancel",
+                "path_template": "/api/orders/{order_id}/cancel",
+                "body": {}
+              },
+              "response": {
+                "status_code": 200,
+                "status_class": "2xx"
+              },
+              "expected_ref": {
+                "test_case_id": "TC110",
+                "step_no": 5
+              },
+              "observed_state_before": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 8,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [
+                  {
+                    "id": 1,
+                    "status": "PAID",
+                    "total_amount": 300000,
+                    "payment_method": "MOCK",
+                    "items": [
+                      {
+                        "product_id": 1,
+                        "unit_price": 150000,
+                        "quantity": 2,
+                        "subtotal": 300000
+                      }
+                    ]
+                  }
+                ],
+                "payments": [
+                  {
+                    "id": 1,
+                    "order_id": 1,
+                    "amount": 300000,
+                    "result": "SUCCESS"
+                  }
+                ]
+              },
+              "observed_state_after": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 8,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [
+                  {
+                    "id": 1,
+                    "status": "CANCELLED",
+                    "total_amount": 300000,
+                    "payment_method": "MOCK",
+                    "items": [
+                      {
+                        "product_id": 1,
+                        "unit_price": 150000,
+                        "quantity": 2,
+                        "subtotal": 300000
+                      }
+                    ]
+                  }
+                ],
+                "payments": [
+                  {
+                    "id": 1,
+                    "order_id": 1,
+                    "amount": 300000,
+                    "result": "SUCCESS"
+                  }
+                ]
+              }
+            },
+            "validation_evidence": {
+              "expected_ref": {
+                "test_case_id": "TC110",
+                "step_no": 5
+              },
+              "request": "POST /api/orders/1/cancel",
+              "http_status": 200,
+              "execution_step": 5
+            }
+          },
+          {
+            "finding_id": "FI01-002",
+            "source_type": "SYNTHETIC_INJECTION",
+            "title": "INVALID_STATE_TRANSITION tại NT08 (order_status == PAID): REJECTED",
+            "group": "STATE_RESOURCE_LIFECYCLE",
+            "sub_class": "ORDER_STATE",
+            "classification_basis": "validator_category=INVALID_STATE_TRANSITION",
+            "validator_category": "INVALID_STATE_TRANSITION",
+            "severity": "HIGH",
+            "severity_score": 6,
+            "severity_criteria": {
+              "unauthorized_operation_accepted": 2,
+              "impact": 2,
+              "impact_domain": "ORDER_STATE",
+              "rule_severity": 2,
+              "persisted_state_or_data_change": 0,
+              "reproducible_in_multiple_cases": 0
+            },
+            "severity_reason": "tổng điểm = unauthorized_operation_accepted:2 + impact:2 + rule_severity:2 + persisted_state_or_data_change:0 + reproducible_in_multiple_cases:0",
+            "confidence": "HIGH",
+            "transition_id": "T08",
+            "negative_transition_id": "NT08",
+            "endpoint": {
+              "method": "POST",
+              "path": "/api/orders/{order_id}/cancel"
+            },
+            "violated_field": "REJECTED",
+            "rules": [
+              {
+                "rule_id": "BSR-CANCEL-01",
+                "name": "Cancellation Allowed Only in Defined States",
+                "category": "CANCEL",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-CANCEL-02",
+                "name": "Paid Order Cancellation Prevention",
+                "category": "CANCEL",
+                "severity": "HIGH"
+              }
+            ],
+            "rule_refs_source": "assertion",
+            "counts": {
+              "failed_assertions": 1,
+              "failed_test_cases": 1
+            },
+            "test_case_ids": [
+              "TC110"
+            ],
+            "path_ids": [
+              "N008"
+            ],
+            "occurrences": [
+              {
+                "test_case_id": "TC110",
+                "path_id": "N008",
+                "path_key": "T01>T04>T05>T06>!NT08",
+                "step_no": 5,
+                "assertion_id": "S5.REJECTED",
+                "expected": {
+                  "accepted": false
+                },
+                "actual": {
+                  "accepted": true,
+                  "http_status": 200
+                },
+                "expected_source": "efsm_model.negative_transitions[NT08].expected.http_status"
+              }
+            ],
+            "evidence": {
+              "source_files": [
+                "test_validation_results.json",
+                "test_execution_results.json"
+              ],
+              "assertion_id": "S5.REJECTED",
+              "test_case_id": "TC110",
+              "evidence_step_no": 5,
+              "request": {
+                "method": "POST",
+                "url": "/api/orders/1/cancel",
+                "path_template": "/api/orders/{order_id}/cancel",
+                "body": {}
+              },
+              "response": {
+                "status_code": 200,
+                "status_class": "2xx"
+              },
+              "expected_ref": {
+                "test_case_id": "TC110",
+                "step_no": 5
+              },
+              "observed_state_before": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 8,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [
+                  {
+                    "id": 1,
+                    "status": "PAID",
+                    "total_amount": 300000,
+                    "payment_method": "MOCK",
+                    "items": [
+                      {
+                        "product_id": 1,
+                        "unit_price": 150000,
+                        "quantity": 2,
+                        "subtotal": 300000
+                      }
+                    ]
+                  }
+                ],
+                "payments": [
+                  {
+                    "id": 1,
+                    "order_id": 1,
+                    "amount": 300000,
+                    "result": "SUCCESS"
+                  }
+                ]
+              },
+              "observed_state_after": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 8,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [
+                  {
+                    "id": 1,
+                    "status": "CANCELLED",
+                    "total_amount": 300000,
+                    "payment_method": "MOCK",
+                    "items": [
+                      {
+                        "product_id": 1,
+                        "unit_price": 150000,
+                        "quantity": 2,
+                        "subtotal": 300000
+                      }
+                    ]
+                  }
+                ],
+                "payments": [
+                  {
+                    "id": 1,
+                    "order_id": 1,
+                    "amount": 300000,
+                    "result": "SUCCESS"
+                  }
+                ]
+              }
+            },
+            "validation_evidence": {
+              "expected_ref": {
+                "test_case_id": "TC110",
+                "step_no": 5
+              },
+              "request": "POST /api/orders/1/cancel",
+              "http_status": 200,
+              "execution_step": 5
+            }
+          },
+          {
+            "finding_id": "FI01-003",
+            "source_type": "SYNTHETIC_INJECTION",
+            "title": "INVALID_STATE_TRANSITION tại NT08 (order_status == PAID): STATE",
+            "group": "STATE_RESOURCE_LIFECYCLE",
+            "sub_class": "ORDER_STATE",
+            "classification_basis": "validator_category=INVALID_STATE_TRANSITION",
+            "validator_category": "INVALID_STATE_TRANSITION",
+            "severity": "MEDIUM",
+            "severity_score": 5,
+            "severity_criteria": {
+              "unauthorized_operation_accepted": 0,
+              "impact": 2,
+              "impact_domain": "ORDER_STATE",
+              "rule_severity": 2,
+              "persisted_state_or_data_change": 1,
+              "reproducible_in_multiple_cases": 0
+            },
+            "severity_reason": "tổng điểm = unauthorized_operation_accepted:0 + impact:2 + rule_severity:2 + persisted_state_or_data_change:1 + reproducible_in_multiple_cases:0",
+            "confidence": "HIGH",
+            "transition_id": "T08",
+            "negative_transition_id": "NT08",
+            "endpoint": {
+              "method": "POST",
+              "path": "/api/orders/{order_id}/cancel"
+            },
+            "violated_field": "STATE",
+            "rules": [
+              {
+                "rule_id": "BSR-CANCEL-01",
+                "name": "Cancellation Allowed Only in Defined States",
+                "category": "CANCEL",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-CANCEL-02",
+                "name": "Paid Order Cancellation Prevention",
+                "category": "CANCEL",
+                "severity": "HIGH"
+              }
+            ],
+            "rule_refs_source": "assertion",
+            "counts": {
+              "failed_assertions": 1,
+              "failed_test_cases": 1
+            },
+            "test_case_ids": [
+              "TC110"
+            ],
+            "path_ids": [
+              "N008"
+            ],
+            "occurrences": [
+              {
+                "test_case_id": "TC110",
+                "path_id": "N008",
+                "path_key": "T01>T04>T05>T06>!NT08",
+                "step_no": 5,
+                "assertion_id": "S5.STATE",
+                "expected": {
+                  "state_unchanged": true,
+                  "state_after": "PAID",
+                  "order_status": {
+                    "1": "PAID"
+                  }
+                },
+                "actual": {
+                  "order_status": {
+                    "1": "CANCELLED"
+                  }
+                },
+                "expected_source": "efsm_model.negative_transitions[NT08].expected.http_status"
+              }
+            ],
+            "evidence": {
+              "source_files": [
+                "test_validation_results.json",
+                "test_execution_results.json"
+              ],
+              "assertion_id": "S5.STATE",
+              "test_case_id": "TC110",
+              "evidence_step_no": 5,
+              "request": {
+                "method": "POST",
+                "url": "/api/orders/1/cancel",
+                "path_template": "/api/orders/{order_id}/cancel",
+                "body": {}
+              },
+              "response": {
+                "status_code": 200,
+                "status_class": "2xx"
+              },
+              "expected_ref": {
+                "test_case_id": "TC110",
+                "step_no": 5
+              },
+              "observed_state_before": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 8,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [
+                  {
+                    "id": 1,
+                    "status": "PAID",
+                    "total_amount": 300000,
+                    "payment_method": "MOCK",
+                    "items": [
+                      {
+                        "product_id": 1,
+                        "unit_price": 150000,
+                        "quantity": 2,
+                        "subtotal": 300000
+                      }
+                    ]
+                  }
+                ],
+                "payments": [
+                  {
+                    "id": 1,
+                    "order_id": 1,
+                    "amount": 300000,
+                    "result": "SUCCESS"
+                  }
+                ]
+              },
+              "observed_state_after": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 8,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [
+                  {
+                    "id": 1,
+                    "status": "CANCELLED",
+                    "total_amount": 300000,
+                    "payment_method": "MOCK",
+                    "items": [
+                      {
+                        "product_id": 1,
+                        "unit_price": 150000,
+                        "quantity": 2,
+                        "subtotal": 300000
+                      }
+                    ]
+                  }
+                ],
+                "payments": [
+                  {
+                    "id": 1,
+                    "order_id": 1,
+                    "amount": 300000,
+                    "result": "SUCCESS"
+                  }
+                ]
+              }
+            },
+            "validation_evidence": {
+              "expected_ref": {
+                "test_case_id": "TC110",
+                "step_no": 5
+              },
+              "request": "POST /api/orders/1/cancel",
+              "observed_ref": "steps[5].observed_state.orders",
+              "execution_step": 5
+            }
+          },
+          {
+            "finding_id": "FI01-004",
+            "source_type": "SYNTHETIC_INJECTION",
+            "title": "INVARIANT_VIOLATION tại NT08 (order_status == PAID): INV-06",
+            "group": "STATE_RESOURCE_LIFECYCLE",
+            "sub_class": "INVARIANT",
+            "classification_basis": "negative_category=INVALID_STATE_TRANSITION",
+            "validator_category": "INVARIANT_VIOLATION",
+            "severity": "MEDIUM",
+            "severity_score": 5,
+            "severity_criteria": {
+              "unauthorized_operation_accepted": 0,
+              "impact": 2,
+              "impact_domain": "INVARIANT",
+              "rule_severity": 2,
+              "persisted_state_or_data_change": 1,
+              "reproducible_in_multiple_cases": 0
+            },
+            "severity_reason": "tổng điểm = unauthorized_operation_accepted:0 + impact:2 + rule_severity:2 + persisted_state_or_data_change:1 + reproducible_in_multiple_cases:0",
+            "confidence": "HIGH",
+            "transition_id": "T08",
+            "negative_transition_id": "NT08",
+            "endpoint": {
+              "method": "POST",
+              "path": "/api/orders/{order_id}/cancel"
+            },
+            "violated_field": "INV-06",
+            "rules": [
+              {
+                "rule_id": "BSR-CANCEL-01",
+                "name": "Cancellation Allowed Only in Defined States",
+                "category": "CANCEL",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-CANCEL-02",
+                "name": "Paid Order Cancellation Prevention",
+                "category": "CANCEL",
+                "severity": "HIGH"
+              }
+            ],
+            "rule_refs_source": "assertion",
+            "counts": {
+              "failed_assertions": 1,
+              "failed_test_cases": 1
+            },
+            "test_case_ids": [
+              "TC110"
+            ],
+            "path_ids": [
+              "N008"
+            ],
+            "occurrences": [
+              {
+                "test_case_id": "TC110",
+                "path_id": "N008",
+                "path_key": "T01>T04>T05>T06>!NT08",
+                "step_no": 5,
+                "assertion_id": "INV-06",
+                "expected": "order_status == PAID => cancel rejected",
+                "actual": {
+                  "negative_transition_rejected_with_state_unchanged": false
+                },
+                "expected_source": null
+              }
+            ],
+            "evidence": {
+              "source_files": [
+                "test_validation_results.json",
+                "test_execution_results.json"
+              ],
+              "assertion_id": "INV-06",
+              "test_case_id": "TC110",
+              "evidence_step_no": 5,
+              "request": {
+                "method": "POST",
+                "url": "/api/orders/1/cancel",
+                "path_template": "/api/orders/{order_id}/cancel",
+                "body": {}
+              },
+              "response": {
+                "status_code": 200,
+                "status_class": "2xx"
+              },
+              "expected_ref": {
+                "test_case_id": "TC110",
+                "step_no": 5
+              },
+              "observed_state_before": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 8,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [
+                  {
+                    "id": 1,
+                    "status": "PAID",
+                    "total_amount": 300000,
+                    "payment_method": "MOCK",
+                    "items": [
+                      {
+                        "product_id": 1,
+                        "unit_price": 150000,
+                        "quantity": 2,
+                        "subtotal": 300000
+                      }
+                    ]
+                  }
+                ],
+                "payments": [
+                  {
+                    "id": 1,
+                    "order_id": 1,
+                    "amount": 300000,
+                    "result": "SUCCESS"
+                  }
+                ]
+              },
+              "observed_state_after": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 8,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [
+                  {
+                    "id": 1,
+                    "status": "CANCELLED",
+                    "total_amount": 300000,
+                    "payment_method": "MOCK",
+                    "items": [
+                      {
+                        "product_id": 1,
+                        "unit_price": 150000,
+                        "quantity": 2,
+                        "subtotal": 300000
+                      }
+                    ]
+                  }
+                ],
+                "payments": [
+                  {
+                    "id": 1,
+                    "order_id": 1,
+                    "amount": 300000,
+                    "result": "SUCCESS"
+                  }
+                ]
+              }
+            },
+            "validation_evidence": {
+              "verified_by": "NT08",
+              "derived_from": "S5.*",
+              "execution_step": 5
+            }
+          },
+          {
+            "finding_id": "FI01-005",
+            "source_type": "SYNTHETIC_INJECTION",
+            "title": "RESOURCE_LIFECYCLE_VIOLATION tại NT08 (order_status == PAID): orders.status của các đơn hiện có không đổi; không có đơn mới",
+            "group": "STATE_RESOURCE_LIFECYCLE",
+            "sub_class": "RESOURCE_LIFECYCLE",
+            "classification_basis": "validator_category=RESOURCE_LIFECYCLE_VIOLATION",
+            "validator_category": "RESOURCE_LIFECYCLE_VIOLATION",
+            "severity": "HIGH",
+            "severity_score": 6,
+            "severity_criteria": {
+              "unauthorized_operation_accepted": 0,
+              "impact": 3,
+              "impact_domain": "MONEY",
+              "rule_severity": 2,
+              "persisted_state_or_data_change": 1,
+              "reproducible_in_multiple_cases": 0
+            },
+            "severity_reason": "tổng điểm = unauthorized_operation_accepted:0 + impact:3 + rule_severity:2 + persisted_state_or_data_change:1 + reproducible_in_multiple_cases:0",
+            "confidence": "HIGH",
+            "transition_id": "T08",
+            "negative_transition_id": "NT08",
+            "endpoint": {
+              "method": "POST",
+              "path": "/api/orders/{order_id}/cancel"
+            },
+            "violated_field": "orders.status của các đơn hiện có không đổi; không có đơn mới",
+            "rules": [
+              {
+                "rule_id": "BSR-CANCEL-01",
+                "name": "Cancellation Allowed Only in Defined States",
+                "category": "CANCEL",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-CANCEL-02",
+                "name": "Paid Order Cancellation Prevention",
+                "category": "CANCEL",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-CART-01",
+                "name": "Positive Cart Quantity",
+                "category": "CART",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-CART-02",
+                "name": "Cart Quantity Must Not Exceed Stock",
+                "category": "CART",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-CART-03",
+                "name": "Cart Product Must Exist",
+                "category": "CART",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-ORDER-01",
+                "name": "Order Requires Non-empty Cart",
+                "category": "ORDER",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-ORDER-02",
+                "name": "Allowed Payment Method",
+                "category": "ORDER",
+                "severity": "MEDIUM"
+              },
+              {
+                "rule_id": "BSR-ORDER-03",
+                "name": "Valid Customer Order Fields",
+                "category": "ORDER",
+                "severity": "MEDIUM"
+              },
+              {
+                "rule_id": "BSR-ORDER-04",
+                "name": "Order Initial State",
+                "category": "ORDER",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-ORDER-05",
+                "name": "Confirm Only Pending Confirmation Order",
+                "category": "ORDER",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-ORDER-06",
+                "name": "Order Creation Uses Server-side Product Price",
+                "category": "ORDER",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-PAYMENT-01",
+                "name": "Payment Only for Confirmed Order",
+                "category": "PAYMENT",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-PAYMENT-02",
+                "name": "Successful Payment Sets Order Paid",
+                "category": "PAYMENT",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-PAYMENT-04",
+                "name": "Prevent Payment for Cancelled or Non-confirmed Order",
+                "category": "PAYMENT",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-PAYMENT-06",
+                "name": "Payment Amount Derived from Order Total",
+                "category": "PAYMENT",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-PAYMENT-07",
+                "name": "Payment Simulation Result Must Be Valid",
+                "category": "PAYMENT",
+                "severity": "MEDIUM"
+              },
+              {
+                "rule_id": "BSR-STOCK-01",
+                "name": "Stock Must Cover Order Quantity",
+                "category": "STOCK",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-STOCK-02",
+                "name": "Order Creation Deducts Stock Exactly",
+                "category": "STOCK",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-STOCK-03",
+                "name": "Stock Must Remain Non-negative",
+                "category": "STOCK",
+                "severity": "HIGH"
+              }
+            ],
+            "rule_refs_source": "assertion",
+            "counts": {
+              "failed_assertions": 1,
+              "failed_test_cases": 1
+            },
+            "test_case_ids": [
+              "TC110"
+            ],
+            "path_ids": [
+              "N008"
+            ],
+            "occurrences": [
+              {
+                "test_case_id": "TC110",
+                "path_id": "N008",
+                "path_key": "T01>T04>T05>T06>!NT08",
+                "step_no": null,
+                "assertion_id": "A7",
+                "expected": {
+                  "1": {
+                    "status": "PAID",
+                    "total": 300000,
+                    "items": [
+                      [
+                        1,
+                        2,
+                        150000
+                      ]
+                    ]
+                  }
+                },
+                "actual": {
+                  "1": {
+                    "status": "CANCELLED",
+                    "total": 300000,
+                    "items": [
+                      [
+                        1,
+                        2,
+                        150000
+                      ]
+                    ]
+                  }
+                },
+                "expected_source": "api_test_mapping.negative_postconditions"
+              }
+            ],
+            "evidence": {
+              "source_files": [
+                "test_validation_results.json",
+                "test_execution_results.json"
+              ],
+              "assertion_id": "A7",
+              "test_case_id": "TC110",
+              "evidence_step_no": 5,
+              "request": {
+                "method": "POST",
+                "url": "/api/orders/1/cancel",
+                "path_template": "/api/orders/{order_id}/cancel",
+                "body": {}
+              },
+              "response": {
+                "status_code": 200,
+                "status_class": "2xx"
+              },
+              "expected_ref": {
+                "test_case_id": "TC110",
+                "step_no": 5
+              },
+              "observed_state_before": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 8,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [
+                  {
+                    "id": 1,
+                    "status": "PAID",
+                    "total_amount": 300000,
+                    "payment_method": "MOCK",
+                    "items": [
+                      {
+                        "product_id": 1,
+                        "unit_price": 150000,
+                        "quantity": 2,
+                        "subtotal": 300000
+                      }
+                    ]
+                  }
+                ],
+                "payments": [
+                  {
+                    "id": 1,
+                    "order_id": 1,
+                    "amount": 300000,
+                    "result": "SUCCESS"
+                  }
+                ]
+              },
+              "observed_state_after": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 8,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [
+                  {
+                    "id": 1,
+                    "status": "CANCELLED",
+                    "total_amount": 300000,
+                    "payment_method": "MOCK",
+                    "items": [
+                      {
+                        "product_id": 1,
+                        "unit_price": 150000,
+                        "quantity": 2,
+                        "subtotal": 300000
+                      }
+                    ]
+                  }
+                ],
+                "payments": [
+                  {
+                    "id": 1,
+                    "order_id": 1,
+                    "amount": 300000,
+                    "result": "SUCCESS"
+                  }
+                ]
+              }
+            },
+            "validation_evidence": {
+              "probe": "GET /api/orders/{order_id}",
+              "source": "api_test_mapping.negative_postconditions",
+              "probe_status": "NOT_SENT",
+              "actual_from": "final_observed_state (probe không gửi được)"
+            }
+          }
+        ],
+        "original_data_unchanged": true
+      },
+      {
+        "scenario_id": "FI02",
+        "title": "Thanh toán lại đơn đã PAID thành công",
+        "source_type": "SYNTHETIC_INJECTION",
+        "test_case_id": "TC109",
+        "negative_transition_id": "NT07",
+        "validation_status": "FAIL",
+        "detected": true,
+        "expected_category": "PAYMENT_LIFECYCLE_VIOLATION",
+        "expected_group": "STATE_RESOURCE_LIFECYCLE",
+        "category_matched": true,
+        "group_matched": true,
+        "failed_assertions": 5,
+        "findings": [
+          {
+            "finding_id": "FI02-001",
+            "source_type": "SYNTHETIC_INJECTION",
+            "title": "HTTP_STATUS_MISMATCH tại NT07 (order_status == PAID): HTTP",
+            "group": "STATE_RESOURCE_LIFECYCLE",
+            "sub_class": "INTERFACE",
+            "classification_basis": "negative_category=INVALID_STATE_TRANSITION",
+            "validator_category": "HTTP_STATUS_MISMATCH",
+            "severity": "LOW",
+            "severity_score": 2,
+            "severity_criteria": {
+              "unauthorized_operation_accepted": 0,
+              "impact": 0,
+              "impact_domain": "INTERFACE_ONLY",
+              "rule_severity": 2,
+              "persisted_state_or_data_change": 0,
+              "reproducible_in_multiple_cases": 0
+            },
+            "severity_reason": "tổng điểm = unauthorized_operation_accepted:0 + impact:0 + rule_severity:2 + persisted_state_or_data_change:0 + reproducible_in_multiple_cases:0",
+            "confidence": "MEDIUM",
+            "transition_id": "T06",
+            "negative_transition_id": "NT07",
+            "endpoint": {
+              "method": "POST",
+              "path": "/api/orders/{order_id}/pay"
+            },
+            "violated_field": "HTTP",
+            "rules": [
+              {
+                "rule_id": "BSR-PAYMENT-05",
+                "name": "Prevent Re-payment of Paid Order",
+                "category": "PAYMENT",
+                "severity": "HIGH"
+              }
+            ],
+            "rule_refs_source": "assertion",
+            "counts": {
+              "failed_assertions": 1,
+              "failed_test_cases": 1
+            },
+            "test_case_ids": [
+              "TC109"
+            ],
+            "path_ids": [
+              "N007"
+            ],
+            "occurrences": [
+              {
+                "test_case_id": "TC109",
+                "path_id": "N007",
+                "path_key": "T01>T04>T05>T06>!NT07",
+                "step_no": 5,
+                "assertion_id": "S5.HTTP",
+                "expected": 409,
+                "actual": 200,
+                "expected_source": "efsm_model.negative_transitions[NT07].expected.http_status"
+              }
+            ],
+            "evidence": {
+              "source_files": [
+                "test_validation_results.json",
+                "test_execution_results.json"
+              ],
+              "assertion_id": "S5.HTTP",
+              "test_case_id": "TC109",
+              "evidence_step_no": 5,
+              "request": {
+                "method": "POST",
+                "url": "/api/orders/1/pay",
+                "path_template": "/api/orders/{order_id}/pay",
+                "body": {
+                  "simulate_result": "SUCCESS"
+                }
+              },
+              "response": {
+                "status_code": 200,
+                "status_class": "2xx"
+              },
+              "expected_ref": {
+                "test_case_id": "TC109",
+                "step_no": 5
+              },
+              "observed_state_before": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 8,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [
+                  {
+                    "id": 1,
+                    "status": "PAID",
+                    "total_amount": 300000,
+                    "payment_method": "MOCK",
+                    "items": [
+                      {
+                        "product_id": 1,
+                        "unit_price": 150000,
+                        "quantity": 2,
+                        "subtotal": 300000
+                      }
+                    ]
+                  }
+                ],
+                "payments": [
+                  {
+                    "id": 1,
+                    "order_id": 1,
+                    "amount": 300000,
+                    "result": "SUCCESS"
+                  }
+                ]
+              },
+              "observed_state_after": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 8,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [
+                  {
+                    "id": 1,
+                    "status": "PAID",
+                    "total_amount": 300000,
+                    "payment_method": "MOCK",
+                    "items": [
+                      {
+                        "product_id": 1,
+                        "unit_price": 150000,
+                        "quantity": 2,
+                        "subtotal": 300000
+                      }
+                    ]
+                  }
+                ],
+                "payments": [
+                  {
+                    "id": 1,
+                    "order_id": 1,
+                    "amount": 300000,
+                    "result": "SUCCESS"
+                  },
+                  {
+                    "id": 1001,
+                    "order_id": 1,
+                    "amount": 300000,
+                    "result": "SUCCESS"
+                  }
+                ]
+              }
+            },
+            "validation_evidence": {
+              "expected_ref": {
+                "test_case_id": "TC109",
+                "step_no": 5
+              },
+              "request": "POST /api/orders/1/pay",
+              "http_status": 200,
+              "execution_step": 5
+            }
+          },
+          {
+            "finding_id": "FI02-002",
+            "source_type": "SYNTHETIC_INJECTION",
+            "title": "INVALID_STATE_TRANSITION tại NT07 (order_status == PAID): REJECTED",
+            "group": "STATE_RESOURCE_LIFECYCLE",
+            "sub_class": "ORDER_STATE",
+            "classification_basis": "validator_category=INVALID_STATE_TRANSITION",
+            "validator_category": "INVALID_STATE_TRANSITION",
+            "severity": "HIGH",
+            "severity_score": 7,
+            "severity_criteria": {
+              "unauthorized_operation_accepted": 2,
+              "impact": 3,
+              "impact_domain": "MONEY",
+              "rule_severity": 2,
+              "persisted_state_or_data_change": 0,
+              "reproducible_in_multiple_cases": 0
+            },
+            "severity_reason": "tổng điểm = unauthorized_operation_accepted:2 + impact:3 + rule_severity:2 + persisted_state_or_data_change:0 + reproducible_in_multiple_cases:0",
+            "confidence": "HIGH",
+            "transition_id": "T06",
+            "negative_transition_id": "NT07",
+            "endpoint": {
+              "method": "POST",
+              "path": "/api/orders/{order_id}/pay"
+            },
+            "violated_field": "REJECTED",
+            "rules": [
+              {
+                "rule_id": "BSR-PAYMENT-05",
+                "name": "Prevent Re-payment of Paid Order",
+                "category": "PAYMENT",
+                "severity": "HIGH"
+              }
+            ],
+            "rule_refs_source": "assertion",
+            "counts": {
+              "failed_assertions": 1,
+              "failed_test_cases": 1
+            },
+            "test_case_ids": [
+              "TC109"
+            ],
+            "path_ids": [
+              "N007"
+            ],
+            "occurrences": [
+              {
+                "test_case_id": "TC109",
+                "path_id": "N007",
+                "path_key": "T01>T04>T05>T06>!NT07",
+                "step_no": 5,
+                "assertion_id": "S5.REJECTED",
+                "expected": {
+                  "accepted": false
+                },
+                "actual": {
+                  "accepted": true,
+                  "http_status": 200
+                },
+                "expected_source": "efsm_model.negative_transitions[NT07].expected.http_status"
+              }
+            ],
+            "evidence": {
+              "source_files": [
+                "test_validation_results.json",
+                "test_execution_results.json"
+              ],
+              "assertion_id": "S5.REJECTED",
+              "test_case_id": "TC109",
+              "evidence_step_no": 5,
+              "request": {
+                "method": "POST",
+                "url": "/api/orders/1/pay",
+                "path_template": "/api/orders/{order_id}/pay",
+                "body": {
+                  "simulate_result": "SUCCESS"
+                }
+              },
+              "response": {
+                "status_code": 200,
+                "status_class": "2xx"
+              },
+              "expected_ref": {
+                "test_case_id": "TC109",
+                "step_no": 5
+              },
+              "observed_state_before": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 8,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [
+                  {
+                    "id": 1,
+                    "status": "PAID",
+                    "total_amount": 300000,
+                    "payment_method": "MOCK",
+                    "items": [
+                      {
+                        "product_id": 1,
+                        "unit_price": 150000,
+                        "quantity": 2,
+                        "subtotal": 300000
+                      }
+                    ]
+                  }
+                ],
+                "payments": [
+                  {
+                    "id": 1,
+                    "order_id": 1,
+                    "amount": 300000,
+                    "result": "SUCCESS"
+                  }
+                ]
+              },
+              "observed_state_after": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 8,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [
+                  {
+                    "id": 1,
+                    "status": "PAID",
+                    "total_amount": 300000,
+                    "payment_method": "MOCK",
+                    "items": [
+                      {
+                        "product_id": 1,
+                        "unit_price": 150000,
+                        "quantity": 2,
+                        "subtotal": 300000
+                      }
+                    ]
+                  }
+                ],
+                "payments": [
+                  {
+                    "id": 1,
+                    "order_id": 1,
+                    "amount": 300000,
+                    "result": "SUCCESS"
+                  },
+                  {
+                    "id": 1001,
+                    "order_id": 1,
+                    "amount": 300000,
+                    "result": "SUCCESS"
+                  }
+                ]
+              }
+            },
+            "validation_evidence": {
+              "expected_ref": {
+                "test_case_id": "TC109",
+                "step_no": 5
+              },
+              "request": "POST /api/orders/1/pay",
+              "http_status": 200,
+              "execution_step": 5
+            }
+          },
+          {
+            "finding_id": "FI02-003",
+            "source_type": "SYNTHETIC_INJECTION",
+            "title": "INVARIANT_VIOLATION tại NT07 (order_status == PAID): INV-08",
+            "group": "STATE_RESOURCE_LIFECYCLE",
+            "sub_class": "INVARIANT",
+            "classification_basis": "negative_category=INVALID_STATE_TRANSITION",
+            "validator_category": "INVARIANT_VIOLATION",
+            "severity": "HIGH",
+            "severity_score": 6,
+            "severity_criteria": {
+              "unauthorized_operation_accepted": 0,
+              "impact": 3,
+              "impact_domain": "MONEY",
+              "rule_severity": 2,
+              "persisted_state_or_data_change": 1,
+              "reproducible_in_multiple_cases": 0
+            },
+            "severity_reason": "tổng điểm = unauthorized_operation_accepted:0 + impact:3 + rule_severity:2 + persisted_state_or_data_change:1 + reproducible_in_multiple_cases:0",
+            "confidence": "HIGH",
+            "transition_id": "T06",
+            "negative_transition_id": "NT07",
+            "endpoint": {
+              "method": "POST",
+              "path": "/api/orders/{order_id}/pay"
+            },
+            "violated_field": "INV-08",
+            "rules": [
+              {
+                "rule_id": "BSR-PAYMENT-01",
+                "name": "Payment Only for Confirmed Order",
+                "category": "PAYMENT",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-PAYMENT-04",
+                "name": "Prevent Payment for Cancelled or Non-confirmed Order",
+                "category": "PAYMENT",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-PAYMENT-05",
+                "name": "Prevent Re-payment of Paid Order",
+                "category": "PAYMENT",
+                "severity": "HIGH"
+              }
+            ],
+            "rule_refs_source": "assertion",
+            "counts": {
+              "failed_assertions": 1,
+              "failed_test_cases": 1
+            },
+            "test_case_ids": [
+              "TC109"
+            ],
+            "path_ids": [
+              "N007"
+            ],
+            "occurrences": [
+              {
+                "test_case_id": "TC109",
+                "path_id": "N007",
+                "path_key": "T01>T04>T05>T06>!NT07",
+                "step_no": 5,
+                "assertion_id": "INV-08",
+                "expected": "pay allowed only when order_status == CONFIRMED",
+                "actual": {
+                  "negative_transition_rejected_with_state_unchanged": false
+                },
+                "expected_source": null
+              }
+            ],
+            "evidence": {
+              "source_files": [
+                "test_validation_results.json",
+                "test_execution_results.json"
+              ],
+              "assertion_id": "INV-08",
+              "test_case_id": "TC109",
+              "evidence_step_no": 5,
+              "request": {
+                "method": "POST",
+                "url": "/api/orders/1/pay",
+                "path_template": "/api/orders/{order_id}/pay",
+                "body": {
+                  "simulate_result": "SUCCESS"
+                }
+              },
+              "response": {
+                "status_code": 200,
+                "status_class": "2xx"
+              },
+              "expected_ref": {
+                "test_case_id": "TC109",
+                "step_no": 5
+              },
+              "observed_state_before": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 8,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [
+                  {
+                    "id": 1,
+                    "status": "PAID",
+                    "total_amount": 300000,
+                    "payment_method": "MOCK",
+                    "items": [
+                      {
+                        "product_id": 1,
+                        "unit_price": 150000,
+                        "quantity": 2,
+                        "subtotal": 300000
+                      }
+                    ]
+                  }
+                ],
+                "payments": [
+                  {
+                    "id": 1,
+                    "order_id": 1,
+                    "amount": 300000,
+                    "result": "SUCCESS"
+                  }
+                ]
+              },
+              "observed_state_after": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 8,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [
+                  {
+                    "id": 1,
+                    "status": "PAID",
+                    "total_amount": 300000,
+                    "payment_method": "MOCK",
+                    "items": [
+                      {
+                        "product_id": 1,
+                        "unit_price": 150000,
+                        "quantity": 2,
+                        "subtotal": 300000
+                      }
+                    ]
+                  }
+                ],
+                "payments": [
+                  {
+                    "id": 1,
+                    "order_id": 1,
+                    "amount": 300000,
+                    "result": "SUCCESS"
+                  },
+                  {
+                    "id": 1001,
+                    "order_id": 1,
+                    "amount": 300000,
+                    "result": "SUCCESS"
+                  }
+                ]
+              }
+            },
+            "validation_evidence": {
+              "verified_by": "NT07",
+              "derived_from": "S5.*",
+              "execution_step": 5
+            }
+          },
+          {
+            "finding_id": "FI02-004",
+            "source_type": "SYNTHETIC_INJECTION",
+            "title": "PAYMENT_LIFECYCLE_VIOLATION tại NT07 (order_status == PAID): DATA.payments",
+            "group": "STATE_RESOURCE_LIFECYCLE",
+            "sub_class": "PAYMENT_LIFECYCLE",
+            "classification_basis": "validator_category=PAYMENT_LIFECYCLE_VIOLATION",
+            "validator_category": "PAYMENT_LIFECYCLE_VIOLATION",
+            "severity": "HIGH",
+            "severity_score": 6,
+            "severity_criteria": {
+              "unauthorized_operation_accepted": 0,
+              "impact": 3,
+              "impact_domain": "MONEY",
+              "rule_severity": 2,
+              "persisted_state_or_data_change": 1,
+              "reproducible_in_multiple_cases": 0
+            },
+            "severity_reason": "tổng điểm = unauthorized_operation_accepted:0 + impact:3 + rule_severity:2 + persisted_state_or_data_change:1 + reproducible_in_multiple_cases:0",
+            "confidence": "HIGH",
+            "transition_id": "T06",
+            "negative_transition_id": "NT07",
+            "endpoint": {
+              "method": "POST",
+              "path": "/api/orders/{order_id}/pay"
+            },
+            "violated_field": "DATA.payments",
+            "rules": [
+              {
+                "rule_id": "BSR-PAYMENT-05",
+                "name": "Prevent Re-payment of Paid Order",
+                "category": "PAYMENT",
+                "severity": "HIGH"
+              }
+            ],
+            "rule_refs_source": "assertion",
+            "counts": {
+              "failed_assertions": 1,
+              "failed_test_cases": 1
+            },
+            "test_case_ids": [
+              "TC109"
+            ],
+            "path_ids": [
+              "N007"
+            ],
+            "occurrences": [
+              {
+                "test_case_id": "TC109",
+                "path_id": "N007",
+                "path_key": "T01>T04>T05>T06>!NT07",
+                "step_no": 5,
+                "assertion_id": "S5.DATA.payments",
+                "expected": [
+                  [
+                    1,
+                    300000,
+                    "SUCCESS"
+                  ]
+                ],
+                "actual": [
+                  [
+                    1,
+                    300000,
+                    "SUCCESS"
+                  ],
+                  [
+                    1,
+                    300000,
+                    "SUCCESS"
+                  ]
+                ],
+                "expected_source": null
+              }
+            ],
+            "evidence": {
+              "source_files": [
+                "test_validation_results.json",
+                "test_execution_results.json"
+              ],
+              "assertion_id": "S5.DATA.payments",
+              "test_case_id": "TC109",
+              "evidence_step_no": 5,
+              "request": {
+                "method": "POST",
+                "url": "/api/orders/1/pay",
+                "path_template": "/api/orders/{order_id}/pay",
+                "body": {
+                  "simulate_result": "SUCCESS"
+                }
+              },
+              "response": {
+                "status_code": 200,
+                "status_class": "2xx"
+              },
+              "expected_ref": {
+                "test_case_id": "TC109",
+                "step_no": 5
+              },
+              "observed_state_before": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 8,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [
+                  {
+                    "id": 1,
+                    "status": "PAID",
+                    "total_amount": 300000,
+                    "payment_method": "MOCK",
+                    "items": [
+                      {
+                        "product_id": 1,
+                        "unit_price": 150000,
+                        "quantity": 2,
+                        "subtotal": 300000
+                      }
+                    ]
+                  }
+                ],
+                "payments": [
+                  {
+                    "id": 1,
+                    "order_id": 1,
+                    "amount": 300000,
+                    "result": "SUCCESS"
+                  }
+                ]
+              },
+              "observed_state_after": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 8,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [
+                  {
+                    "id": 1,
+                    "status": "PAID",
+                    "total_amount": 300000,
+                    "payment_method": "MOCK",
+                    "items": [
+                      {
+                        "product_id": 1,
+                        "unit_price": 150000,
+                        "quantity": 2,
+                        "subtotal": 300000
+                      }
+                    ]
+                  }
+                ],
+                "payments": [
+                  {
+                    "id": 1,
+                    "order_id": 1,
+                    "amount": 300000,
+                    "result": "SUCCESS"
+                  },
+                  {
+                    "id": 1001,
+                    "order_id": 1,
+                    "amount": 300000,
+                    "result": "SUCCESS"
+                  }
+                ]
+              }
+            },
+            "validation_evidence": {
+              "expected_ref": {
+                "test_case_id": "TC109",
+                "step_no": 5
+              },
+              "request": "POST /api/orders/1/pay",
+              "observed_ref": "steps[5].observed_state",
+              "compared_with": "observed_state của bước liền trước",
+              "execution_step": 5
+            }
+          },
+          {
+            "finding_id": "FI02-005",
+            "source_type": "SYNTHETIC_INJECTION",
+            "title": "PAYMENT_LIFECYCLE_VIOLATION tại NT07 (order_status == PAID): INV-09",
+            "group": "STATE_RESOURCE_LIFECYCLE",
+            "sub_class": "PAYMENT_LIFECYCLE",
+            "classification_basis": "validator_category=PAYMENT_LIFECYCLE_VIOLATION",
+            "validator_category": "PAYMENT_LIFECYCLE_VIOLATION",
+            "severity": "HIGH",
+            "severity_score": 6,
+            "severity_criteria": {
+              "unauthorized_operation_accepted": 0,
+              "impact": 3,
+              "impact_domain": "MONEY",
+              "rule_severity": 2,
+              "persisted_state_or_data_change": 1,
+              "reproducible_in_multiple_cases": 0
+            },
+            "severity_reason": "tổng điểm = unauthorized_operation_accepted:0 + impact:3 + rule_severity:2 + persisted_state_or_data_change:1 + reproducible_in_multiple_cases:0",
+            "confidence": "HIGH",
+            "transition_id": "T06",
+            "negative_transition_id": "NT07",
+            "endpoint": {
+              "method": "POST",
+              "path": "/api/orders/{order_id}/pay"
+            },
+            "violated_field": "INV-09",
+            "rules": [
+              {
+                "rule_id": "BSR-PAYMENT-05",
+                "name": "Prevent Re-payment of Paid Order",
+                "category": "PAYMENT",
+                "severity": "HIGH"
+              }
+            ],
+            "rule_refs_source": "assertion",
+            "counts": {
+              "failed_assertions": 1,
+              "failed_test_cases": 1
+            },
+            "test_case_ids": [
+              "TC109"
+            ],
+            "path_ids": [
+              "N007"
+            ],
+            "occurrences": [
+              {
+                "test_case_id": "TC109",
+                "path_id": "N007",
+                "path_key": "T01>T04>T05>T06>!NT07",
+                "step_no": 5,
+                "assertion_id": "INV-09",
+                "expected": "successful_payment_count_per_order <= 1",
+                "actual": {
+                  "violations": [
+                    {
+                      "step_no": 5,
+                      "order_id": 1,
+                      "successful_payments": 2
+                    }
+                  ]
+                },
+                "expected_source": null
+              }
+            ],
+            "evidence": {
+              "source_files": [
+                "test_validation_results.json",
+                "test_execution_results.json"
+              ],
+              "assertion_id": "INV-09",
+              "test_case_id": "TC109",
+              "evidence_step_no": 5,
+              "request": {
+                "method": "POST",
+                "url": "/api/orders/1/pay",
+                "path_template": "/api/orders/{order_id}/pay",
+                "body": {
+                  "simulate_result": "SUCCESS"
+                }
+              },
+              "response": {
+                "status_code": 200,
+                "status_class": "2xx"
+              },
+              "expected_ref": {
+                "test_case_id": "TC109",
+                "step_no": 5
+              },
+              "observed_state_before": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 8,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [
+                  {
+                    "id": 1,
+                    "status": "PAID",
+                    "total_amount": 300000,
+                    "payment_method": "MOCK",
+                    "items": [
+                      {
+                        "product_id": 1,
+                        "unit_price": 150000,
+                        "quantity": 2,
+                        "subtotal": 300000
+                      }
+                    ]
+                  }
+                ],
+                "payments": [
+                  {
+                    "id": 1,
+                    "order_id": 1,
+                    "amount": 300000,
+                    "result": "SUCCESS"
+                  }
+                ]
+              },
+              "observed_state_after": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 8,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [
+                  {
+                    "id": 1,
+                    "status": "PAID",
+                    "total_amount": 300000,
+                    "payment_method": "MOCK",
+                    "items": [
+                      {
+                        "product_id": 1,
+                        "unit_price": 150000,
+                        "quantity": 2,
+                        "subtotal": 300000
+                      }
+                    ]
+                  }
+                ],
+                "payments": [
+                  {
+                    "id": 1,
+                    "order_id": 1,
+                    "amount": 300000,
+                    "result": "SUCCESS"
+                  },
+                  {
+                    "id": 1001,
+                    "order_id": 1,
+                    "amount": 300000,
+                    "result": "SUCCESS"
+                  }
+                ]
+              }
+            },
+            "validation_evidence": {
+              "states_checked": 6,
+              "invariant_description": "Không thanh toán thành công nhiều lần trên một đơn (payment_count = số payment SUCCESS).",
+              "execution_step": 5
+            }
+          }
+        ],
+        "original_data_unchanged": true
+      },
+      {
+        "scenario_id": "FI03",
+        "title": "Hủy hai lần làm tồn kho được hoàn hai lần",
+        "source_type": "SYNTHETIC_INJECTION",
+        "test_case_id": "TC111",
+        "negative_transition_id": "NT09",
+        "validation_status": "FAIL",
+        "detected": true,
+        "expected_category": "STOCK_INTEGRITY_VIOLATION",
+        "expected_group": "STATE_RESOURCE_LIFECYCLE",
+        "category_matched": true,
+        "group_matched": true,
+        "failed_assertions": 4,
+        "findings": [
+          {
+            "finding_id": "FI03-001",
+            "source_type": "SYNTHETIC_INJECTION",
+            "title": "INVARIANT_VIOLATION tại NT09 (order_status == CANCELLED): INV-10",
+            "group": "STATE_RESOURCE_LIFECYCLE",
+            "sub_class": "INVARIANT",
+            "classification_basis": "negative_category=INVALID_STATE_TRANSITION",
+            "validator_category": "INVARIANT_VIOLATION",
+            "severity": "MEDIUM",
+            "severity_score": 5,
+            "severity_criteria": {
+              "unauthorized_operation_accepted": 0,
+              "impact": 2,
+              "impact_domain": "INVARIANT",
+              "rule_severity": 2,
+              "persisted_state_or_data_change": 1,
+              "reproducible_in_multiple_cases": 0
+            },
+            "severity_reason": "tổng điểm = unauthorized_operation_accepted:0 + impact:2 + rule_severity:2 + persisted_state_or_data_change:1 + reproducible_in_multiple_cases:0",
+            "confidence": "HIGH",
+            "transition_id": "T08",
+            "negative_transition_id": "NT09",
+            "endpoint": {
+              "method": "POST",
+              "path": "/api/orders/{order_id}/cancel"
+            },
+            "violated_field": "INV-10",
+            "rules": [
+              {
+                "rule_id": "BSR-CANCEL-01",
+                "name": "Cancellation Allowed Only in Defined States",
+                "category": "CANCEL",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-STOCK-05",
+                "name": "Stock Restoration Must Not Be Duplicated",
+                "category": "STOCK",
+                "severity": "HIGH"
+              }
+            ],
+            "rule_refs_source": "assertion",
+            "counts": {
+              "failed_assertions": 1,
+              "failed_test_cases": 1
+            },
+            "test_case_ids": [
+              "TC111"
+            ],
+            "path_ids": [
+              "N009"
+            ],
+            "occurrences": [
+              {
+                "test_case_id": "TC111",
+                "path_id": "N009",
+                "path_key": "T01>T04>T08>!NT09",
+                "step_no": 4,
+                "assertion_id": "INV-10",
+                "expected": "CANCELLED is absorbing for confirm, pay, cancel events",
+                "actual": {
+                  "negative_transition_rejected_with_state_unchanged": false
+                },
+                "expected_source": null
+              }
+            ],
+            "evidence": {
+              "source_files": [
+                "test_validation_results.json",
+                "test_execution_results.json"
+              ],
+              "assertion_id": "INV-10",
+              "test_case_id": "TC111",
+              "evidence_step_no": 4,
+              "request": {
+                "method": "POST",
+                "url": "/api/orders/1/cancel",
+                "path_template": "/api/orders/{order_id}/cancel",
+                "body": {}
+              },
+              "response": {
+                "status_code": 409,
+                "status_class": "4xx"
+              },
+              "expected_ref": {
+                "test_case_id": "TC111",
+                "step_no": 4
+              },
+              "observed_state_before": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 10,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [
+                  {
+                    "id": 1,
+                    "status": "CANCELLED",
+                    "total_amount": 300000,
+                    "payment_method": "MOCK",
+                    "items": [
+                      {
+                        "product_id": 1,
+                        "unit_price": 150000,
+                        "quantity": 2,
+                        "subtotal": 300000
+                      }
+                    ]
+                  }
+                ],
+                "payments": []
+              },
+              "observed_state_after": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 12,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [
+                  {
+                    "id": 1,
+                    "status": "CANCELLED",
+                    "total_amount": 300000,
+                    "payment_method": "MOCK",
+                    "items": [
+                      {
+                        "product_id": 1,
+                        "unit_price": 150000,
+                        "quantity": 2,
+                        "subtotal": 300000
+                      }
+                    ]
+                  }
+                ],
+                "payments": []
+              }
+            },
+            "validation_evidence": {
+              "verified_by": "NT09",
+              "derived_from": "S4.*",
+              "execution_step": 4
+            }
+          },
+          {
+            "finding_id": "FI03-002",
+            "source_type": "SYNTHETIC_INJECTION",
+            "title": "STOCK_INTEGRITY_VIOLATION tại NT09 (order_status == CANCELLED): products.stock của mọi sản phẩm bằng ảnh chụp trước bước âm tính",
+            "group": "STATE_RESOURCE_LIFECYCLE",
+            "sub_class": "STOCK_LIFECYCLE",
+            "classification_basis": "validator_category=STOCK_INTEGRITY_VIOLATION",
+            "validator_category": "STOCK_INTEGRITY_VIOLATION",
+            "severity": "HIGH",
+            "severity_score": 6,
+            "severity_criteria": {
+              "unauthorized_operation_accepted": 0,
+              "impact": 3,
+              "impact_domain": "INVENTORY",
+              "rule_severity": 2,
+              "persisted_state_or_data_change": 1,
+              "reproducible_in_multiple_cases": 0
+            },
+            "severity_reason": "tổng điểm = unauthorized_operation_accepted:0 + impact:3 + rule_severity:2 + persisted_state_or_data_change:1 + reproducible_in_multiple_cases:0",
+            "confidence": "HIGH",
+            "transition_id": "T08",
+            "negative_transition_id": "NT09",
+            "endpoint": {
+              "method": "POST",
+              "path": "/api/orders/{order_id}/cancel"
+            },
+            "violated_field": "products.stock của mọi sản phẩm bằng ảnh chụp trước bước âm tính",
+            "rules": [
+              {
+                "rule_id": "BSR-CANCEL-01",
+                "name": "Cancellation Allowed Only in Defined States",
+                "category": "CANCEL",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-CANCEL-02",
+                "name": "Paid Order Cancellation Prevention",
+                "category": "CANCEL",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-CANCEL-03",
+                "name": "Cancellation State Update",
+                "category": "CANCEL",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-CART-01",
+                "name": "Positive Cart Quantity",
+                "category": "CART",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-CART-02",
+                "name": "Cart Quantity Must Not Exceed Stock",
+                "category": "CART",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-CART-03",
+                "name": "Cart Product Must Exist",
+                "category": "CART",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-ORDER-01",
+                "name": "Order Requires Non-empty Cart",
+                "category": "ORDER",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-ORDER-02",
+                "name": "Allowed Payment Method",
+                "category": "ORDER",
+                "severity": "MEDIUM"
+              },
+              {
+                "rule_id": "BSR-ORDER-03",
+                "name": "Valid Customer Order Fields",
+                "category": "ORDER",
+                "severity": "MEDIUM"
+              },
+              {
+                "rule_id": "BSR-ORDER-04",
+                "name": "Order Initial State",
+                "category": "ORDER",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-ORDER-06",
+                "name": "Order Creation Uses Server-side Product Price",
+                "category": "ORDER",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-STOCK-01",
+                "name": "Stock Must Cover Order Quantity",
+                "category": "STOCK",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-STOCK-02",
+                "name": "Order Creation Deducts Stock Exactly",
+                "category": "STOCK",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-STOCK-03",
+                "name": "Stock Must Remain Non-negative",
+                "category": "STOCK",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-STOCK-04",
+                "name": "Cancellation Restores Stock",
+                "category": "STOCK",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-STOCK-05",
+                "name": "Stock Restoration Must Not Be Duplicated",
+                "category": "STOCK",
+                "severity": "HIGH"
+              }
+            ],
+            "rule_refs_source": "assertion",
+            "counts": {
+              "failed_assertions": 1,
+              "failed_test_cases": 1
+            },
+            "test_case_ids": [
+              "TC111"
+            ],
+            "path_ids": [
+              "N009"
+            ],
+            "occurrences": [
+              {
+                "test_case_id": "TC111",
+                "path_id": "N009",
+                "path_key": "T01>T04>T08>!NT09",
+                "step_no": null,
+                "assertion_id": "A6",
+                "expected": {
+                  "1": 10,
+                  "2": 5,
+                  "3": 3
+                },
+                "actual": {
+                  "1": 12,
+                  "2": 5,
+                  "3": 3
+                },
+                "expected_source": "api_test_mapping.negative_postconditions"
+              }
+            ],
+            "evidence": {
+              "source_files": [
+                "test_validation_results.json",
+                "test_execution_results.json"
+              ],
+              "assertion_id": "A6",
+              "test_case_id": "TC111",
+              "evidence_step_no": 4,
+              "request": {
+                "method": "POST",
+                "url": "/api/orders/1/cancel",
+                "path_template": "/api/orders/{order_id}/cancel",
+                "body": {}
+              },
+              "response": {
+                "status_code": 409,
+                "status_class": "4xx"
+              },
+              "expected_ref": {
+                "test_case_id": "TC111",
+                "step_no": 4
+              },
+              "observed_state_before": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 10,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [
+                  {
+                    "id": 1,
+                    "status": "CANCELLED",
+                    "total_amount": 300000,
+                    "payment_method": "MOCK",
+                    "items": [
+                      {
+                        "product_id": 1,
+                        "unit_price": 150000,
+                        "quantity": 2,
+                        "subtotal": 300000
+                      }
+                    ]
+                  }
+                ],
+                "payments": []
+              },
+              "observed_state_after": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 12,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [
+                  {
+                    "id": 1,
+                    "status": "CANCELLED",
+                    "total_amount": 300000,
+                    "payment_method": "MOCK",
+                    "items": [
+                      {
+                        "product_id": 1,
+                        "unit_price": 150000,
+                        "quantity": 2,
+                        "subtotal": 300000
+                      }
+                    ]
+                  }
+                ],
+                "payments": []
+              }
+            },
+            "validation_evidence": {
+              "probe": "GET /api/products/{product_id}",
+              "source": "api_test_mapping.negative_postconditions",
+              "probe_status": "NOT_SENT",
+              "actual_from": "final_observed_state (probe không gửi được)"
+            }
+          },
+          {
+            "finding_id": "FI03-003",
+            "source_type": "SYNTHETIC_INJECTION",
+            "title": "STOCK_INTEGRITY_VIOLATION tại NT09 (order_status == CANCELLED): DATA.stock",
+            "group": "STATE_RESOURCE_LIFECYCLE",
+            "sub_class": "STOCK_LIFECYCLE",
+            "classification_basis": "validator_category=STOCK_INTEGRITY_VIOLATION",
+            "validator_category": "STOCK_INTEGRITY_VIOLATION",
+            "severity": "HIGH",
+            "severity_score": 6,
+            "severity_criteria": {
+              "unauthorized_operation_accepted": 0,
+              "impact": 3,
+              "impact_domain": "INVENTORY",
+              "rule_severity": 2,
+              "persisted_state_or_data_change": 1,
+              "reproducible_in_multiple_cases": 0
+            },
+            "severity_reason": "tổng điểm = unauthorized_operation_accepted:0 + impact:3 + rule_severity:2 + persisted_state_or_data_change:1 + reproducible_in_multiple_cases:0",
+            "confidence": "HIGH",
+            "transition_id": "T08",
+            "negative_transition_id": "NT09",
+            "endpoint": {
+              "method": "POST",
+              "path": "/api/orders/{order_id}/cancel"
+            },
+            "violated_field": "DATA.stock",
+            "rules": [
+              {
+                "rule_id": "BSR-CANCEL-01",
+                "name": "Cancellation Allowed Only in Defined States",
+                "category": "CANCEL",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-STOCK-05",
+                "name": "Stock Restoration Must Not Be Duplicated",
+                "category": "STOCK",
+                "severity": "HIGH"
+              }
+            ],
+            "rule_refs_source": "assertion",
+            "counts": {
+              "failed_assertions": 1,
+              "failed_test_cases": 1
+            },
+            "test_case_ids": [
+              "TC111"
+            ],
+            "path_ids": [
+              "N009"
+            ],
+            "occurrences": [
+              {
+                "test_case_id": "TC111",
+                "path_id": "N009",
+                "path_key": "T01>T04>T08>!NT09",
+                "step_no": 4,
+                "assertion_id": "S4.DATA.stock",
+                "expected": {
+                  "1": 10,
+                  "2": 5,
+                  "3": 3
+                },
+                "actual": {
+                  "1": 12,
+                  "2": 5,
+                  "3": 3
+                },
+                "expected_source": null
+              }
+            ],
+            "evidence": {
+              "source_files": [
+                "test_validation_results.json",
+                "test_execution_results.json"
+              ],
+              "assertion_id": "S4.DATA.stock",
+              "test_case_id": "TC111",
+              "evidence_step_no": 4,
+              "request": {
+                "method": "POST",
+                "url": "/api/orders/1/cancel",
+                "path_template": "/api/orders/{order_id}/cancel",
+                "body": {}
+              },
+              "response": {
+                "status_code": 409,
+                "status_class": "4xx"
+              },
+              "expected_ref": {
+                "test_case_id": "TC111",
+                "step_no": 4
+              },
+              "observed_state_before": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 10,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [
+                  {
+                    "id": 1,
+                    "status": "CANCELLED",
+                    "total_amount": 300000,
+                    "payment_method": "MOCK",
+                    "items": [
+                      {
+                        "product_id": 1,
+                        "unit_price": 150000,
+                        "quantity": 2,
+                        "subtotal": 300000
+                      }
+                    ]
+                  }
+                ],
+                "payments": []
+              },
+              "observed_state_after": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 12,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [
+                  {
+                    "id": 1,
+                    "status": "CANCELLED",
+                    "total_amount": 300000,
+                    "payment_method": "MOCK",
+                    "items": [
+                      {
+                        "product_id": 1,
+                        "unit_price": 150000,
+                        "quantity": 2,
+                        "subtotal": 300000
+                      }
+                    ]
+                  }
+                ],
+                "payments": []
+              }
+            },
+            "validation_evidence": {
+              "expected_ref": {
+                "test_case_id": "TC111",
+                "step_no": 4
+              },
+              "request": "POST /api/orders/1/cancel",
+              "observed_ref": "steps[4].observed_state",
+              "compared_with": "observed_state của bước liền trước",
+              "execution_step": 4
+            }
+          },
+          {
+            "finding_id": "FI03-004",
+            "source_type": "SYNTHETIC_INJECTION",
+            "title": "STOCK_INTEGRITY_VIOLATION tại NT09 (order_status == CANCELLED): INV-05",
+            "group": "STATE_RESOURCE_LIFECYCLE",
+            "sub_class": "STOCK_LIFECYCLE",
+            "classification_basis": "validator_category=STOCK_INTEGRITY_VIOLATION",
+            "validator_category": "STOCK_INTEGRITY_VIOLATION",
+            "severity": "HIGH",
+            "severity_score": 6,
+            "severity_criteria": {
+              "unauthorized_operation_accepted": 0,
+              "impact": 3,
+              "impact_domain": "INVENTORY",
+              "rule_severity": 2,
+              "persisted_state_or_data_change": 1,
+              "reproducible_in_multiple_cases": 0
+            },
+            "severity_reason": "tổng điểm = unauthorized_operation_accepted:0 + impact:3 + rule_severity:2 + persisted_state_or_data_change:1 + reproducible_in_multiple_cases:0",
+            "confidence": "HIGH",
+            "transition_id": "T08",
+            "negative_transition_id": "NT09",
+            "endpoint": {
+              "method": "POST",
+              "path": "/api/orders/{order_id}/cancel"
+            },
+            "violated_field": "INV-05",
+            "rules": [
+              {
+                "rule_id": "BSR-STOCK-04",
+                "name": "Cancellation Restores Stock",
+                "category": "STOCK",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-STOCK-05",
+                "name": "Stock Restoration Must Not Be Duplicated",
+                "category": "STOCK",
+                "severity": "HIGH"
+              }
+            ],
+            "rule_refs_source": "assertion",
+            "counts": {
+              "failed_assertions": 1,
+              "failed_test_cases": 1
+            },
+            "test_case_ids": [
+              "TC111"
+            ],
+            "path_ids": [
+              "N009"
+            ],
+            "occurrences": [
+              {
+                "test_case_id": "TC111",
+                "path_id": "N009",
+                "path_key": "T01>T04>T08>!NT09",
+                "step_no": 4,
+                "assertion_id": "INV-05",
+                "expected": "order_status == CANCELLED => stock_restoration_count == 1",
+                "actual": {
+                  "violations": [
+                    {
+                      "step_no": 4,
+                      "product_id": "1",
+                      "expected_stock_delta": 0,
+                      "actual_stock_delta": 2
+                    }
+                  ]
+                },
+                "expected_source": null
+              }
+            ],
+            "evidence": {
+              "source_files": [
+                "test_validation_results.json",
+                "test_execution_results.json"
+              ],
+              "assertion_id": "INV-05",
+              "test_case_id": "TC111",
+              "evidence_step_no": 4,
+              "request": {
+                "method": "POST",
+                "url": "/api/orders/1/cancel",
+                "path_template": "/api/orders/{order_id}/cancel",
+                "body": {}
+              },
+              "response": {
+                "status_code": 409,
+                "status_class": "4xx"
+              },
+              "expected_ref": {
+                "test_case_id": "TC111",
+                "step_no": 4
+              },
+              "observed_state_before": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 10,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [
+                  {
+                    "id": 1,
+                    "status": "CANCELLED",
+                    "total_amount": 300000,
+                    "payment_method": "MOCK",
+                    "items": [
+                      {
+                        "product_id": 1,
+                        "unit_price": 150000,
+                        "quantity": 2,
+                        "subtotal": 300000
+                      }
+                    ]
+                  }
+                ],
+                "payments": []
+              },
+              "observed_state_after": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 12,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [
+                  {
+                    "id": 1,
+                    "status": "CANCELLED",
+                    "total_amount": 300000,
+                    "payment_method": "MOCK",
+                    "items": [
+                      {
+                        "product_id": 1,
+                        "unit_price": 150000,
+                        "quantity": 2,
+                        "subtotal": 300000
+                      }
+                    ]
+                  }
+                ],
+                "payments": []
+              }
+            },
+            "validation_evidence": {
+              "states_checked": 5,
+              "invariant_description": "Hoàn kho đúng một lần.",
+              "execution_step": 4
+            }
+          }
+        ],
+        "original_data_unchanged": true
+      },
+      {
+        "scenario_id": "FI04",
+        "title": "Chấp nhận số lượng vượt tồn kho",
+        "source_type": "SYNTHETIC_INJECTION",
+        "test_case_id": "TC104",
+        "negative_transition_id": "NT02",
+        "validation_status": "FAIL",
+        "detected": true,
+        "expected_category": "GUARD_VIOLATION",
+        "expected_group": "LIMITS_AUTHORIZATION",
+        "category_matched": true,
+        "group_matched": true,
+        "failed_assertions": 3,
+        "findings": [
+          {
+            "finding_id": "FI04-001",
+            "source_type": "SYNTHETIC_INJECTION",
+            "title": "GUARD_VIOLATION tại NT02 (current_qty + quantity > stock): REJECTED",
+            "group": "LIMITS_AUTHORIZATION",
+            "sub_class": "BUSINESS_LIMIT",
+            "classification_basis": "validator_category=GUARD_VIOLATION",
+            "validator_category": "GUARD_VIOLATION",
+            "severity": "MEDIUM",
+            "severity_score": 5,
+            "severity_criteria": {
+              "unauthorized_operation_accepted": 2,
+              "impact": 1,
+              "impact_domain": "BUSINESS_LIMIT",
+              "rule_severity": 2,
+              "persisted_state_or_data_change": 0,
+              "reproducible_in_multiple_cases": 0
+            },
+            "severity_reason": "tổng điểm = unauthorized_operation_accepted:2 + impact:1 + rule_severity:2 + persisted_state_or_data_change:0 + reproducible_in_multiple_cases:0",
+            "confidence": "HIGH",
+            "transition_id": "T01",
+            "negative_transition_id": "NT02",
+            "endpoint": {
+              "method": "POST",
+              "path": "/api/cart/items"
+            },
+            "violated_field": "REJECTED",
+            "rules": [
+              {
+                "rule_id": "BSR-CART-02",
+                "name": "Cart Quantity Must Not Exceed Stock",
+                "category": "CART",
+                "severity": "HIGH"
+              }
+            ],
+            "rule_refs_source": "assertion",
+            "counts": {
+              "failed_assertions": 1,
+              "failed_test_cases": 1
+            },
+            "test_case_ids": [
+              "TC104"
+            ],
+            "path_ids": [
+              "N002"
+            ],
+            "occurrences": [
+              {
+                "test_case_id": "TC104",
+                "path_id": "N002",
+                "path_key": "!NT02",
+                "step_no": 1,
+                "assertion_id": "S1.REJECTED",
+                "expected": {
+                  "accepted": false
+                },
+                "actual": {
+                  "accepted": true,
+                  "http_status": 200
+                },
+                "expected_source": "efsm_model.negative_transitions[NT02].expected.http_status"
+              }
+            ],
+            "evidence": {
+              "source_files": [
+                "test_validation_results.json",
+                "test_execution_results.json"
+              ],
+              "assertion_id": "S1.REJECTED",
+              "test_case_id": "TC104",
+              "evidence_step_no": 1,
+              "request": {
+                "method": "POST",
+                "url": "/api/cart/items",
+                "path_template": "/api/cart/items",
+                "body": {
+                  "product_id": 1,
+                  "quantity": 11
+                }
+              },
+              "response": {
+                "status_code": 200,
+                "status_class": "2xx"
+              },
+              "expected_ref": {
+                "test_case_id": "TC104",
+                "step_no": 1
+              },
+              "observed_state_before": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 10,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [],
+                "payments": []
+              },
+              "observed_state_after": {
+                "cart": {
+                  "items": [
+                    {
+                      "product_id": 1,
+                      "quantity": 11
+                    }
+                  ],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 10,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [],
+                "payments": []
+              }
+            },
+            "validation_evidence": {
+              "expected_ref": {
+                "test_case_id": "TC104",
+                "step_no": 1
+              },
+              "request": "POST /api/cart/items",
+              "http_status": 200,
+              "execution_step": 1
+            }
+          },
+          {
+            "finding_id": "FI04-002",
+            "source_type": "SYNTHETIC_INJECTION",
+            "title": "HTTP_STATUS_MISMATCH tại NT02 (current_qty + quantity > stock): HTTP",
+            "group": "LIMITS_AUTHORIZATION",
+            "sub_class": "INTERFACE",
+            "classification_basis": "negative_category=BUSINESS_CONSTRAINT_VIOLATION",
+            "validator_category": "HTTP_STATUS_MISMATCH",
+            "severity": "LOW",
+            "severity_score": 2,
+            "severity_criteria": {
+              "unauthorized_operation_accepted": 0,
+              "impact": 0,
+              "impact_domain": "INTERFACE_ONLY",
+              "rule_severity": 2,
+              "persisted_state_or_data_change": 0,
+              "reproducible_in_multiple_cases": 0
+            },
+            "severity_reason": "tổng điểm = unauthorized_operation_accepted:0 + impact:0 + rule_severity:2 + persisted_state_or_data_change:0 + reproducible_in_multiple_cases:0",
+            "confidence": "MEDIUM",
+            "transition_id": "T01",
+            "negative_transition_id": "NT02",
+            "endpoint": {
+              "method": "POST",
+              "path": "/api/cart/items"
+            },
+            "violated_field": "HTTP",
+            "rules": [
+              {
+                "rule_id": "BSR-CART-02",
+                "name": "Cart Quantity Must Not Exceed Stock",
+                "category": "CART",
+                "severity": "HIGH"
+              }
+            ],
+            "rule_refs_source": "assertion",
+            "counts": {
+              "failed_assertions": 1,
+              "failed_test_cases": 1
+            },
+            "test_case_ids": [
+              "TC104"
+            ],
+            "path_ids": [
+              "N002"
+            ],
+            "occurrences": [
+              {
+                "test_case_id": "TC104",
+                "path_id": "N002",
+                "path_key": "!NT02",
+                "step_no": 1,
+                "assertion_id": "S1.HTTP",
+                "expected": 400,
+                "actual": 200,
+                "expected_source": "efsm_model.negative_transitions[NT02].expected.http_status"
+              }
+            ],
+            "evidence": {
+              "source_files": [
+                "test_validation_results.json",
+                "test_execution_results.json"
+              ],
+              "assertion_id": "S1.HTTP",
+              "test_case_id": "TC104",
+              "evidence_step_no": 1,
+              "request": {
+                "method": "POST",
+                "url": "/api/cart/items",
+                "path_template": "/api/cart/items",
+                "body": {
+                  "product_id": 1,
+                  "quantity": 11
+                }
+              },
+              "response": {
+                "status_code": 200,
+                "status_class": "2xx"
+              },
+              "expected_ref": {
+                "test_case_id": "TC104",
+                "step_no": 1
+              },
+              "observed_state_before": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 10,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [],
+                "payments": []
+              },
+              "observed_state_after": {
+                "cart": {
+                  "items": [
+                    {
+                      "product_id": 1,
+                      "quantity": 11
+                    }
+                  ],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 10,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [],
+                "payments": []
+              }
+            },
+            "validation_evidence": {
+              "expected_ref": {
+                "test_case_id": "TC104",
+                "step_no": 1
+              },
+              "request": "POST /api/cart/items",
+              "http_status": 200,
+              "execution_step": 1
+            }
+          },
+          {
+            "finding_id": "FI04-003",
+            "source_type": "SYNTHETIC_INJECTION",
+            "title": "UNEXPECTED_SIDE_EFFECT tại NT02 (current_qty + quantity > stock): DATA.cart",
+            "group": "LIMITS_AUTHORIZATION",
+            "sub_class": "SIDE_EFFECT",
+            "classification_basis": "negative_category=BUSINESS_CONSTRAINT_VIOLATION",
+            "validator_category": "UNEXPECTED_SIDE_EFFECT",
+            "severity": "MEDIUM",
+            "severity_score": 4,
+            "severity_criteria": {
+              "unauthorized_operation_accepted": 0,
+              "impact": 1,
+              "impact_domain": "SIDE_EFFECT",
+              "rule_severity": 2,
+              "persisted_state_or_data_change": 1,
+              "reproducible_in_multiple_cases": 0
+            },
+            "severity_reason": "tổng điểm = unauthorized_operation_accepted:0 + impact:1 + rule_severity:2 + persisted_state_or_data_change:1 + reproducible_in_multiple_cases:0",
+            "confidence": "HIGH",
+            "transition_id": "T01",
+            "negative_transition_id": "NT02",
+            "endpoint": {
+              "method": "POST",
+              "path": "/api/cart/items"
+            },
+            "violated_field": "DATA.cart",
+            "rules": [
+              {
+                "rule_id": "BSR-CART-02",
+                "name": "Cart Quantity Must Not Exceed Stock",
+                "category": "CART",
+                "severity": "HIGH"
+              }
+            ],
+            "rule_refs_source": "assertion",
+            "counts": {
+              "failed_assertions": 1,
+              "failed_test_cases": 1
+            },
+            "test_case_ids": [
+              "TC104"
+            ],
+            "path_ids": [
+              "N002"
+            ],
+            "occurrences": [
+              {
+                "test_case_id": "TC104",
+                "path_id": "N002",
+                "path_key": "!NT02",
+                "step_no": 1,
+                "assertion_id": "S1.DATA.cart",
+                "expected": [],
+                "actual": [
+                  [
+                    1,
+                    11
+                  ]
+                ],
+                "expected_source": null
+              }
+            ],
+            "evidence": {
+              "source_files": [
+                "test_validation_results.json",
+                "test_execution_results.json"
+              ],
+              "assertion_id": "S1.DATA.cart",
+              "test_case_id": "TC104",
+              "evidence_step_no": 1,
+              "request": {
+                "method": "POST",
+                "url": "/api/cart/items",
+                "path_template": "/api/cart/items",
+                "body": {
+                  "product_id": 1,
+                  "quantity": 11
+                }
+              },
+              "response": {
+                "status_code": 200,
+                "status_class": "2xx"
+              },
+              "expected_ref": {
+                "test_case_id": "TC104",
+                "step_no": 1
+              },
+              "observed_state_before": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 10,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [],
+                "payments": []
+              },
+              "observed_state_after": {
+                "cart": {
+                  "items": [
+                    {
+                      "product_id": 1,
+                      "quantity": 11
+                    }
+                  ],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 10,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [],
+                "payments": []
+              }
+            },
+            "validation_evidence": {
+              "expected_ref": {
+                "test_case_id": "TC104",
+                "step_no": 1
+              },
+              "request": "POST /api/cart/items",
+              "observed_ref": "steps[1].observed_state",
+              "compared_with": "observed_state của bước liền trước",
+              "execution_step": 1
+            }
+          }
+        ],
+        "original_data_unchanged": true
+      },
+      {
+        "scenario_id": "FI05",
+        "title": "Thanh toán thất bại nhưng đơn chuyển PAID",
+        "source_type": "SYNTHETIC_INJECTION",
+        "test_case_id": "TC006",
+        "negative_transition_id": null,
+        "validation_status": "FAIL",
+        "detected": true,
+        "expected_category": "INVALID_STATE_TRANSITION",
+        "expected_group": "STATE_RESOURCE_LIFECYCLE",
+        "category_matched": true,
+        "group_matched": true,
+        "failed_assertions": 1,
+        "findings": [
+          {
+            "finding_id": "FI05-001",
+            "source_type": "SYNTHETIC_INJECTION",
+            "title": "INVALID_STATE_TRANSITION tại T07: STATE",
+            "group": "STATE_RESOURCE_LIFECYCLE",
+            "sub_class": "ORDER_STATE",
+            "classification_basis": "validator_category=INVALID_STATE_TRANSITION",
+            "validator_category": "INVALID_STATE_TRANSITION",
+            "severity": "HIGH",
+            "severity_score": 6,
+            "severity_criteria": {
+              "unauthorized_operation_accepted": 0,
+              "impact": 3,
+              "impact_domain": "MONEY",
+              "rule_severity": 2,
+              "persisted_state_or_data_change": 1,
+              "reproducible_in_multiple_cases": 0
+            },
+            "severity_reason": "tổng điểm = unauthorized_operation_accepted:0 + impact:3 + rule_severity:2 + persisted_state_or_data_change:1 + reproducible_in_multiple_cases:0",
+            "confidence": "HIGH",
+            "transition_id": "T07",
+            "negative_transition_id": null,
+            "endpoint": {
+              "method": "POST",
+              "path": "/api/orders/{order_id}/pay"
+            },
+            "violated_field": "STATE",
+            "rules": [
+              {
+                "rule_id": "BSR-PAYMENT-03",
+                "name": "Failed Payment Does Not Set Order Paid",
+                "category": "PAYMENT",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-PAYMENT-04",
+                "name": "Prevent Payment for Cancelled or Non-confirmed Order",
+                "category": "PAYMENT",
+                "severity": "HIGH"
+              },
+              {
+                "rule_id": "BSR-PAYMENT-07",
+                "name": "Payment Simulation Result Must Be Valid",
+                "category": "PAYMENT",
+                "severity": "MEDIUM"
+              }
+            ],
+            "rule_refs_source": "assertion",
+            "counts": {
+              "failed_assertions": 1,
+              "failed_test_cases": 1
+            },
+            "test_case_ids": [
+              "TC006"
+            ],
+            "path_ids": [
+              "P006"
+            ],
+            "occurrences": [
+              {
+                "test_case_id": "TC006",
+                "path_id": "P006",
+                "path_key": "T01>T04>T05>T07",
+                "step_no": 4,
+                "assertion_id": "S4.STATE",
+                "expected": {
+                  "state_after": "CONFIRMED",
+                  "order_status": {
+                    "1": "CONFIRMED"
+                  }
+                },
+                "actual": {
+                  "order_status": {
+                    "1": "PAID"
+                  }
+                },
+                "expected_source": "efsm_model.transitions[T07].expected_http_status"
+              }
+            ],
+            "evidence": {
+              "source_files": [
+                "test_validation_results.json",
+                "test_execution_results.json"
+              ],
+              "assertion_id": "S4.STATE",
+              "test_case_id": "TC006",
+              "evidence_step_no": 4,
+              "request": {
+                "method": "POST",
+                "url": "/api/orders/1/pay",
+                "path_template": "/api/orders/{order_id}/pay",
+                "body": {
+                  "simulate_result": "FAILED"
+                }
+              },
+              "response": {
+                "status_code": 200,
+                "status_class": "2xx"
+              },
+              "expected_ref": {
+                "test_case_id": "TC006",
+                "step_no": 4
+              },
+              "observed_state_before": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 8,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [
+                  {
+                    "id": 1,
+                    "status": "CONFIRMED",
+                    "total_amount": 300000,
+                    "payment_method": "MOCK",
+                    "items": [
+                      {
+                        "product_id": 1,
+                        "unit_price": 150000,
+                        "quantity": 2,
+                        "subtotal": 300000
+                      }
+                    ]
+                  }
+                ],
+                "payments": []
+              },
+              "observed_state_after": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 8,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [
+                  {
+                    "id": 1,
+                    "status": "PAID",
+                    "total_amount": 300000,
+                    "payment_method": "MOCK",
+                    "items": [
+                      {
+                        "product_id": 1,
+                        "unit_price": 150000,
+                        "quantity": 2,
+                        "subtotal": 300000
+                      }
+                    ]
+                  }
+                ],
+                "payments": [
+                  {
+                    "id": 1,
+                    "order_id": 1,
+                    "amount": 300000,
+                    "result": "FAILED"
+                  }
+                ]
+              }
+            },
+            "validation_evidence": {
+              "expected_ref": {
+                "test_case_id": "TC006",
+                "step_no": 4
+              },
+              "request": "POST /api/orders/1/pay",
+              "observed_ref": "steps[4].observed_state.orders",
+              "execution_step": 4
+            }
+          }
+        ],
+        "original_data_unchanged": true
+      },
+      {
+        "scenario_id": "FI06",
+        "title": "Mã từ chối hợp lệ nhưng dữ liệu vẫn bị thay đổi",
+        "source_type": "SYNTHETIC_INJECTION",
+        "test_case_id": "TC103",
+        "negative_transition_id": "NT01",
+        "validation_status": "FAIL",
+        "detected": true,
+        "expected_category": "UNEXPECTED_SIDE_EFFECT",
+        "expected_group": "LIMITS_AUTHORIZATION",
+        "category_matched": true,
+        "group_matched": true,
+        "failed_assertions": 1,
+        "findings": [
+          {
+            "finding_id": "FI06-001",
+            "source_type": "SYNTHETIC_INJECTION",
+            "title": "UNEXPECTED_SIDE_EFFECT tại NT01 (quantity <= 0): DATA.cart",
+            "group": "LIMITS_AUTHORIZATION",
+            "sub_class": "SIDE_EFFECT",
+            "classification_basis": "negative_category=INPUT_VALIDATION_VIOLATION",
+            "validator_category": "UNEXPECTED_SIDE_EFFECT",
+            "severity": "MEDIUM",
+            "severity_score": 4,
+            "severity_criteria": {
+              "unauthorized_operation_accepted": 0,
+              "impact": 1,
+              "impact_domain": "SIDE_EFFECT",
+              "rule_severity": 2,
+              "persisted_state_or_data_change": 1,
+              "reproducible_in_multiple_cases": 0
+            },
+            "severity_reason": "tổng điểm = unauthorized_operation_accepted:0 + impact:1 + rule_severity:2 + persisted_state_or_data_change:1 + reproducible_in_multiple_cases:0",
+            "confidence": "HIGH",
+            "transition_id": "T01",
+            "negative_transition_id": "NT01",
+            "endpoint": {
+              "method": "POST",
+              "path": "/api/cart/items"
+            },
+            "violated_field": "DATA.cart",
+            "rules": [
+              {
+                "rule_id": "BSR-CART-01",
+                "name": "Positive Cart Quantity",
+                "category": "CART",
+                "severity": "HIGH"
+              }
+            ],
+            "rule_refs_source": "assertion",
+            "counts": {
+              "failed_assertions": 1,
+              "failed_test_cases": 1
+            },
+            "test_case_ids": [
+              "TC103"
+            ],
+            "path_ids": [
+              "N001"
+            ],
+            "occurrences": [
+              {
+                "test_case_id": "TC103",
+                "path_id": "N001",
+                "path_key": "!NT01",
+                "step_no": 1,
+                "assertion_id": "S1.DATA.cart",
+                "expected": [],
+                "actual": [
+                  [
+                    2,
+                    1
+                  ]
+                ],
+                "expected_source": null
+              }
+            ],
+            "evidence": {
+              "source_files": [
+                "test_validation_results.json",
+                "test_execution_results.json"
+              ],
+              "assertion_id": "S1.DATA.cart",
+              "test_case_id": "TC103",
+              "evidence_step_no": 1,
+              "request": {
+                "method": "POST",
+                "url": "/api/cart/items",
+                "path_template": "/api/cart/items",
+                "body": {
+                  "product_id": 1,
+                  "quantity": 0
+                }
+              },
+              "response": {
+                "status_code": 422,
+                "status_class": "4xx"
+              },
+              "expected_ref": {
+                "test_case_id": "TC103",
+                "step_no": 1
+              },
+              "observed_state_before": {
+                "cart": {
+                  "items": [],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 10,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [],
+                "payments": []
+              },
+              "observed_state_after": {
+                "cart": {
+                  "items": [
+                    {
+                      "product_id": 2,
+                      "quantity": 1
+                    }
+                  ],
+                  "total_quantity": 0,
+                  "total_amount": 0
+                },
+                "product_stock": {
+                  "1": 10,
+                  "2": 5,
+                  "3": 3
+                },
+                "orders": [],
+                "payments": []
+              }
+            },
+            "validation_evidence": {
+              "expected_ref": {
+                "test_case_id": "TC103",
+                "step_no": 1
+              },
+              "request": "POST /api/cart/items",
+              "observed_ref": "steps[1].observed_state",
+              "compared_with": "observed_state của bước liền trước",
+              "execution_step": 1
+            }
+          }
+        ],
+        "original_data_unchanged": true
+      }
+    ],
+    "summary": {
+      "total": 6,
+      "detected": 6,
+      "category_matched": 6,
+      "group_matched": 6,
+      "findings": 19
+    }
+  },
+  "limitations": [
+    "49 test case/path chưa được thực thi (NO_FEASIBLE_DATA_FOUND: 49); khu vực này chưa được kiểm chứng.",
+    "0 test case INCONCLUSIVE (chưa kết luận).",
+    "Kết quả chỉ phản ánh những gì quan sát được qua các GET API của Phần 6 và các assertion đã mô hình hóa; không đọc database trực tiếp.",
+    "40 assertion hậu điều kiện negative dùng final_observed_state thay cho probe độc lập (probe thiếu path param ở Phần 6).",
+    "BShop không triển khai xác thực/phân quyền theo người dùng (quy tắc BSR-AUTH-01 bị loại khỏi phạm vi: không áp dụng). Vì vậy nhóm LIMITS_AUTHORIZATION chỉ phản ánh giới hạn và ràng buộc nghiệp vụ; không có finding nào được gắn nhãn lỗi ownership hay authentication.",
+    "Độ bao phủ cấu trúc, khả thi và thực thi là ba khái niệm khác nhau; bao phủ transition không đồng nghĩa bảo mật nghiệp vụ đầy đủ.",
+    "Fault injection chỉ chứng minh khả năng phát hiện của công cụ trên các mẫu lỗi đã chọn; không phải lỗ hổng thực tế của BShop và không chứng minh phát hiện được mọi lỗi.",
+    "Các cặp transition chưa thực thi: T01>T10, T02>T10, T03>T10, T10>T02, T10>T03, T10>T04, T10>T10."
+  ],
+  "answers": {
+    "1_da_kiem_thu_gi": "122 test case đã thực thi (NEGATIVE: 20, POSITIVE: 102); 6431 assertion; transition thực thi 10/10, negative transition 20/20, rule được xác minh bằng PASS 26/26.",
+    "2_dat_that_bai_chua_kiem_chung": "PASS 122, FAIL 0, SKIPPED 49 (chưa kiểm chứng), INCONCLUSIVE 0 (chưa kết luận).",
+    "3_sai_lech_va_bang_chung": "Không có finding thực tế.",
+    "4_phat_hien_loi_cai_dat": "Phát hiện 6/6 lỗi cài đặt; đúng nhãn 6/6; đúng nhóm nghiên cứu 6/6 (source_type=SYNTHETIC_INJECTION, không phải lỗi thực tế)."
+  }
+}

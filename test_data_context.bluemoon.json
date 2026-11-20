@@ -1,0 +1,12 @@
+{
+  "description": "Ngữ cảnh VÍ DỤ cho BlueMoon: giá trị ưu tiên của các biến không phải input của client (ví dụ stock). Đây không phải miền giá trị nghiệp vụ; EFSM không khai báo min/max.",
+  "defaults": {
+    "product_exists": true,
+    "cart_item_exists": true,
+    "stock": 10,
+    "current_qty": 0,
+    "cart_items_count": 1,
+    "ordered_quantity": 2
+  },
+  "transitions": {}
+}

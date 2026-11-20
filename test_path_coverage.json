@@ -1,0 +1,147 @@
+{
+  "generator": "TestPathGenerator",
+  "schema_version": "1.0",
+  "model": {
+    "name": "BlueMoon_EFSM",
+    "sha256": "b5ae83972566f29944be134ddc1e467c9e3c61826801f1a13f70a6372b0583e9"
+  },
+  "states": {
+    "total": 5,
+    "reachable": 5,
+    "unreachable": [],
+    "covered_structural": 5,
+    "covered_feasible": 5,
+    "structural_ratio": 1.0,
+    "feasible_ratio": 1.0,
+    "uncovered_structural": [],
+    "uncovered_feasible": []
+  },
+  "positive_transitions": {
+    "total": 10,
+    "reachable": 10,
+    "covered_structural": 10,
+    "covered_feasible": 10,
+    "structural_ratio": 1.0,
+    "feasible_ratio": 1.0,
+    "uncovered_structural": [],
+    "uncovered_feasible": []
+  },
+  "transition_pairs": {
+    "possible": 28,
+    "covered_structural": 28,
+    "covered_feasible": 14,
+    "structural_ratio": 1.0,
+    "uncovered_structural": []
+  },
+  "negative_transitions": {
+    "total": 20,
+    "with_generated_path": 20,
+    "with_feasible_path": 20,
+    "structural_ratio": 1.0,
+    "feasible_ratio": 1.0,
+    "without_path": [],
+    "not_feasible": [],
+    "not_api_reachable": [
+      "NT04"
+    ]
+  },
+  "security_rules": {
+    "rules_file_loaded": true,
+    "implemented_total": 26,
+    "linked_to_paths": [
+      "BSR-CANCEL-01",
+      "BSR-CANCEL-02",
+      "BSR-CANCEL-03",
+      "BSR-CART-01",
+      "BSR-CART-02",
+      "BSR-CART-03",
+      "BSR-CART-04",
+      "BSR-CART-05",
+      "BSR-ORDER-01",
+      "BSR-ORDER-02",
+      "BSR-ORDER-03",
+      "BSR-ORDER-04",
+      "BSR-ORDER-05",
+      "BSR-ORDER-06",
+      "BSR-PAYMENT-01",
+      "BSR-PAYMENT-02",
+      "BSR-PAYMENT-03",
+      "BSR-PAYMENT-04",
+      "BSR-PAYMENT-05",
+      "BSR-PAYMENT-06",
+      "BSR-PAYMENT-07",
+      "BSR-STOCK-01",
+      "BSR-STOCK-02",
+      "BSR-STOCK-03",
+      "BSR-STOCK-04",
+      "BSR-STOCK-05"
+    ],
+    "linked_count": 26,
+    "not_linked": [],
+    "unknown_rule_ids_in_paths": [],
+    "excluded_not_applicable": [
+      "BSR-AUTH-01",
+      "BSR-CANCEL-COMPLETED",
+      "BSR-PAYMENT-EXTERNAL"
+    ],
+    "with_feasibility_witness": [
+      "BSR-CART-01",
+      "BSR-CART-02",
+      "BSR-CART-03",
+      "BSR-CART-04",
+      "BSR-CART-05",
+      "BSR-ORDER-01",
+      "BSR-ORDER-02",
+      "BSR-ORDER-03",
+      "BSR-ORDER-04",
+      "BSR-ORDER-05",
+      "BSR-ORDER-06",
+      "BSR-STOCK-01",
+      "BSR-STOCK-02",
+      "BSR-STOCK-03",
+      "BSR-STOCK-04",
+      "BSR-STOCK-05",
+      "BSR-CANCEL-01",
+      "BSR-CANCEL-02",
+      "BSR-CANCEL-03",
+      "BSR-PAYMENT-01",
+      "BSR-PAYMENT-02",
+      "BSR-PAYMENT-03",
+      "BSR-PAYMENT-04",
+      "BSR-PAYMENT-05",
+      "BSR-PAYMENT-06",
+      "BSR-PAYMENT-07"
+    ],
+    "with_generated_test_data": {
+      "status": "NOT_MEASURED",
+      "note": "test_data_generator.py has not run."
+    },
+    "executed_on_backend": {
+      "status": "NOT_MEASURED"
+    },
+    "verified_by_oracle": {
+      "status": "NOT_MEASURED"
+    },
+    "level": "PATH_COVERAGE_ONLY"
+  },
+  "paths": {
+    "total": 171,
+    "by_type": {
+      "positive": 151,
+      "negative": 20
+    },
+    "by_feasibility": {
+      "positive": {
+        "FEASIBLE": 32,
+        "INFEASIBLE": 119
+      },
+      "negative": {
+        "FEASIBLE": 20
+      }
+    }
+  },
+  "executed_coverage": {
+    "status": "NOT_MEASURED",
+    "note": "No API call was made by this module; nothing is counted as executed or verified."
+  }
+}

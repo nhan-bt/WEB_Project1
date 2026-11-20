@@ -1,0 +1,846 @@
+{
+  "generator": "PathAwareTestDataGenerator",
+  "schema_version": "1.0",
+  "summary": {
+    "input_paths": 171,
+    "input_positive_paths": 151,
+    "input_negative_paths": 20,
+    "test_cases": 122,
+    "positive_cases": 102,
+    "negative_cases": 20,
+    "readiness": {
+      "READY": 119,
+      "PARTIALLY_READY": 3,
+      "BLOCKED": 49,
+      "UNSUPPORTED": 0
+    },
+    "unconverted_paths": 49,
+    "unconverted_by_reason": {
+      "NO_FEASIBLE_DATA_FOUND": 49
+    },
+    "paths_infeasible_in_test_paths_now_planned": 70,
+    "cases_with_api_setup_steps": 75,
+    "fixture_steps": 1,
+    "rules_linked": 26,
+    "rules_in_security_rules_index": 26
+  },
+  "transition_coverage": {
+    "total": 10,
+    "covered_as_path_step": [
+      "T01",
+      "T02",
+      "T03",
+      "T04",
+      "T05",
+      "T06",
+      "T07",
+      "T08",
+      "T09",
+      "T10"
+    ],
+    "covered_including_setup": [
+      "T01",
+      "T02",
+      "T03",
+      "T04",
+      "T05",
+      "T06",
+      "T07",
+      "T08",
+      "T09",
+      "T10"
+    ],
+    "not_covered": [],
+    "ratio_path_step": 1.0
+  },
+  "negative_transition_coverage": {
+    "total": 20,
+    "covered": [
+      "NT01",
+      "NT02",
+      "NT03",
+      "NT04",
+      "NT05",
+      "NT06",
+      "NT07",
+      "NT08",
+      "NT09",
+      "NT10",
+      "NT11",
+      "NT12",
+      "NT13",
+      "NT14",
+      "NT15",
+      "NT16",
+      "NT17",
+      "NT18",
+      "NT19",
+      "NT20"
+    ],
+    "not_covered": []
+  },
+  "state_coverage": {
+    "covered": [
+      "CANCELLED",
+      "CART",
+      "CONFIRMED",
+      "PAID",
+      "PENDING_CONFIRMATION"
+    ],
+    "total": 5
+  },
+  "rule_coverage": {
+    "rules_in_selected_paths": 26,
+    "rules_linked_to_test_cases": 26,
+    "not_linked": []
+  },
+  "negative_isolation": {
+    "ISOLATED": 18,
+    "NOT_ISOLATED": 0,
+    "UNEVALUATED": 2
+  },
+  "data_classification_totals": {
+    "input": 1101,
+    "derived": 1878,
+    "backend_generated": 238
+  },
+  "fixture_steps": [
+    {
+      "test_case_id": "TC106",
+      "step_no": 2,
+      "description": "Đặt products.stock = 1 cho id=1 bằng fixture/seed DB (không có API) để điều kiện 'ordered_quantity > stock' xảy ra."
+    }
+  ],
+  "invariants": {
+    "note": "Mọi invariant đều chưa thể kiểm chứng trước khi thực thi; số liệu bên dưới chỉ là đánh giá trên dữ liệu mô phỏng.",
+    "per_invariant": {
+      "INV-01": {
+        "description": "Số lượng thao tác giỏ hàng phải là số nguyên dương.",
+        "kind": "state_predicate",
+        "covered_by": [],
+        "simulated_basis": "EFSM_SIMULATED_DATA",
+        "simulated_checkpoints": {
+          "SATISFIED": 228,
+          "VIOLATED": 0,
+          "SKIPPED": 445,
+          "UNSUPPORTED": 0,
+          "ERROR": 0
+        },
+        "runtime_status": "NOT_VERIFIED_UNTIL_EXECUTION"
+      },
+      "INV-02": {
+        "description": "Không đặt hàng vượt tồn kho (stock_before là snapshot lúc tạo đơn; không áp dụng sau khi hủy).",
+        "kind": "state_predicate",
+        "covered_by": [],
+        "simulated_basis": "EFSM_SIMULATED_DATA",
+        "simulated_checkpoints": {
+          "SATISFIED": 328,
+          "VIOLATED": 0,
+          "SKIPPED": 345,
+          "UNSUPPORTED": 0,
+          "ERROR": 0
+        },
+        "runtime_status": "NOT_VERIFIED_UNTIL_EXECUTION"
+      },
+      "INV-03": {
+        "description": "Tổng tiền tính từ giá trong DB. Cần runtime context cung cấp order_items (quantity, unit_price) và order_total.",
+        "kind": "state_predicate",
+        "covered_by": [],
+        "simulated_basis": "EFSM_SIMULATED_DATA",
+        "simulated_checkpoints": {
+          "SATISFIED": 387,
+          "VIOLATED": 0,
+          "SKIPPED": 286,
+          "UNSUPPORTED": 0,
+          "ERROR": 0
+        },
+        "runtime_status": "NOT_VERIFIED_UNTIL_EXECUTION"
+      },
+      "INV-04": {
+        "description": "Đơn PAID phải có payment thành công; payment_count = số payment SUCCESS của đơn (biến dẫn xuất).",
+        "kind": "state_predicate",
+        "covered_by": [],
+        "simulated_basis": "EFSM_SIMULATED_DATA",
+        "simulated_checkpoints": {
+          "SATISFIED": 45,
+          "VIOLATED": 0,
+          "SKIPPED": 628,
+          "UNSUPPORTED": 0,
+          "ERROR": 0
+        },
+        "runtime_status": "NOT_VERIFIED_UNTIL_EXECUTION"
+      },
+      "INV-05": {
+        "description": "Hoàn kho đúng một lần.",
+        "kind": "state_predicate",
+        "covered_by": [],
+        "simulated_basis": "EFSM_SIMULATED_DATA",
+        "simulated_checkpoints": {
+          "SATISFIED": 59,
+          "VIOLATED": 0,
+          "SKIPPED": 614,
+          "UNSUPPORTED": 0,
+          "ERROR": 0
+        },
+        "runtime_status": "NOT_VERIFIED_UNTIL_EXECUTION"
+      },
+      "INV-06": {
+        "description": "Không hủy đơn đã thanh toán. Là thuộc tính của sự kiện nên được kiểm tra trên cấu trúc mô hình (PAID không có transition cancel_order); backend được kiểm chứng bằng NT08.",
+        "kind": "model_structure",
+        "covered_by": [
+          "NT08"
+        ],
+        "simulated_basis": "MODEL_STRUCTURE",
+        "simulated_checkpoints": {
+          "SATISFIED": 673,
+          "VIOLATED": 0,
+          "SKIPPED": 0,
+          "UNSUPPORTED": 0,
+          "ERROR": 0
+        },
+        "runtime_status": "NOT_VERIFIED_UNTIL_EXECUTION"
+      },
+      "INV-07": {
+        "description": "Chỉ xác nhận đơn đang chờ (kiểm tra cấu trúc mô hình; backend kiểm chứng bằng NT05, NT10, NT20).",
+        "kind": "model_structure",
+        "covered_by": [
+          "T05",
+          "NT05",
+          "NT10",
+          "NT20"
+        ],
+        "simulated_basis": "MODEL_STRUCTURE",
+        "simulated_checkpoints": {
+          "SATISFIED": 673,
+          "VIOLATED": 0,
+          "SKIPPED": 0,
+          "UNSUPPORTED": 0,
+          "ERROR": 0
+        },
+        "runtime_status": "NOT_VERIFIED_UNTIL_EXECUTION"
+      },
+      "INV-08": {
+        "description": "Chỉ thanh toán đơn đã xác nhận (kiểm tra cấu trúc mô hình; backend kiểm chứng bằng NT06, NT07, NT11).",
+        "kind": "model_structure",
+        "covered_by": [
+          "T06",
+          "T07",
+          "NT06",
+          "NT07",
+          "NT11"
+        ],
+        "simulated_basis": "MODEL_STRUCTURE",
+        "simulated_checkpoints": {
+          "SATISFIED": 673,
+          "VIOLATED": 0,
+          "SKIPPED": 0,
+          "UNSUPPORTED": 0,
+          "ERROR": 0
+        },
+        "runtime_status": "NOT_VERIFIED_UNTIL_EXECUTION"
+      },
+      "INV-09": {
+        "description": "Không thanh toán thành công nhiều lần trên một đơn (payment_count = số payment SUCCESS).",
+        "kind": "state_predicate",
+        "covered_by": [],
+        "simulated_basis": "EFSM_SIMULATED_DATA",
+        "simulated_checkpoints": {
+          "SATISFIED": 387,
+          "VIOLATED": 0,
+          "SKIPPED": 286,
+          "UNSUPPORTED": 0,
+          "ERROR": 0
+        },
+        "runtime_status": "NOT_VERIFIED_UNTIL_EXECUTION"
+      },
+      "INV-10": {
+        "description": "Đơn đã hủy không thể confirm/pay/cancel tiếp (kiểm tra cấu trúc mô hình; backend kiểm chứng bằng NT09-NT11).",
+        "kind": "model_structure",
+        "covered_by": [
+          "NT09",
+          "NT10",
+          "NT11"
+        ],
+        "simulated_basis": "MODEL_STRUCTURE",
+        "simulated_checkpoints": {
+          "SATISFIED": 673,
+          "VIOLATED": 0,
+          "SKIPPED": 0,
+          "UNSUPPORTED": 0,
+          "ERROR": 0
+        },
+        "runtime_status": "NOT_VERIFIED_UNTIL_EXECUTION"
+      },
+      "INV-11": {
+        "description": "Tồn kho không bao giờ âm.",
+        "kind": "state_predicate",
+        "covered_by": [],
+        "simulated_basis": "EFSM_SIMULATED_DATA",
+        "simulated_checkpoints": {
+          "SATISFIED": 387,
+          "VIOLATED": 0,
+          "SKIPPED": 286,
+          "UNSUPPORTED": 0,
+          "ERROR": 0
+        },
+        "runtime_status": "NOT_VERIFIED_UNTIL_EXECUTION"
+      },
+      "INV-12": {
+        "description": "Số tiền thanh toán lấy từ order_total, không do client cung cấp.",
+        "kind": "state_predicate",
+        "covered_by": [],
+        "simulated_basis": "EFSM_SIMULATED_DATA",
+        "simulated_checkpoints": {
+          "SATISFIED": 45,
+          "VIOLATED": 0,
+          "SKIPPED": 628,
+          "UNSUPPORTED": 0,
+          "ERROR": 0
+        },
+        "runtime_status": "NOT_VERIFIED_UNTIL_EXECUTION"
+      }
+    },
+    "never_evaluated_as_satisfied_or_violated": []
+  },
+  "unconverted_paths": [
+    {
+      "source_path_id": "P029",
+      "path_key": "T01>T10>T04>T05>T06",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P030",
+      "path_key": "T01>T10>T04>T05>T07>T06",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P031",
+      "path_key": "T01>T10>T04>T05>T07>T07>T06",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P032",
+      "path_key": "T01>T10>T04>T05>T07>T07>T09",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P033",
+      "path_key": "T01>T10>T04>T05>T07>T09",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P034",
+      "path_key": "T01>T10>T04>T05>T09",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P035",
+      "path_key": "T01>T10>T04>T08",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P061",
+      "path_key": "T02>T10>T04>T05>T06",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P062",
+      "path_key": "T02>T10>T04>T05>T07>T06",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P063",
+      "path_key": "T02>T10>T04>T05>T07>T07>T06",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P064",
+      "path_key": "T02>T10>T04>T05>T07>T07>T09",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P065",
+      "path_key": "T02>T10>T04>T05>T07>T09",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P066",
+      "path_key": "T02>T10>T04>T05>T09",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P067",
+      "path_key": "T02>T10>T04>T08",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P096",
+      "path_key": "T03>T10>T04>T05>T06",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P097",
+      "path_key": "T03>T10>T04>T05>T07>T06",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P098",
+      "path_key": "T03>T10>T04>T05>T07>T07>T06",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P099",
+      "path_key": "T03>T10>T04>T05>T07>T07>T09",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P100",
+      "path_key": "T03>T10>T04>T05>T07>T09",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P101",
+      "path_key": "T03>T10>T04>T05>T09",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P102",
+      "path_key": "T03>T10>T04>T08",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P117",
+      "path_key": "T10>T02>T04>T05>T06",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "không có bước nào khả thi",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P118",
+      "path_key": "T10>T02>T04>T05>T07>T06",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "không có bước nào khả thi",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P119",
+      "path_key": "T10>T02>T04>T05>T07>T07>T06",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "không có bước nào khả thi",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P120",
+      "path_key": "T10>T02>T04>T05>T07>T07>T09",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "không có bước nào khả thi",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P121",
+      "path_key": "T10>T02>T04>T05>T07>T09",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "không có bước nào khả thi",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P122",
+      "path_key": "T10>T02>T04>T05>T09",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "không có bước nào khả thi",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P123",
+      "path_key": "T10>T02>T04>T08",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "không có bước nào khả thi",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P124",
+      "path_key": "T10>T03>T04>T05>T06",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "không có bước nào khả thi",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P125",
+      "path_key": "T10>T03>T04>T05>T07>T06",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "không có bước nào khả thi",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P126",
+      "path_key": "T10>T03>T04>T05>T07>T07>T06",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "không có bước nào khả thi",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P127",
+      "path_key": "T10>T03>T04>T05>T07>T07>T09",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "không có bước nào khả thi",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P128",
+      "path_key": "T10>T03>T04>T05>T07>T09",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "không có bước nào khả thi",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P129",
+      "path_key": "T10>T03>T04>T05>T09",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "không có bước nào khả thi",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P130",
+      "path_key": "T10>T03>T04>T08",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "không có bước nào khả thi",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P131",
+      "path_key": "T10>T10>T04>T05>T06",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P132",
+      "path_key": "T10>T10>T04>T05>T07>T06",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P133",
+      "path_key": "T10>T10>T04>T05>T07>T07>T06",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P134",
+      "path_key": "T10>T10>T04>T05>T07>T07>T09",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P135",
+      "path_key": "T10>T10>T04>T05>T07>T09",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P136",
+      "path_key": "T10>T10>T04>T05>T09",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P137",
+      "path_key": "T10>T10>T04>T08",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 3 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P138",
+      "path_key": "T10>T04>T05>T06",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 2 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P139",
+      "path_key": "T10>T04>T05>T07>T06",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 2 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P140",
+      "path_key": "T10>T04>T05>T07>T07>T06",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 2 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P141",
+      "path_key": "T10>T04>T05>T07>T07>T09",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 2 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P142",
+      "path_key": "T10>T04>T05>T07>T09",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 2 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P143",
+      "path_key": "T10>T04>T05>T09",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 2 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    },
+    {
+      "source_path_id": "P144",
+      "path_key": "T10>T04>T08",
+      "type": "positive",
+      "readiness": "BLOCKED",
+      "reason_code": "NO_FEASIBLE_DATA_FOUND",
+      "reason": "bước 2 của path (T04): GUARD_NOT_SATISFIED - UNSAT: no solution exists in the defined domain (cart_items_count > 0 is false for the fixed values)",
+      "evidence": "SEARCH_EXHAUSTED",
+      "proof_scope": "bounded search: product choices over the seed catalog and up to 3 API setup steps; not a proof that no data exists",
+      "source_feasibility": "INFEASIBLE"
+    }
+  ]
+}

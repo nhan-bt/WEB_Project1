@@ -1,0 +1,1090 @@
+{
+  "schema_version": "1.0",
+  "project": "BlueMoon",
+  "artifact": "security_rules.json",
+  "description": "Danh mục Business Security Rules được đối chiếu với backend trong WEB_Project1(1).zip. Rules phản ánh hành vi đang được code thực thi; các yêu cầu chưa được hỗ trợ bởi kiến trúc hiện tại (ví dụ ownership/authentication, COMPLETED, cổng thanh toán thực) không được đưa vào danh mục active.",
+  "source_basis": [
+    "app/schemas.py",
+    "app/models.py",
+    "app/service/cart.py",
+    "app/service/order.py",
+    "app/service/payment.py",
+    "app/routes/orders.py",
+    "app/routes/payments.py"
+  ],
+  "status_definitions": {
+    "IMPLEMENTED": "Quy tắc có cơ sở rõ ràng trong code backend đã rà soát.",
+    "NEEDS_REVIEW": "Cần xác nhận thêm chính sách nghiệp vụ hoặc behavior.",
+    "NOT_APPLICABLE": "Không phù hợp với kiến trúc/phạm vi hiện tại."
+  },
+  "operator_catalog": [
+    "==",
+    "!=",
+    ">",
+    ">=",
+    "<",
+    "<=",
+    "in",
+    "not_in",
+    "exists",
+    "not_empty"
+  ],
+  "rules": [
+    {
+      "rule_id": "BSR-CART-01",
+      "name": "Positive Cart Quantity",
+      "category": "CART",
+      "description": "Số lượng sản phẩm đầu vào cho thao tác giỏ hàng phải là số nguyên dương.",
+      "subject": "CLIENT",
+      "resource": "CART_ITEM",
+      "event": [
+        "ADD_CART_ITEM",
+        "UPDATE_CART_ITEM"
+      ],
+      "preconditions": [
+        {
+          "field": "product_id",
+          "operator": ">",
+          "value": 0
+        }
+      ],
+      "guard": [
+        {
+          "field": "quantity",
+          "operator": ">",
+          "value": 0
+        }
+      ],
+      "expected_result": {
+        "accept": true,
+        "quantity_persisted": "requested_positive_quantity"
+      },
+      "violation_expected": {
+        "accept": false,
+        "http_status": 422,
+        "state_change": false
+      },
+      "severity": "HIGH",
+      "status": "IMPLEMENTED",
+      "evidence": [
+        "app/schemas.py: CartItemInput.quantity Field(gt=0)",
+        "app/schemas.py: QuantityInput.quantity Field(gt=0)"
+      ],
+      "mutant_ids": [
+        "BUG-01"
+      ]
+    },
+    {
+      "rule_id": "BSR-CART-02",
+      "name": "Cart Quantity Must Not Exceed Stock",
+      "category": "CART",
+      "description": "Tổng số lượng của sản phẩm trong giỏ sau thao tác thêm hoặc cập nhật không được vượt tồn kho hiện tại.",
+      "subject": "CLIENT",
+      "resource": "CART_ITEM",
+      "event": [
+        "ADD_CART_ITEM",
+        "UPDATE_CART_ITEM"
+      ],
+      "preconditions": [
+        {
+          "field": "product.exists",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "guard": [
+        {
+          "field": "resulting_cart_quantity",
+          "operator": "<=",
+          "value_from": "product.stock"
+        }
+      ],
+      "expected_result": {
+        "accept": true,
+        "cart_quantity": "resulting_cart_quantity"
+      },
+      "violation_expected": {
+        "accept": false,
+        "http_status": 400,
+        "state_change": false
+      },
+      "severity": "HIGH",
+      "status": "IMPLEMENTED",
+      "evidence": [
+        "app/service/cart.py: add_cart_item()",
+        "app/service/cart.py: update_cart_item()"
+      ],
+      "mutant_ids": [
+        "BUG-02"
+      ]
+    },
+    {
+      "rule_id": "BSR-CART-03",
+      "name": "Cart Product Must Exist",
+      "category": "CART",
+      "description": "Không thể thêm hoặc cập nhật giỏ hàng cho product_id không tồn tại.",
+      "subject": "CLIENT",
+      "resource": "PRODUCT",
+      "event": [
+        "ADD_CART_ITEM",
+        "UPDATE_CART_ITEM"
+      ],
+      "preconditions": [],
+      "guard": [
+        {
+          "field": "product.exists",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "expected_result": {
+        "accept": true
+      },
+      "violation_expected": {
+        "accept": false,
+        "http_status": 404,
+        "state_change": false
+      },
+      "severity": "HIGH",
+      "status": "IMPLEMENTED",
+      "evidence": [
+        "app/service/cart.py: add_cart_item()",
+        "app/service/cart.py: update_cart_item()"
+      ],
+      "mutant_ids": [
+        "BUG-02A"
+      ]
+    },
+    {
+      "rule_id": "BSR-CART-04",
+      "name": "Update Only Existing Cart Item",
+      "category": "CART",
+      "description": "Chỉ cập nhật số lượng của sản phẩm đang có trong giỏ; item không tồn tại bị từ chối.",
+      "subject": "CLIENT",
+      "resource": "CART_ITEM",
+      "event": "UPDATE_CART_ITEM",
+      "preconditions": [
+        {
+          "field": "product.exists",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "guard": [
+        {
+          "field": "cart_item.exists",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "expected_result": {
+        "accept": true,
+        "cart_quantity": "requested_quantity"
+      },
+      "violation_expected": {
+        "accept": false,
+        "http_status": 404,
+        "state_change": false
+      },
+      "severity": "MEDIUM",
+      "status": "IMPLEMENTED",
+      "evidence": [
+        "app/service/cart.py: update_cart_item()"
+      ],
+      "mutant_ids": []
+    },
+    {
+      "rule_id": "BSR-CART-05",
+      "name": "Delete Only Existing Cart Item",
+      "category": "CART",
+      "description": "Yêu cầu xóa cart item không tồn tại bị từ chối.",
+      "subject": "CLIENT",
+      "resource": "CART_ITEM",
+      "event": "DELETE_CART_ITEM",
+      "preconditions": [],
+      "guard": [
+        {
+          "field": "cart_item.exists",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "expected_result": {
+        "accept": true,
+        "cart_item_exists": false
+      },
+      "violation_expected": {
+        "accept": false,
+        "http_status": 404,
+        "state_change": false
+      },
+      "severity": "MEDIUM",
+      "status": "IMPLEMENTED",
+      "evidence": [
+        "app/service/cart.py: delete_cart_item()"
+      ],
+      "mutant_ids": []
+    },
+    {
+      "rule_id": "BSR-ORDER-01",
+      "name": "Order Requires Non-empty Cart",
+      "category": "ORDER",
+      "description": "Không tạo đơn hàng khi giỏ hàng rỗng.",
+      "subject": "CUSTOMER",
+      "resource": "ORDER",
+      "event": "CREATE_ORDER",
+      "preconditions": [],
+      "guard": [
+        {
+          "field": "cart.items_count",
+          "operator": ">",
+          "value": 0
+        }
+      ],
+      "expected_result": {
+        "accept": true,
+        "order_created": true
+      },
+      "violation_expected": {
+        "accept": false,
+        "http_status": 400,
+        "order_created": false,
+        "stock_changed": false
+      },
+      "severity": "HIGH",
+      "status": "IMPLEMENTED",
+      "evidence": [
+        "app/service/order.py: create_order()"
+      ],
+      "mutant_ids": [
+        "BUG-03"
+      ]
+    },
+    {
+      "rule_id": "BSR-ORDER-02",
+      "name": "Allowed Payment Method",
+      "category": "ORDER",
+      "description": "Phương thức thanh toán khi tạo đơn chỉ được thuộc tập MOCK hoặc COD.",
+      "subject": "CUSTOMER",
+      "resource": "ORDER",
+      "event": "CREATE_ORDER",
+      "preconditions": [
+        {
+          "field": "cart.items_count",
+          "operator": ">",
+          "value": 0
+        }
+      ],
+      "guard": [
+        {
+          "field": "payment_method",
+          "operator": "in",
+          "value": [
+            "MOCK",
+            "COD"
+          ]
+        }
+      ],
+      "expected_result": {
+        "accept": true,
+        "payment_method": "requested_allowed_method"
+      },
+      "violation_expected": {
+        "accept": false,
+        "http_status": 400,
+        "order_created": false
+      },
+      "severity": "MEDIUM",
+      "status": "IMPLEMENTED",
+      "evidence": [
+        "app/service/order.py: ALLOWED_PAYMENT_METHODS and create_order()"
+      ],
+      "mutant_ids": []
+    },
+    {
+      "rule_id": "BSR-ORDER-03",
+      "name": "Valid Customer Order Fields",
+      "category": "ORDER",
+      "description": "Thông tin khách hàng cần thỏa các giới hạn schema: customer_name 2–100 ký tự, phone 9–15 ký tự, address 5–255 ký tự.",
+      "subject": "CUSTOMER",
+      "resource": "ORDER",
+      "event": "CREATE_ORDER",
+      "preconditions": [],
+      "guard": [
+        {
+          "field": "customer_name.length",
+          "operator": ">=",
+          "value": 2
+        },
+        {
+          "field": "customer_name.length",
+          "operator": "<=",
+          "value": 100
+        },
+        {
+          "field": "phone.length",
+          "operator": ">=",
+          "value": 9
+        },
+        {
+          "field": "phone.length",
+          "operator": "<=",
+          "value": 15
+        },
+        {
+          "field": "address.length",
+          "operator": ">=",
+          "value": 5
+        },
+        {
+          "field": "address.length",
+          "operator": "<=",
+          "value": 255
+        }
+      ],
+      "expected_result": {
+        "accept": true
+      },
+      "violation_expected": {
+        "accept": false,
+        "http_status": 422,
+        "order_created": false
+      },
+      "severity": "MEDIUM",
+      "status": "IMPLEMENTED",
+      "evidence": [
+        "app/schemas.py: OrderInput"
+      ],
+      "mutant_ids": []
+    },
+    {
+      "rule_id": "BSR-ORDER-04",
+      "name": "Order Initial State",
+      "category": "ORDER",
+      "description": "Đơn hàng mới được tạo có trạng thái PENDING_CONFIRMATION.",
+      "subject": "SYSTEM",
+      "resource": "ORDER",
+      "event": "CREATE_ORDER",
+      "preconditions": [
+        {
+          "field": "cart.items_count",
+          "operator": ">",
+          "value": 0
+        }
+      ],
+      "guard": [
+        {
+          "field": "order_creation_valid",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "expected_result": {
+        "order.status": "PENDING_CONFIRMATION"
+      },
+      "violation_expected": {
+        "state_incorrect": true
+      },
+      "severity": "HIGH",
+      "status": "IMPLEMENTED",
+      "evidence": [
+        "app/models.py: Order.status default",
+        "app/service/order.py: create_order()"
+      ],
+      "mutant_ids": []
+    },
+    {
+      "rule_id": "BSR-ORDER-05",
+      "name": "Confirm Only Pending Confirmation Order",
+      "category": "ORDER",
+      "description": "Chỉ xác nhận đơn hàng đang ở trạng thái PENDING_CONFIRMATION.",
+      "subject": "STAFF_OR_SYSTEM",
+      "resource": "ORDER",
+      "event": "CONFIRM_ORDER",
+      "preconditions": [
+        {
+          "field": "order.exists",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "guard": [
+        {
+          "field": "order.status",
+          "operator": "==",
+          "value": "PENDING_CONFIRMATION"
+        }
+      ],
+      "expected_result": {
+        "accept": true,
+        "order.status": "CONFIRMED"
+      },
+      "violation_expected": {
+        "accept": false,
+        "http_status": 409,
+        "state_change": false
+      },
+      "severity": "HIGH",
+      "status": "IMPLEMENTED",
+      "evidence": [
+        "app/service/order.py: confirm_order()"
+      ],
+      "mutant_ids": [
+        "BUG-05"
+      ]
+    },
+    {
+      "rule_id": "BSR-ORDER-06",
+      "name": "Order Creation Uses Server-side Product Price",
+      "category": "ORDER",
+      "description": "Đơn hàng lấy đơn giá từ Product trong database và tổng tiền được tính bằng tổng product.price * cart quantity.",
+      "subject": "SYSTEM",
+      "resource": "ORDER",
+      "event": "CREATE_ORDER",
+      "preconditions": [
+        {
+          "field": "cart.items_count",
+          "operator": ">",
+          "value": 0
+        }
+      ],
+      "guard": [
+        {
+          "field": "product.price_source",
+          "operator": "==",
+          "value": "DATABASE"
+        }
+      ],
+      "expected_result": {
+        "order.total_amount": "sum(database_product_price * item.quantity)",
+        "order_item.unit_price": "database_product_price"
+      },
+      "violation_expected": {
+        "price_tampering_accepted": false
+      },
+      "severity": "HIGH",
+      "status": "IMPLEMENTED",
+      "evidence": [
+        "app/service/order.py: create_order() computes subtotal from product.price; schemas.OrderInput does not accept price/amount"
+      ],
+      "mutant_ids": [
+        "BUG-10"
+      ]
+    },
+    {
+      "rule_id": "BSR-STOCK-01",
+      "name": "Stock Must Cover Order Quantity",
+      "category": "STOCK",
+      "description": "Khi tạo đơn, số lượng từng mặt hàng phải không lớn hơn stock hiện tại.",
+      "subject": "SYSTEM",
+      "resource": "PRODUCT_STOCK",
+      "event": "CREATE_ORDER",
+      "preconditions": [
+        {
+          "field": "product.exists",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "guard": [
+        {
+          "field": "cart_item.quantity",
+          "operator": "<=",
+          "value_from": "product.stock"
+        }
+      ],
+      "expected_result": {
+        "accept": true
+      },
+      "violation_expected": {
+        "accept": false,
+        "http_status": 400,
+        "order_created": false,
+        "stock_changed": false
+      },
+      "severity": "HIGH",
+      "status": "IMPLEMENTED",
+      "evidence": [
+        "app/service/order.py: create_order()"
+      ],
+      "mutant_ids": [
+        "BUG-04"
+      ]
+    },
+    {
+      "rule_id": "BSR-STOCK-02",
+      "name": "Order Creation Deducts Stock Exactly",
+      "category": "STOCK",
+      "description": "Khi tạo đơn thành công, stock mỗi sản phẩm giảm đúng quantity trong OrderItem.",
+      "subject": "SYSTEM",
+      "resource": "PRODUCT_STOCK",
+      "event": "CREATE_ORDER",
+      "preconditions": [
+        {
+          "field": "order_creation_valid",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "guard": [
+        {
+          "field": "stock_before",
+          "operator": ">=",
+          "value_from": "order_item.quantity"
+        }
+      ],
+      "expected_result": {
+        "stock_after": "stock_before - order_item.quantity"
+      },
+      "violation_expected": {
+        "stock_delta_incorrect": true
+      },
+      "severity": "HIGH",
+      "status": "IMPLEMENTED",
+      "evidence": [
+        "app/service/order.py: create_order() decrements product.stock"
+      ],
+      "mutant_ids": []
+    },
+    {
+      "rule_id": "BSR-STOCK-03",
+      "name": "Stock Must Remain Non-negative",
+      "category": "STOCK",
+      "description": "Tồn kho sau khi đặt hàng không được âm.",
+      "subject": "SYSTEM",
+      "resource": "PRODUCT_STOCK",
+      "event": "CREATE_ORDER",
+      "preconditions": [
+        {
+          "field": "product.exists",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "guard": [
+        {
+          "field": "cart_item.quantity",
+          "operator": "<=",
+          "value_from": "product.stock"
+        }
+      ],
+      "expected_result": {
+        "product.stock": {
+          "operator": ">=",
+          "value": 0
+        }
+      },
+      "violation_expected": {
+        "accept": false,
+        "stock_negative": false
+      },
+      "severity": "HIGH",
+      "status": "IMPLEMENTED",
+      "evidence": [
+        "app/service/order.py: quantity validation before stock decrement"
+      ],
+      "mutant_ids": [
+        "BUG-04"
+      ]
+    },
+    {
+      "rule_id": "BSR-STOCK-04",
+      "name": "Cancellation Restores Stock",
+      "category": "STOCK",
+      "description": "Khi hủy đơn hợp lệ, stock của sản phẩm còn tham chiếu phải được tăng lại bằng quantity của order item.",
+      "subject": "SYSTEM",
+      "resource": "PRODUCT_STOCK",
+      "event": "CANCEL_ORDER",
+      "preconditions": [
+        {
+          "field": "order.status",
+          "operator": "in",
+          "value": [
+            "PENDING_CONFIRMATION",
+            "CONFIRMED"
+          ]
+        }
+      ],
+      "guard": [
+        {
+          "field": "cancel_allowed",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "expected_result": {
+        "stock_after": "stock_before_cancel + order_item.quantity"
+      },
+      "violation_expected": {
+        "stock_not_restored": true
+      },
+      "severity": "HIGH",
+      "status": "IMPLEMENTED",
+      "evidence": [
+        "app/service/order.py: cancel_order()"
+      ],
+      "mutant_ids": []
+    },
+    {
+      "rule_id": "BSR-STOCK-05",
+      "name": "Stock Restoration Must Not Be Duplicated",
+      "category": "STOCK",
+      "description": "Một đơn chỉ được khôi phục stock một lần; lần hủy tiếp theo sau CANCELLED phải bị từ chối và không làm thay đổi stock.",
+      "subject": "SYSTEM",
+      "resource": "PRODUCT_STOCK",
+      "event": "CANCEL_ORDER",
+      "preconditions": [
+        {
+          "field": "order.status",
+          "operator": "==",
+          "value": "CANCELLED"
+        }
+      ],
+      "guard": [
+        {
+          "field": "order.status",
+          "operator": "in",
+          "value": [
+            "PENDING_CONFIRMATION",
+            "CONFIRMED"
+          ]
+        }
+      ],
+      "expected_result": {
+        "accept": false,
+        "http_status": 409,
+        "stock_change": 0
+      },
+      "violation_expected": {
+        "duplicate_stock_restore": false
+      },
+      "severity": "HIGH",
+      "status": "IMPLEMENTED",
+      "evidence": [
+        "app/service/order.py: cancel_order() status allow-list before restoration"
+      ],
+      "mutant_ids": [
+        "BUG-09"
+      ]
+    },
+    {
+      "rule_id": "BSR-CANCEL-01",
+      "name": "Cancellation Allowed Only in Defined States",
+      "category": "CANCEL",
+      "description": "Chỉ cho phép hủy đơn có trạng thái PENDING_CONFIRMATION hoặc CONFIRMED.",
+      "subject": "CUSTOMER_OR_OPERATOR",
+      "resource": "ORDER",
+      "event": "CANCEL_ORDER",
+      "preconditions": [
+        {
+          "field": "order.exists",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "guard": [
+        {
+          "field": "order.status",
+          "operator": "in",
+          "value": [
+            "PENDING_CONFIRMATION",
+            "CONFIRMED"
+          ]
+        }
+      ],
+      "expected_result": {
+        "accept": true,
+        "order.status": "CANCELLED"
+      },
+      "violation_expected": {
+        "accept": false,
+        "http_status": 409,
+        "state_change": false
+      },
+      "severity": "HIGH",
+      "status": "IMPLEMENTED",
+      "evidence": [
+        "app/service/order.py: cancel_order()"
+      ],
+      "mutant_ids": [
+        "BUG-08"
+      ]
+    },
+    {
+      "rule_id": "BSR-CANCEL-02",
+      "name": "Paid Order Cancellation Prevention",
+      "category": "CANCEL",
+      "description": "Không cho hủy đơn đã PAID vì PAID không thuộc tập trạng thái cho phép hủy trong code hiện tại.",
+      "subject": "CUSTOMER_OR_OPERATOR",
+      "resource": "ORDER",
+      "event": "CANCEL_ORDER",
+      "preconditions": [
+        {
+          "field": "order.status",
+          "operator": "==",
+          "value": "PAID"
+        }
+      ],
+      "guard": [
+        {
+          "field": "order.status",
+          "operator": "in",
+          "value": [
+            "PENDING_CONFIRMATION",
+            "CONFIRMED"
+          ]
+        }
+      ],
+      "expected_result": {
+        "accept": false,
+        "http_status": 409,
+        "order.status": "PAID",
+        "stock_change": 0
+      },
+      "violation_expected": {
+        "paid_order_cancelled": false
+      },
+      "severity": "HIGH",
+      "status": "IMPLEMENTED",
+      "evidence": [
+        "app/service/order.py: cancel_order() status allow-list"
+      ],
+      "mutant_ids": [
+        "BUG-08"
+      ]
+    },
+    {
+      "rule_id": "BSR-CANCEL-03",
+      "name": "Cancellation State Update",
+      "category": "CANCEL",
+      "description": "Khi hủy thành công, order.status phải được chuyển thành CANCELLED.",
+      "subject": "SYSTEM",
+      "resource": "ORDER",
+      "event": "CANCEL_ORDER",
+      "preconditions": [
+        {
+          "field": "order.status",
+          "operator": "in",
+          "value": [
+            "PENDING_CONFIRMATION",
+            "CONFIRMED"
+          ]
+        }
+      ],
+      "guard": [
+        {
+          "field": "cancel_allowed",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "expected_result": {
+        "order.status": "CANCELLED"
+      },
+      "violation_expected": {
+        "state_not_cancelled": true
+      },
+      "severity": "HIGH",
+      "status": "IMPLEMENTED",
+      "evidence": [
+        "app/service/order.py: cancel_order() sets status CANCELLED"
+      ],
+      "mutant_ids": []
+    },
+    {
+      "rule_id": "BSR-PAYMENT-01",
+      "name": "Payment Only for Confirmed Order",
+      "category": "PAYMENT",
+      "description": "Chỉ cho phép pay_order khi order.status là CONFIRMED.",
+      "subject": "CUSTOMER_OR_OPERATOR",
+      "resource": "ORDER_PAYMENT",
+      "event": "PAY_ORDER",
+      "preconditions": [
+        {
+          "field": "order.exists",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "guard": [
+        {
+          "field": "order.status",
+          "operator": "==",
+          "value": "CONFIRMED"
+        }
+      ],
+      "expected_result": {
+        "accept": true,
+        "payment_record_created": true
+      },
+      "violation_expected": {
+        "accept": false,
+        "http_status": 409,
+        "payment_record_created": false,
+        "state_change": false
+      },
+      "severity": "HIGH",
+      "status": "IMPLEMENTED",
+      "evidence": [
+        "app/service/payment.py: pay_order()"
+      ],
+      "mutant_ids": [
+        "BUG-06"
+      ]
+    },
+    {
+      "rule_id": "BSR-PAYMENT-02",
+      "name": "Successful Payment Sets Order Paid",
+      "category": "PAYMENT",
+      "description": "Khi simulate_result SUCCESS, payment record lưu SUCCESS và order.status chuyển PAID.",
+      "subject": "SYSTEM",
+      "resource": "ORDER_PAYMENT",
+      "event": "PAY_ORDER",
+      "preconditions": [
+        {
+          "field": "order.status",
+          "operator": "==",
+          "value": "CONFIRMED"
+        }
+      ],
+      "guard": [
+        {
+          "field": "simulate_result",
+          "operator": "==",
+          "value": "SUCCESS"
+        }
+      ],
+      "expected_result": {
+        "payment.result": "SUCCESS",
+        "order.status": "PAID",
+        "payment.amount": "order.total_amount"
+      },
+      "violation_expected": {
+        "paid_state_inconsistent": true
+      },
+      "severity": "HIGH",
+      "status": "IMPLEMENTED",
+      "evidence": [
+        "app/service/payment.py: pay_order()"
+      ],
+      "mutant_ids": []
+    },
+    {
+      "rule_id": "BSR-PAYMENT-03",
+      "name": "Failed Payment Does Not Set Order Paid",
+      "category": "PAYMENT",
+      "description": "Khi simulate_result FAILED, payment record lưu FAILED và order vẫn ở CONFIRMED.",
+      "subject": "SYSTEM",
+      "resource": "ORDER_PAYMENT",
+      "event": "PAY_ORDER",
+      "preconditions": [
+        {
+          "field": "order.status",
+          "operator": "==",
+          "value": "CONFIRMED"
+        }
+      ],
+      "guard": [
+        {
+          "field": "simulate_result",
+          "operator": "==",
+          "value": "FAILED"
+        }
+      ],
+      "expected_result": {
+        "payment.result": "FAILED",
+        "order.status": "CONFIRMED"
+      },
+      "violation_expected": {
+        "order_marked_paid_on_failure": false
+      },
+      "severity": "HIGH",
+      "status": "IMPLEMENTED",
+      "evidence": [
+        "app/service/payment.py: pay_order()"
+      ],
+      "mutant_ids": []
+    },
+    {
+      "rule_id": "BSR-PAYMENT-04",
+      "name": "Prevent Payment for Cancelled or Non-confirmed Order",
+      "category": "PAYMENT",
+      "description": "Đơn CANCELLED và mọi trạng thái khác CONFIRMED đều không được thanh toán.",
+      "subject": "CUSTOMER_OR_OPERATOR",
+      "resource": "ORDER_PAYMENT",
+      "event": "PAY_ORDER",
+      "preconditions": [
+        {
+          "field": "order.status",
+          "operator": "in",
+          "value": [
+            "CANCELLED",
+            "PENDING_CONFIRMATION",
+            "PAID"
+          ]
+        }
+      ],
+      "guard": [
+        {
+          "field": "order.status",
+          "operator": "==",
+          "value": "CONFIRMED"
+        }
+      ],
+      "expected_result": {
+        "accept": false,
+        "http_status": 409,
+        "payment_record_created": false,
+        "order_status_unchanged": true
+      },
+      "violation_expected": {
+        "payment_accepted_for_nonconfirmed_order": false
+      },
+      "severity": "HIGH",
+      "status": "IMPLEMENTED",
+      "evidence": [
+        "app/service/payment.py: pay_order() status guard"
+      ],
+      "mutant_ids": [
+        "BUG-06"
+      ]
+    },
+    {
+      "rule_id": "BSR-PAYMENT-05",
+      "name": "Prevent Re-payment of Paid Order",
+      "category": "PAYMENT",
+      "description": "Không tạo payment record mới khi đơn đã PAID; guard CONFIRMED ngăn thanh toán lặp.",
+      "subject": "CUSTOMER_OR_OPERATOR",
+      "resource": "ORDER_PAYMENT",
+      "event": "PAY_ORDER",
+      "preconditions": [
+        {
+          "field": "order.status",
+          "operator": "==",
+          "value": "PAID"
+        }
+      ],
+      "guard": [
+        {
+          "field": "order.status",
+          "operator": "==",
+          "value": "CONFIRMED"
+        }
+      ],
+      "expected_result": {
+        "accept": false,
+        "http_status": 409,
+        "new_payment_record": false,
+        "order.status": "PAID"
+      },
+      "violation_expected": {
+        "duplicate_payment_record": false
+      },
+      "severity": "HIGH",
+      "status": "IMPLEMENTED",
+      "evidence": [
+        "app/service/payment.py: pay_order() status guard"
+      ],
+      "mutant_ids": [
+        "BUG-07"
+      ]
+    },
+    {
+      "rule_id": "BSR-PAYMENT-06",
+      "name": "Payment Amount Derived from Order Total",
+      "category": "PAYMENT",
+      "description": "Payment.amount được lấy từ order.total_amount, không phải từ amount do request client cung cấp.",
+      "subject": "SYSTEM",
+      "resource": "PAYMENT",
+      "event": "PAY_ORDER",
+      "preconditions": [
+        {
+          "field": "order.status",
+          "operator": "==",
+          "value": "CONFIRMED"
+        }
+      ],
+      "guard": [
+        {
+          "field": "payment.amount_source",
+          "operator": "==",
+          "value": "order.total_amount"
+        }
+      ],
+      "expected_result": {
+        "payment.amount": "order.total_amount"
+      },
+      "violation_expected": {
+        "client_amount_tampering_accepted": false
+      },
+      "severity": "HIGH",
+      "status": "IMPLEMENTED",
+      "evidence": [
+        "app/service/payment.py: Payment(amount=order.total_amount); PaymentInput has no amount field"
+      ],
+      "mutant_ids": [
+        "BUG-10"
+      ]
+    },
+    {
+      "rule_id": "BSR-PAYMENT-07",
+      "name": "Payment Simulation Result Must Be Valid",
+      "category": "PAYMENT",
+      "description": "simulate_result chỉ chấp nhận SUCCESS hoặc FAILED.",
+      "subject": "CLIENT",
+      "resource": "PAYMENT",
+      "event": "PAY_ORDER",
+      "preconditions": [
+        {
+          "field": "order.status",
+          "operator": "==",
+          "value": "CONFIRMED"
+        }
+      ],
+      "guard": [
+        {
+          "field": "simulate_result",
+          "operator": "in",
+          "value": [
+            "SUCCESS",
+            "FAILED"
+          ]
+        }
+      ],
+      "expected_result": {
+        "accept": true
+      },
+      "violation_expected": {
+        "accept": false,
+        "http_status": 400,
+        "payment_record_created": false
+      },
+      "severity": "MEDIUM",
+      "status": "IMPLEMENTED",
+      "evidence": [
+        "app/service/payment.py: pay_order() result allow-list"
+      ],
+      "mutant_ids": []
+    }
+  ],
+  "excluded_rules": [
+    {
+      "rule_id": "BSR-AUTH-01",
+      "name": "Order Ownership",
+      "status": "NOT_APPLICABLE",
+      "reason": "BlueMoon model hiện là single shared cart/demo, Order chưa có user_id/owner_id và chưa có authentication."
+    },
+    {
+      "rule_id": "BSR-CANCEL-COMPLETED",
+      "name": "Prevent Cancellation of Completed Order",
+      "status": "NOT_APPLICABLE",
+      "reason": "Trạng thái COMPLETED chưa thấy trong model/service hiện tại."
+    },
+    {
+      "rule_id": "BSR-PAYMENT-EXTERNAL",
+      "name": "External Payment Gateway Verification",
+      "status": "NOT_APPLICABLE",
+      "reason": "Payment là mô phỏng nội bộ (simulate_result SUCCESS/FAILED); chưa có tích hợp gateway thực tế trong code được rà soát."
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#2563eb">
+  <title>Chi tiết sản phẩm | BlueMart</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/product-detail.js" defer></script>
+</head>
+<body>
+  <div class="announcement">Ưu đãi mỗi ngày · Mua sắm đơn giản, an tâm</div>
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="BlueMart trang chủ"><span class="brand-mark">B</span><span>Blue<span class="brand-blue">Mart</span></span></a>
+    <nav class="main-nav" aria-label="Điều hướng chính">
+      <a class="nav-link" href="/">Trang chủ</a>
+      <a class="nav-link active" href="/#products">Sản phẩm</a>
+      <a class="nav-link" href="/static/orders.html">Đơn hàng</a>
+    </nav>
+    <div class="header-actions"><a class="icon-button" href="/static/cart.html" aria-label="Mở giỏ hàng"><span aria-hidden="true">🛒</span><span>Giỏ hàng</span><span class="cart-count" id="cart-count">0</span></a></div>
+  </header>
+
+  <main class="product-detail-page page-container">
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Trang chủ</a><span>›</span><a href="/#products">Sản phẩm</a><span>›</span><span id="breadcrumb-product">Chi tiết sản phẩm</span></nav>
+    <div id="product-detail-status" class="product-detail-status" role="status">Đang tải thông tin sản phẩm...</div>
+    <section id="product-detail-content" class="product-detail-layout" aria-live="polite"></section>
+    <section class="product-detail-extra">
+      <div class="product-detail-extra-heading"><span class="section-kicker">THÔNG TIN SẢN PHẨM</span><h2>Mua sắm rõ ràng, an tâm</h2></div>
+      <div class="product-detail-benefits">
+        <article><span>✓</span><div><strong>Thông tin minh bạch</strong><p>Giá bán và số lượng tồn kho lấy trực tiếp từ hệ thống.</p></div></article>
+        <article><span>↗</span><div><strong>Đặt hàng thuận tiện</strong><p>Thêm sản phẩm vào giỏ và tiếp tục thanh toán khi sẵn sàng.</p></div></article>
+        <article><span>♡</span><div><strong>Hỗ trợ trải nghiệm</strong><p>Bạn có thể xem lại giỏ hàng hoặc tiếp tục khám phá sản phẩm khác.</p></div></article>
+      </div>
+    </section>
+    <section class="related-products">
+      <div class="section-heading"><div><span class="section-kicker">KHÁM PHÁ THÊM</span><h2>Sản phẩm khác</h2><p>Có thể bạn cũng quan tâm.</p></div><a class="secondary-button" href="/#products">Tất cả sản phẩm <span aria-hidden="true">→</span></a></div>
+      <div id="related-products-grid" class="related-products-grid"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><a class="brand footer-brand" href="/"><span class="brand-mark">B</span><span>Blue<span class="brand-blue">Mart</span></span></a><p>© <span id="year"></span> BlueMart. Website bán hàng demo phục vụ học tập.</p><a href="/docs" target="_blank" rel="noopener">API Docs</a></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

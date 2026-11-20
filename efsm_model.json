@@ -1,0 +1,1767 @@
+{
+  "schema_version": "2.0",
+  "project": "BlueMoon",
+  "model_name": "BlueMoon_EFSM",
+  "description": "Mô hình EFSM cho workflow giỏ hàng, tạo đơn, xác nhận, thanh toán và hủy đơn, đối chiếu trực tiếp với app/service/*.py và app/schemas.py. Guard/action/invariant là dữ liệu có cấu trúc (không dùng eval).",
+  "conventions": {
+    "guard_dsl": "all | any | not | {var, op, value|value_var} | {expr}. Toán tử: == != > >= < <= in not_in exists not_empty.",
+    "expr": "so sánh, and/or/not, + - * /, hằng số, tên biến, tên enum, SUM_PRODUCT(list_var, 'field_a', 'field_b').",
+    "action": "assign {var, expr|value, when?} được mô phỏng; effect {description} là tác động backend, KHÔNG mô phỏng.",
+    "invariant": "state_predicate: applies_in_states/applies_when/check; model_structure: structure; evaluable=false cần unsupported_reason.",
+    "scope": "CART | ORDER | PAYMENT | GLOBAL",
+    "variable_origin": "request (client gửi) | database (đọc từ DB) | derived (harness dẫn xuất / EFSM duy trì)"
+  },
+  "abstractions": [
+    "Giỏ hàng là một giỏ dùng chung; chưa có tài khoản/ownership nên không mô hình hóa quyền sở hữu (BSR-AUTH-01).",
+    "ordered_quantity, stock, current_qty mô tả MỘT dòng hàng; backend kiểm tra từng dòng và INV-02 áp dụng cho mọi dòng.",
+    "Tiền là số nguyên (VND). order_total/payment_amount khai báo decimal để chấp nhận cả số nguyên.",
+    "404 do order_id không tồn tại không được mô hình hóa như transition (tra cứu tài nguyên, không đổi state)."
+  ],
+  "traceability": {
+    "security_rules_file": "security_rules.json",
+    "excluded_rules": [
+      "BSR-AUTH-01",
+      "BSR-CANCEL-COMPLETED",
+      "BSR-PAYMENT-EXTERNAL"
+    ],
+    "note": "Mỗi transition/negative/invariant có rule_refs; security_event khớp trường 'event' của rule."
+  },
+  "initial_state": "CART",
+  "states": [
+    {
+      "id": "CART",
+      "name": "Giỏ hàng",
+      "type": "initial",
+      "entity_type": "cart",
+      "lifecycle": "cart",
+      "order_status_value": null,
+      "description": "Vòng đời giỏ hàng (một giỏ dùng chung, chưa có tài khoản): thêm, sửa, xóa, làm trống."
+    },
+    {
+      "id": "PENDING_CONFIRMATION",
+      "name": "Đơn chờ xác nhận",
+      "type": "intermediate",
+      "entity_type": "order",
+      "lifecycle": "order",
+      "order_status_value": "PENDING_CONFIRMATION",
+      "description": "Đơn vừa tạo: tồn kho đã trừ và giỏ đã xóa trong cùng một transaction."
+    },
+    {
+      "id": "CONFIRMED",
+      "name": "Đơn đã xác nhận",
+      "type": "intermediate",
+      "entity_type": "order",
+      "lifecycle": "order",
+      "order_status_value": "CONFIRMED",
+      "description": "Có thể thanh toán (thành công hoặc thất bại, thử lại được) hoặc hủy."
+    },
+    {
+      "id": "PAID",
+      "name": "Đơn đã thanh toán",
+      "type": "terminal",
+      "entity_type": "order",
+      "lifecycle": "order",
+      "order_status_value": "PAID",
+      "description": "Thanh toán mô phỏng thành công. Backend không cho thanh toán lại hoặc hủy."
+    },
+    {
+      "id": "CANCELLED",
+      "name": "Đơn đã hủy",
+      "type": "terminal",
+      "entity_type": "order",
+      "lifecycle": "order",
+      "order_status_value": "CANCELLED",
+      "description": "Đã hoàn kho đúng một lần. Không confirm/pay/cancel tiếp được."
+    }
+  ],
+  "variables": [
+    {
+      "name": "cart_items_count",
+      "type": "integer",
+      "scope": "cart",
+      "origin": "derived",
+      "description": "Số dòng sản phẩm trong giỏ (COUNT cart_items)."
+    },
+    {
+      "name": "quantity",
+      "type": "integer",
+      "scope": "input",
+      "origin": "request",
+      "description": "Số lượng được yêu cầu (body.quantity).",
+      "api_field": "body.quantity"
+    },
+    {
+      "name": "current_qty",
+      "type": "integer",
+      "scope": "cart_item",
+      "origin": "database",
+      "description": "Số lượng sản phẩm hiện có trong giỏ (0 nếu chưa có dòng)."
+    },
+    {
+      "name": "stock",
+      "type": "integer",
+      "scope": "product",
+      "origin": "database",
+      "description": "Tồn kho hiện tại của sản phẩm."
+    },
+    {
+      "name": "unit_price",
+      "type": "decimal",
+      "scope": "database",
+      "origin": "database",
+      "description": "Giá sản phẩm lấy từ database (products.price)."
+    },
+    {
+      "name": "order_total",
+      "type": "decimal",
+      "scope": "order",
+      "origin": "database",
+      "description": "Tổng tiền đơn = tổng quantity * unit_price (orders.total_amount)."
+    },
+    {
+      "name": "order_status",
+      "type": "string",
+      "scope": "order",
+      "origin": "database",
+      "description": "Trạng thái đơn (orders.status).",
+      "allowed_values": [
+        "PENDING_CONFIRMATION",
+        "CONFIRMED",
+        "PAID",
+        "CANCELLED"
+      ]
+    },
+    {
+      "name": "payment_method",
+      "type": "string",
+      "scope": "input",
+      "origin": "request",
+      "description": "Phương thức thanh toán backend cho phép khi tạo đơn.",
+      "allowed_values": [
+        "MOCK",
+        "COD"
+      ],
+      "api_field": "body.payment_method"
+    },
+    {
+      "name": "payment_result",
+      "type": "string",
+      "scope": "input",
+      "origin": "request",
+      "description": "Kết quả thanh toán mô phỏng (body.simulate_result).",
+      "allowed_values": [
+        "SUCCESS",
+        "FAILED"
+      ],
+      "api_field": "body.simulate_result"
+    },
+    {
+      "name": "stock_before",
+      "type": "integer",
+      "scope": "product",
+      "origin": "derived",
+      "description": "Snapshot tồn kho trước khi tạo đơn."
+    },
+    {
+      "name": "stock_after",
+      "type": "integer",
+      "scope": "product",
+      "origin": "derived",
+      "description": "Tồn kho sau thao tác trừ/hoàn kho gần nhất."
+    },
+    {
+      "name": "cancel_count",
+      "type": "integer",
+      "scope": "order",
+      "origin": "derived",
+      "description": "Số lần hủy thành công của đơn (khởi tạo 0 khi tạo đơn)."
+    },
+    {
+      "name": "payment_count",
+      "type": "integer",
+      "scope": "order",
+      "origin": "derived",
+      "description": "Số payment THÀNH CÔNG (result == SUCCESS) của đơn (COUNT payments); khởi tạo 0 khi tạo đơn."
+    },
+    {
+      "name": "cart_item_exists",
+      "type": "boolean",
+      "scope": "cart",
+      "origin": "derived",
+      "description": "Dòng sản phẩm có tồn tại trong giỏ (cart_items)."
+    },
+    {
+      "name": "stock_restoration_count",
+      "type": "integer",
+      "scope": "order",
+      "origin": "derived",
+      "description": "Số lần hoàn kho cho đơn; khởi tạo 0 khi tạo đơn, tăng 1 khi hủy."
+    },
+    {
+      "name": "ordered_quantity",
+      "type": "integer",
+      "scope": "order_item",
+      "origin": "derived",
+      "description": "Số lượng của MỘT dòng hàng trong đơn (trừu tượng hóa theo từng dòng giỏ hàng)."
+    },
+    {
+      "name": "product_exists",
+      "type": "boolean",
+      "scope": "product",
+      "origin": "database",
+      "description": "Sản phẩm (product_id) tồn tại; nếu không backend trả 404."
+    },
+    {
+      "name": "customer_name_length",
+      "type": "integer",
+      "scope": "input",
+      "origin": "request",
+      "description": "Độ dài body.customer_name (Pydantic: 2..100).",
+      "api_field": "len(body.customer_name)"
+    },
+    {
+      "name": "phone_length",
+      "type": "integer",
+      "scope": "input",
+      "origin": "request",
+      "description": "Độ dài body.phone (Pydantic: 9..15).",
+      "api_field": "len(body.phone)"
+    },
+    {
+      "name": "address_length",
+      "type": "integer",
+      "scope": "input",
+      "origin": "request",
+      "description": "Độ dài body.address (Pydantic: 5..255).",
+      "api_field": "len(body.address)"
+    },
+    {
+      "name": "order_items",
+      "type": "list",
+      "scope": "order_item",
+      "origin": "database",
+      "description": "Danh sách dòng hàng của đơn: mỗi phần tử có quantity và unit_price (giá snapshot từ DB)."
+    },
+    {
+      "name": "payment_amount",
+      "type": "decimal",
+      "scope": "payment",
+      "origin": "database",
+      "description": "Số tiền của payment (payments.amount = orders.total_amount)."
+    }
+  ],
+  "transitions": [
+    {
+      "id": "T01",
+      "source": "CART",
+      "event": "add_item",
+      "security_event": "ADD_CART_ITEM",
+      "guard": {
+        "all": [
+          {
+            "var": "product_exists",
+            "op": "==",
+            "value": true
+          },
+          {
+            "var": "quantity",
+            "op": ">",
+            "value": 0
+          },
+          {
+            "expr": "current_qty + quantity <= stock"
+          }
+        ]
+      },
+      "actions": [
+        {
+          "type": "assign",
+          "var": "cart_items_count",
+          "expr": "cart_items_count + 1",
+          "when": {
+            "var": "current_qty",
+            "op": "==",
+            "value": 0
+          }
+        },
+        {
+          "type": "assign",
+          "var": "current_qty",
+          "expr": "current_qty + quantity"
+        },
+        {
+          "type": "assign",
+          "var": "cart_item_exists",
+          "value": true
+        },
+        {
+          "type": "effect",
+          "description": "UPSERT cart_items(product_id, quantity = current_qty + quantity) trong một transaction",
+          "simulated": false
+        }
+      ],
+      "variables": {
+        "guard_reads": [
+          "current_qty",
+          "product_exists",
+          "quantity",
+          "stock"
+        ],
+        "action_reads": [
+          "current_qty",
+          "quantity"
+        ],
+        "conditional_action_reads": [
+          "cart_items_count"
+        ],
+        "action_writes": [
+          "cart_items_count",
+          "current_qty",
+          "cart_item_exists"
+        ],
+        "required_inputs": [
+          "current_qty",
+          "product_exists",
+          "quantity",
+          "stock"
+        ]
+      },
+      "target": "CART",
+      "expected_http_status": 200,
+      "api": {
+        "method": "POST",
+        "path": "/api/cart/items",
+        "service": "app/service/cart.py::add_cart_item",
+        "request_body": {
+          "product_id": "int > 0",
+          "quantity": "int > 0"
+        },
+        "backend_checks": [
+          "Pydantic: product_id > 0, quantity > 0 -> 422",
+          "service: product tồn tại -> 404",
+          "service: current_qty + quantity <= stock -> 400"
+        ]
+      },
+      "rule_refs": [
+        "BSR-CART-01",
+        "BSR-CART-02",
+        "BSR-CART-03"
+      ]
+    },
+    {
+      "id": "T02",
+      "source": "CART",
+      "event": "update_quantity",
+      "security_event": "UPDATE_CART_ITEM",
+      "guard": {
+        "all": [
+          {
+            "var": "product_exists",
+            "op": "==",
+            "value": true
+          },
+          {
+            "var": "cart_item_exists",
+            "op": "==",
+            "value": true
+          },
+          {
+            "var": "quantity",
+            "op": ">",
+            "value": 0
+          },
+          {
+            "var": "quantity",
+            "op": "<=",
+            "value_var": "stock"
+          }
+        ]
+      },
+      "actions": [
+        {
+          "type": "assign",
+          "var": "current_qty",
+          "expr": "quantity"
+        },
+        {
+          "type": "effect",
+          "description": "UPDATE cart_items.quantity = quantity",
+          "simulated": false
+        }
+      ],
+      "variables": {
+        "guard_reads": [
+          "cart_item_exists",
+          "product_exists",
+          "quantity",
+          "stock"
+        ],
+        "action_reads": [
+          "quantity"
+        ],
+        "conditional_action_reads": [],
+        "action_writes": [
+          "current_qty"
+        ],
+        "required_inputs": [
+          "cart_item_exists",
+          "product_exists",
+          "quantity",
+          "stock"
+        ]
+      },
+      "target": "CART",
+      "expected_http_status": 200,
+      "api": {
+        "method": "PATCH",
+        "path": "/api/cart/items/{product_id}",
+        "service": "app/service/cart.py::update_cart_item",
+        "request_body": {
+          "quantity": "int > 0"
+        },
+        "backend_checks": [
+          "Pydantic: quantity > 0 -> 422",
+          "service: product tồn tại -> 404",
+          "service: dòng giỏ tồn tại -> 404",
+          "service: quantity <= stock -> 400"
+        ]
+      },
+      "rule_refs": [
+        "BSR-CART-01",
+        "BSR-CART-02",
+        "BSR-CART-03",
+        "BSR-CART-04"
+      ]
+    },
+    {
+      "id": "T03",
+      "source": "CART",
+      "event": "remove_item",
+      "security_event": "DELETE_CART_ITEM",
+      "guard": {
+        "var": "cart_item_exists",
+        "op": "==",
+        "value": true
+      },
+      "actions": [
+        {
+          "type": "assign",
+          "var": "cart_items_count",
+          "expr": "cart_items_count - 1"
+        },
+        {
+          "type": "assign",
+          "var": "current_qty",
+          "value": 0
+        },
+        {
+          "type": "assign",
+          "var": "cart_item_exists",
+          "value": false
+        },
+        {
+          "type": "effect",
+          "description": "DELETE dòng cart_items của product_id",
+          "simulated": false
+        }
+      ],
+      "variables": {
+        "guard_reads": [
+          "cart_item_exists"
+        ],
+        "action_reads": [
+          "cart_items_count"
+        ],
+        "conditional_action_reads": [],
+        "action_writes": [
+          "cart_items_count",
+          "current_qty",
+          "cart_item_exists"
+        ],
+        "required_inputs": [
+          "cart_item_exists",
+          "cart_items_count"
+        ]
+      },
+      "target": "CART",
+      "expected_http_status": 200,
+      "api": {
+        "method": "DELETE",
+        "path": "/api/cart/items/{product_id}",
+        "service": "app/service/cart.py::delete_cart_item",
+        "request_body": {},
+        "backend_checks": [
+          "service: dòng giỏ tồn tại -> 404 (không kiểm tra product)"
+        ]
+      },
+      "rule_refs": [
+        "BSR-CART-05"
+      ]
+    },
+    {
+      "id": "T10",
+      "source": "CART",
+      "event": "clear_cart",
+      "security_event": null,
+      "guard": null,
+      "guard_note": "Backend luôn trả 200, kể cả khi giỏ đang trống (không có điều kiện từ chối).",
+      "actions": [
+        {
+          "type": "assign",
+          "var": "cart_items_count",
+          "value": 0
+        },
+        {
+          "type": "assign",
+          "var": "current_qty",
+          "value": 0
+        },
+        {
+          "type": "assign",
+          "var": "cart_item_exists",
+          "value": false
+        },
+        {
+          "type": "effect",
+          "description": "DELETE toàn bộ cart_items",
+          "simulated": false
+        }
+      ],
+      "variables": {
+        "guard_reads": [],
+        "action_reads": [],
+        "conditional_action_reads": [],
+        "action_writes": [
+          "cart_items_count",
+          "current_qty",
+          "cart_item_exists"
+        ],
+        "required_inputs": []
+      },
+      "target": "CART",
+      "expected_http_status": 200,
+      "api": {
+        "method": "DELETE",
+        "path": "/api/cart",
+        "service": "app/service/cart.py::clear_cart",
+        "request_body": {},
+        "backend_checks": [
+          "không có kiểm tra nào"
+        ]
+      },
+      "rule_refs": [],
+      "notes": "Thêm ở v2 (REPRESENTATION_GAP): endpoint tồn tại nhưng v1 không mô hình hóa; chưa có BSR tương ứng."
+    },
+    {
+      "id": "T04",
+      "source": "CART",
+      "event": "create_order",
+      "security_event": "CREATE_ORDER",
+      "guard": {
+        "all": [
+          {
+            "var": "cart_items_count",
+            "op": ">",
+            "value": 0
+          },
+          {
+            "var": "ordered_quantity",
+            "op": ">",
+            "value": 0
+          },
+          {
+            "var": "ordered_quantity",
+            "op": "<=",
+            "value_var": "stock"
+          },
+          {
+            "var": "payment_method",
+            "op": "in",
+            "value": [
+              "MOCK",
+              "COD"
+            ]
+          },
+          {
+            "var": "customer_name_length",
+            "op": ">=",
+            "value": 2
+          },
+          {
+            "var": "customer_name_length",
+            "op": "<=",
+            "value": 100
+          },
+          {
+            "var": "phone_length",
+            "op": ">=",
+            "value": 9
+          },
+          {
+            "var": "phone_length",
+            "op": "<=",
+            "value": 15
+          },
+          {
+            "var": "address_length",
+            "op": ">=",
+            "value": 5
+          },
+          {
+            "var": "address_length",
+            "op": "<=",
+            "value": 255
+          }
+        ]
+      },
+      "actions": [
+        {
+          "type": "assign",
+          "var": "stock_before",
+          "expr": "stock"
+        },
+        {
+          "type": "assign",
+          "var": "stock",
+          "expr": "stock - ordered_quantity"
+        },
+        {
+          "type": "assign",
+          "var": "stock_after",
+          "expr": "stock"
+        },
+        {
+          "type": "assign",
+          "var": "order_total",
+          "expr": "SUM_PRODUCT(order_items, 'quantity', 'unit_price')"
+        },
+        {
+          "type": "assign",
+          "var": "order_status",
+          "value": "PENDING_CONFIRMATION"
+        },
+        {
+          "type": "assign",
+          "var": "cancel_count",
+          "value": 0
+        },
+        {
+          "type": "assign",
+          "var": "payment_count",
+          "value": 0
+        },
+        {
+          "type": "assign",
+          "var": "stock_restoration_count",
+          "value": 0
+        },
+        {
+          "type": "assign",
+          "var": "cart_items_count",
+          "value": 0
+        },
+        {
+          "type": "assign",
+          "var": "current_qty",
+          "value": 0
+        },
+        {
+          "type": "assign",
+          "var": "cart_item_exists",
+          "value": false
+        },
+        {
+          "type": "effect",
+          "description": "INSERT orders(status=PENDING_CONFIRMATION, total_amount) và order_items(unit_price lấy từ products.price)",
+          "simulated": false
+        },
+        {
+          "type": "effect",
+          "description": "UPDATE products.stock -= quantity cho mọi dòng giỏ",
+          "simulated": false
+        },
+        {
+          "type": "effect",
+          "description": "DELETE toàn bộ cart_items (cùng transaction)",
+          "simulated": false
+        }
+      ],
+      "variables": {
+        "guard_reads": [
+          "address_length",
+          "cart_items_count",
+          "customer_name_length",
+          "ordered_quantity",
+          "payment_method",
+          "phone_length",
+          "stock"
+        ],
+        "action_reads": [
+          "order_items",
+          "ordered_quantity",
+          "stock"
+        ],
+        "conditional_action_reads": [],
+        "action_writes": [
+          "stock_before",
+          "stock",
+          "stock_after",
+          "order_total",
+          "order_status",
+          "cancel_count",
+          "payment_count",
+          "stock_restoration_count",
+          "cart_items_count",
+          "current_qty",
+          "cart_item_exists"
+        ],
+        "required_inputs": [
+          "address_length",
+          "cart_items_count",
+          "customer_name_length",
+          "order_items",
+          "ordered_quantity",
+          "payment_method",
+          "phone_length",
+          "stock"
+        ]
+      },
+      "target": "PENDING_CONFIRMATION",
+      "expected_http_status": 201,
+      "api": {
+        "method": "POST",
+        "path": "/api/orders",
+        "service": "app/service/order.py::create_order",
+        "request_body": {
+          "customer_name": "str 2..100",
+          "phone": "str 9..15",
+          "address": "str 5..255",
+          "payment_method": "str (MOCK|COD)"
+        },
+        "backend_checks": [
+          "Pydantic: độ dài customer_name/phone/address -> 422",
+          "service: giỏ không rỗng -> 400",
+          "service: payment_method thuộc {MOCK, COD} -> 400",
+          "service: mỗi dòng 0 < quantity <= stock -> 400 (ordered_quantity/stock là một dòng)"
+        ]
+      },
+      "rule_refs": [
+        "BSR-ORDER-01",
+        "BSR-ORDER-02",
+        "BSR-ORDER-03",
+        "BSR-ORDER-04",
+        "BSR-ORDER-06",
+        "BSR-STOCK-01",
+        "BSR-STOCK-02",
+        "BSR-STOCK-03"
+      ]
+    },
+    {
+      "id": "T05",
+      "source": "PENDING_CONFIRMATION",
+      "event": "confirm_order",
+      "security_event": "CONFIRM_ORDER",
+      "guard": {
+        "var": "order_status",
+        "op": "==",
+        "value": "PENDING_CONFIRMATION"
+      },
+      "actions": [
+        {
+          "type": "assign",
+          "var": "order_status",
+          "value": "CONFIRMED"
+        },
+        {
+          "type": "effect",
+          "description": "UPDATE orders.status = CONFIRMED",
+          "simulated": false
+        }
+      ],
+      "variables": {
+        "guard_reads": [
+          "order_status"
+        ],
+        "action_reads": [],
+        "conditional_action_reads": [],
+        "action_writes": [
+          "order_status"
+        ],
+        "required_inputs": [
+          "order_status"
+        ]
+      },
+      "target": "CONFIRMED",
+      "expected_http_status": 200,
+      "api": {
+        "method": "POST",
+        "path": "/api/orders/{order_id}/confirm",
+        "service": "app/service/order.py::confirm_order",
+        "request_body": {},
+        "backend_checks": [
+          "service: đơn tồn tại -> 404",
+          "service: status == PENDING_CONFIRMATION -> 409"
+        ]
+      },
+      "rule_refs": [
+        "BSR-ORDER-05"
+      ]
+    },
+    {
+      "id": "T06",
+      "source": "CONFIRMED",
+      "event": "pay",
+      "security_event": "PAY_ORDER",
+      "guard": {
+        "all": [
+          {
+            "var": "order_status",
+            "op": "==",
+            "value": "CONFIRMED"
+          },
+          {
+            "var": "payment_result",
+            "op": "==",
+            "value": "SUCCESS"
+          }
+        ]
+      },
+      "actions": [
+        {
+          "type": "assign",
+          "var": "payment_amount",
+          "expr": "order_total"
+        },
+        {
+          "type": "assign",
+          "var": "order_status",
+          "value": "PAID"
+        },
+        {
+          "type": "assign",
+          "var": "payment_count",
+          "expr": "payment_count + 1"
+        },
+        {
+          "type": "effect",
+          "description": "INSERT payments(order_id, amount = orders.total_amount, result = SUCCESS)",
+          "simulated": false
+        }
+      ],
+      "variables": {
+        "guard_reads": [
+          "order_status",
+          "payment_result"
+        ],
+        "action_reads": [
+          "order_total",
+          "payment_count"
+        ],
+        "conditional_action_reads": [],
+        "action_writes": [
+          "payment_amount",
+          "order_status",
+          "payment_count"
+        ],
+        "required_inputs": [
+          "order_status",
+          "order_total",
+          "payment_count",
+          "payment_result"
+        ]
+      },
+      "target": "PAID",
+      "expected_http_status": 200,
+      "api": {
+        "method": "POST",
+        "path": "/api/orders/{order_id}/pay",
+        "service": "app/service/payment.py::pay_order",
+        "request_body": {
+          "simulate_result": "str (SUCCESS|FAILED)"
+        },
+        "backend_checks": [
+          "service: đơn tồn tại -> 404",
+          "service: status == CONFIRMED -> 409",
+          "service: simulate_result thuộc {SUCCESS, FAILED} -> 400 (kiểm tra SAU status)"
+        ]
+      },
+      "rule_refs": [
+        "BSR-PAYMENT-01",
+        "BSR-PAYMENT-02",
+        "BSR-PAYMENT-04",
+        "BSR-PAYMENT-06",
+        "BSR-PAYMENT-07"
+      ]
+    },
+    {
+      "id": "T07",
+      "source": "CONFIRMED",
+      "event": "pay",
+      "security_event": "PAY_ORDER",
+      "guard": {
+        "all": [
+          {
+            "var": "order_status",
+            "op": "==",
+            "value": "CONFIRMED"
+          },
+          {
+            "var": "payment_result",
+            "op": "==",
+            "value": "FAILED"
+          }
+        ]
+      },
+      "actions": [
+        {
+          "type": "effect",
+          "description": "INSERT payments(order_id, amount = orders.total_amount, result = FAILED); orders.status giữ nguyên CONFIRMED",
+          "simulated": false
+        }
+      ],
+      "variables": {
+        "guard_reads": [
+          "order_status",
+          "payment_result"
+        ],
+        "action_reads": [],
+        "conditional_action_reads": [],
+        "action_writes": [],
+        "required_inputs": [
+          "order_status",
+          "payment_result"
+        ]
+      },
+      "target": "CONFIRMED",
+      "expected_http_status": 200,
+      "api": {
+        "method": "POST",
+        "path": "/api/orders/{order_id}/pay",
+        "service": "app/service/payment.py::pay_order",
+        "request_body": {
+          "simulate_result": "FAILED"
+        },
+        "backend_checks": [
+          "như T06; thanh toán thất bại vẫn trả 200 và cho phép thử lại"
+        ]
+      },
+      "rule_refs": [
+        "BSR-PAYMENT-03",
+        "BSR-PAYMENT-04",
+        "BSR-PAYMENT-07"
+      ]
+    },
+    {
+      "id": "T08",
+      "source": "PENDING_CONFIRMATION",
+      "event": "cancel_order",
+      "security_event": "CANCEL_ORDER",
+      "guard": {
+        "var": "order_status",
+        "op": "in",
+        "value": [
+          "PENDING_CONFIRMATION",
+          "CONFIRMED"
+        ]
+      },
+      "actions": [
+        {
+          "type": "assign",
+          "var": "stock",
+          "expr": "stock + ordered_quantity"
+        },
+        {
+          "type": "assign",
+          "var": "stock_after",
+          "expr": "stock"
+        },
+        {
+          "type": "assign",
+          "var": "order_status",
+          "value": "CANCELLED"
+        },
+        {
+          "type": "assign",
+          "var": "cancel_count",
+          "expr": "cancel_count + 1"
+        },
+        {
+          "type": "assign",
+          "var": "stock_restoration_count",
+          "expr": "stock_restoration_count + 1"
+        },
+        {
+          "type": "effect",
+          "description": "UPDATE products.stock += order_items.quantity cho mọi dòng có product_id; UPDATE orders.status = CANCELLED (cùng transaction)",
+          "simulated": false
+        }
+      ],
+      "variables": {
+        "guard_reads": [
+          "order_status"
+        ],
+        "action_reads": [
+          "cancel_count",
+          "ordered_quantity",
+          "stock",
+          "stock_restoration_count"
+        ],
+        "conditional_action_reads": [],
+        "action_writes": [
+          "stock",
+          "stock_after",
+          "order_status",
+          "cancel_count",
+          "stock_restoration_count"
+        ],
+        "required_inputs": [
+          "cancel_count",
+          "order_status",
+          "ordered_quantity",
+          "stock",
+          "stock_restoration_count"
+        ]
+      },
+      "target": "CANCELLED",
+      "expected_http_status": 200,
+      "api": {
+        "method": "POST",
+        "path": "/api/orders/{order_id}/cancel",
+        "service": "app/service/order.py::cancel_order",
+        "request_body": {},
+        "backend_checks": [
+          "service: đơn tồn tại -> 404",
+          "service: status thuộc {PENDING_CONFIRMATION, CONFIRMED} -> 409"
+        ]
+      },
+      "rule_refs": [
+        "BSR-CANCEL-01",
+        "BSR-CANCEL-02",
+        "BSR-CANCEL-03",
+        "BSR-STOCK-04",
+        "BSR-STOCK-05"
+      ]
+    },
+    {
+      "id": "T09",
+      "source": "CONFIRMED",
+      "event": "cancel_order",
+      "security_event": "CANCEL_ORDER",
+      "guard": {
+        "var": "order_status",
+        "op": "in",
+        "value": [
+          "PENDING_CONFIRMATION",
+          "CONFIRMED"
+        ]
+      },
+      "actions": [
+        {
+          "type": "assign",
+          "var": "stock",
+          "expr": "stock + ordered_quantity"
+        },
+        {
+          "type": "assign",
+          "var": "stock_after",
+          "expr": "stock"
+        },
+        {
+          "type": "assign",
+          "var": "order_status",
+          "value": "CANCELLED"
+        },
+        {
+          "type": "assign",
+          "var": "cancel_count",
+          "expr": "cancel_count + 1"
+        },
+        {
+          "type": "assign",
+          "var": "stock_restoration_count",
+          "expr": "stock_restoration_count + 1"
+        },
+        {
+          "type": "effect",
+          "description": "UPDATE products.stock += order_items.quantity cho mọi dòng có product_id; UPDATE orders.status = CANCELLED (cùng transaction)",
+          "simulated": false
+        }
+      ],
+      "variables": {
+        "guard_reads": [
+          "order_status"
+        ],
+        "action_reads": [
+          "cancel_count",
+          "ordered_quantity",
+          "stock",
+          "stock_restoration_count"
+        ],
+        "conditional_action_reads": [],
+        "action_writes": [
+          "stock",
+          "stock_after",
+          "order_status",
+          "cancel_count",
+          "stock_restoration_count"
+        ],
+        "required_inputs": [
+          "cancel_count",
+          "order_status",
+          "ordered_quantity",
+          "stock",
+          "stock_restoration_count"
+        ]
+      },
+      "target": "CANCELLED",
+      "expected_http_status": 200,
+      "api": {
+        "method": "POST",
+        "path": "/api/orders/{order_id}/cancel",
+        "service": "app/service/order.py::cancel_order",
+        "request_body": {},
+        "backend_checks": [
+          "service: đơn tồn tại -> 404",
+          "service: status thuộc {PENDING_CONFIRMATION, CONFIRMED} -> 409"
+        ]
+      },
+      "rule_refs": [
+        "BSR-CANCEL-01",
+        "BSR-CANCEL-02",
+        "BSR-CANCEL-03",
+        "BSR-STOCK-04",
+        "BSR-STOCK-05"
+      ]
+    }
+  ],
+  "invariants": [
+    {
+      "id": "INV-01",
+      "scope": "CART",
+      "expression": "quantity > 0",
+      "kind": "state_predicate",
+      "applies_in_states": [
+        "CART"
+      ],
+      "check": {
+        "var": "quantity",
+        "op": ">",
+        "value": 0
+      },
+      "description": "Số lượng thao tác giỏ hàng phải là số nguyên dương.",
+      "rule_refs": [
+        "BSR-CART-01"
+      ]
+    },
+    {
+      "id": "INV-02",
+      "scope": "ORDER",
+      "expression": "ordered_quantity <= stock_before",
+      "kind": "state_predicate",
+      "applies_in_states": [
+        "CART",
+        "PENDING_CONFIRMATION",
+        "CONFIRMED",
+        "PAID"
+      ],
+      "check": {
+        "var": "ordered_quantity",
+        "op": "<=",
+        "value_var": "stock_before"
+      },
+      "description": "Không đặt hàng vượt tồn kho (stock_before là snapshot lúc tạo đơn; không áp dụng sau khi hủy).",
+      "rule_refs": [
+        "BSR-STOCK-01",
+        "BSR-STOCK-03"
+      ]
+    },
+    {
+      "id": "INV-03",
+      "scope": "ORDER",
+      "expression": "order_total == SUM(ordered_quantity * unit_price_from_database)",
+      "kind": "state_predicate",
+      "applies_in_states": [
+        "PENDING_CONFIRMATION",
+        "CONFIRMED",
+        "PAID",
+        "CANCELLED"
+      ],
+      "check": {
+        "expr": "order_total == SUM_PRODUCT(order_items, 'quantity', 'unit_price')"
+      },
+      "description": "Tổng tiền tính từ giá trong DB. Cần runtime context cung cấp order_items (quantity, unit_price) và order_total.",
+      "rule_refs": [
+        "BSR-ORDER-06"
+      ]
+    },
+    {
+      "id": "INV-04",
+      "scope": "PAYMENT",
+      "expression": "order_status == PAID => exists payment(result == SUCCESS)",
+      "kind": "state_predicate",
+      "applies_in_states": [
+        "PAID"
+      ],
+      "applies_when": {
+        "var": "order_status",
+        "op": "==",
+        "value": "PAID"
+      },
+      "check": {
+        "var": "payment_count",
+        "op": ">=",
+        "value": 1
+      },
+      "description": "Đơn PAID phải có payment thành công; payment_count = số payment SUCCESS của đơn (biến dẫn xuất).",
+      "rule_refs": [
+        "BSR-PAYMENT-02"
+      ]
+    },
+    {
+      "id": "INV-05",
+      "scope": "ORDER",
+      "expression": "order_status == CANCELLED => stock_restoration_count == 1",
+      "kind": "state_predicate",
+      "applies_in_states": [
+        "CANCELLED"
+      ],
+      "applies_when": {
+        "var": "order_status",
+        "op": "==",
+        "value": "CANCELLED"
+      },
+      "check": {
+        "var": "stock_restoration_count",
+        "op": "==",
+        "value": 1
+      },
+      "description": "Hoàn kho đúng một lần.",
+      "rule_refs": [
+        "BSR-STOCK-04",
+        "BSR-STOCK-05"
+      ]
+    },
+    {
+      "id": "INV-06",
+      "scope": "ORDER",
+      "expression": "order_status == PAID => cancel rejected",
+      "kind": "model_structure",
+      "structure": {
+        "type": "no_event_from_state",
+        "state": "PAID",
+        "events": [
+          "cancel_order"
+        ]
+      },
+      "covered_by": [
+        "NT08"
+      ],
+      "description": "Không hủy đơn đã thanh toán. Là thuộc tính của sự kiện nên được kiểm tra trên cấu trúc mô hình (PAID không có transition cancel_order); backend được kiểm chứng bằng NT08.",
+      "rule_refs": [
+        "BSR-CANCEL-01",
+        "BSR-CANCEL-02"
+      ]
+    },
+    {
+      "id": "INV-07",
+      "scope": "ORDER",
+      "expression": "confirm allowed only when order_status == PENDING_CONFIRMATION",
+      "kind": "model_structure",
+      "structure": {
+        "type": "event_only_from_states",
+        "event": "confirm_order",
+        "states": [
+          "PENDING_CONFIRMATION"
+        ]
+      },
+      "covered_by": [
+        "T05",
+        "NT05",
+        "NT10",
+        "NT20"
+      ],
+      "description": "Chỉ xác nhận đơn đang chờ (kiểm tra cấu trúc mô hình; backend kiểm chứng bằng NT05, NT10, NT20).",
+      "rule_refs": [
+        "BSR-ORDER-05"
+      ]
+    },
+    {
+      "id": "INV-08",
+      "scope": "PAYMENT",
+      "expression": "pay allowed only when order_status == CONFIRMED",
+      "kind": "model_structure",
+      "structure": {
+        "type": "event_only_from_states",
+        "event": "pay",
+        "states": [
+          "CONFIRMED"
+        ]
+      },
+      "covered_by": [
+        "T06",
+        "T07",
+        "NT06",
+        "NT07",
+        "NT11"
+      ],
+      "description": "Chỉ thanh toán đơn đã xác nhận (kiểm tra cấu trúc mô hình; backend kiểm chứng bằng NT06, NT07, NT11).",
+      "rule_refs": [
+        "BSR-PAYMENT-01",
+        "BSR-PAYMENT-04",
+        "BSR-PAYMENT-05"
+      ]
+    },
+    {
+      "id": "INV-09",
+      "scope": "PAYMENT",
+      "expression": "successful_payment_count_per_order <= 1",
+      "kind": "state_predicate",
+      "check": {
+        "var": "payment_count",
+        "op": "<=",
+        "value": 1
+      },
+      "description": "Không thanh toán thành công nhiều lần trên một đơn (payment_count = số payment SUCCESS).",
+      "rule_refs": [
+        "BSR-PAYMENT-05"
+      ]
+    },
+    {
+      "id": "INV-10",
+      "scope": "ORDER",
+      "expression": "CANCELLED is absorbing for confirm, pay, cancel events",
+      "kind": "model_structure",
+      "structure": {
+        "type": "no_event_from_state",
+        "state": "CANCELLED",
+        "events": [
+          "confirm_order",
+          "pay",
+          "cancel_order"
+        ]
+      },
+      "covered_by": [
+        "NT09",
+        "NT10",
+        "NT11"
+      ],
+      "description": "Đơn đã hủy không thể confirm/pay/cancel tiếp (kiểm tra cấu trúc mô hình; backend kiểm chứng bằng NT09-NT11).",
+      "rule_refs": [
+        "BSR-CANCEL-01",
+        "BSR-STOCK-05"
+      ]
+    },
+    {
+      "id": "INV-11",
+      "scope": "GLOBAL",
+      "expression": "stock_after >= 0",
+      "kind": "state_predicate",
+      "check": {
+        "var": "stock_after",
+        "op": ">=",
+        "value": 0
+      },
+      "description": "Tồn kho không bao giờ âm.",
+      "rule_refs": [
+        "BSR-STOCK-03"
+      ]
+    },
+    {
+      "id": "INV-12",
+      "scope": "PAYMENT",
+      "expression": "order_status == PAID => payment_amount == order_total",
+      "kind": "state_predicate",
+      "applies_in_states": [
+        "PAID"
+      ],
+      "applies_when": {
+        "var": "order_status",
+        "op": "==",
+        "value": "PAID"
+      },
+      "check": {
+        "var": "payment_amount",
+        "op": "==",
+        "value_var": "order_total"
+      },
+      "description": "Số tiền thanh toán lấy từ order_total, không do client cung cấp.",
+      "rule_refs": [
+        "BSR-PAYMENT-06"
+      ]
+    }
+  ],
+  "negative_transitions": [
+    {
+      "id": "NT01",
+      "source": "CART",
+      "event": "add_item",
+      "base_transition": "T01",
+      "invalid_condition": "quantity <= 0",
+      "expected": {
+        "accepted": false,
+        "http_status": 422,
+        "state_unchanged": true,
+        "data_unchanged": true
+      },
+      "rule_refs": [
+        "BSR-CART-01"
+      ],
+      "mutant_refs": [
+        "BUG-01"
+      ]
+    },
+    {
+      "id": "NT02",
+      "source": "CART",
+      "event": "add_item",
+      "base_transition": "T01",
+      "invalid_condition": "current_qty + quantity > stock",
+      "expected": {
+        "accepted": false,
+        "http_status": 400,
+        "state_unchanged": true,
+        "data_unchanged": true
+      },
+      "rule_refs": [
+        "BSR-CART-02"
+      ],
+      "mutant_refs": [
+        "BUG-02"
+      ]
+    },
+    {
+      "id": "NT03",
+      "source": "CART",
+      "event": "create_order",
+      "base_transition": "T04",
+      "invalid_condition": "cart_items_count == 0",
+      "expected": {
+        "accepted": false,
+        "http_status": 400,
+        "state_unchanged": true,
+        "data_unchanged": true
+      },
+      "rule_refs": [
+        "BSR-ORDER-01"
+      ],
+      "mutant_refs": [
+        "BUG-03"
+      ]
+    },
+    {
+      "id": "NT04",
+      "source": "CART",
+      "event": "create_order",
+      "base_transition": "T04",
+      "invalid_condition": "ordered_quantity > stock",
+      "expected": {
+        "accepted": false,
+        "http_status": 400,
+        "state_unchanged": true,
+        "data_unchanged": true
+      },
+      "rule_refs": [
+        "BSR-STOCK-01",
+        "BSR-STOCK-03"
+      ],
+      "mutant_refs": [
+        "BUG-04"
+      ],
+      "api_reachable": false,
+      "note": "Không thể đạt được chỉ qua API (giỏ luôn <= stock lúc thêm; tạo đơn xóa giỏ). Cần seed DB hoặc mutant BUG-04."
+    },
+    {
+      "id": "NT05",
+      "source": "CONFIRMED",
+      "event": "confirm_order",
+      "base_transition": "T05",
+      "invalid_condition": "order_status != PENDING_CONFIRMATION",
+      "expected": {
+        "accepted": false,
+        "http_status": 409,
+        "state_unchanged": true,
+        "data_unchanged": true
+      },
+      "rule_refs": [
+        "BSR-ORDER-05"
+      ],
+      "mutant_refs": [
+        "BUG-05"
+      ]
+    },
+    {
+      "id": "NT06",
+      "source": "PENDING_CONFIRMATION",
+      "event": "pay",
+      "base_transition": "T06",
+      "invalid_condition": "order_status != CONFIRMED",
+      "expected": {
+        "accepted": false,
+        "http_status": 409,
+        "state_unchanged": true,
+        "data_unchanged": true
+      },
+      "rule_refs": [
+        "BSR-PAYMENT-01",
+        "BSR-PAYMENT-04"
+      ],
+      "mutant_refs": [
+        "BUG-06"
+      ]
+    },
+    {
+      "id": "NT07",
+      "source": "PAID",
+      "event": "pay",
+      "base_transition": "T06",
+      "invalid_condition": "order_status == PAID",
+      "expected": {
+        "accepted": false,
+        "http_status": 409,
+        "state_unchanged": true,
+        "data_unchanged": true
+      },
+      "rule_refs": [
+        "BSR-PAYMENT-05"
+      ],
+      "mutant_refs": [
+        "BUG-07"
+      ]
+    },
+    {
+      "id": "NT08",
+      "source": "PAID",
+      "event": "cancel_order",
+      "base_transition": "T08",
+      "invalid_condition": "order_status == PAID",
+      "expected": {
+        "accepted": false,
+        "http_status": 409,
+        "state_unchanged": true,
+        "data_unchanged": true
+      },
+      "rule_refs": [
+        "BSR-CANCEL-01",
+        "BSR-CANCEL-02"
+      ],
+      "mutant_refs": [
+        "BUG-08"
+      ]
+    },
+    {
+      "id": "NT09",
+      "source": "CANCELLED",
+      "event": "cancel_order",
+      "base_transition": "T08",
+      "invalid_condition": "order_status == CANCELLED",
+      "expected": {
+        "accepted": false,
+        "http_status": 409,
+        "state_unchanged": true,
+        "data_unchanged": true
+      },
+      "rule_refs": [
+        "BSR-CANCEL-01",
+        "BSR-STOCK-05"
+      ],
+      "mutant_refs": [
+        "BUG-09"
+      ]
+    },
+    {
+      "id": "NT10",
+      "source": "CANCELLED",
+      "event": "confirm_order",
+      "base_transition": "T05",
+      "invalid_condition": "order_status == CANCELLED",
+      "expected": {
+        "accepted": false,
+        "http_status": 409,
+        "state_unchanged": true,
+        "data_unchanged": true
+      },
+      "rule_refs": [
+        "BSR-ORDER-05"
+      ],
+      "mutant_refs": [
+        "BUG-05"
+      ]
+    },
+    {
+      "id": "NT11",
+      "source": "CANCELLED",
+      "event": "pay",
+      "base_transition": "T06",
+      "invalid_condition": "order_status == CANCELLED",
+      "expected": {
+        "accepted": false,
+        "http_status": 409,
+        "state_unchanged": true,
+        "data_unchanged": true
+      },
+      "rule_refs": [
+        "BSR-PAYMENT-04"
+      ],
+      "mutant_refs": [
+        "BUG-06"
+      ]
+    },
+    {
+      "id": "NT12",
+      "source": "CONFIRMED",
+      "event": "pay",
+      "base_transition": "T06",
+      "invalid_condition": "payment_result not in {SUCCESS, FAILED}",
+      "expected": {
+        "accepted": false,
+        "http_status": 400,
+        "state_unchanged": true,
+        "data_unchanged": true
+      },
+      "rule_refs": [
+        "BSR-PAYMENT-07"
+      ],
+      "mutant_refs": [],
+      "note": "v1 ghi 422; backend thực tế trả 400 (không có ràng buộc Pydantic cho simulate_result) - khớp BSR-PAYMENT-07."
+    },
+    {
+      "id": "NT13",
+      "source": "CART",
+      "event": "create_order",
+      "base_transition": "T04",
+      "invalid_condition": "payment_method not in {MOCK, COD}",
+      "expected": {
+        "accepted": false,
+        "http_status": 400,
+        "state_unchanged": true,
+        "data_unchanged": true
+      },
+      "rule_refs": [
+        "BSR-ORDER-02"
+      ],
+      "mutant_refs": [],
+      "note": "Điều kiện tiên quyết: giỏ không rỗng (kiểm tra giỏ rỗng chạy trước)."
+    },
+    {
+      "id": "NT14",
+      "source": "CART",
+      "event": "create_order",
+      "base_transition": "T04",
+      "invalid_condition": "customer_name_length < 2 or customer_name_length > 100 or phone_length < 9 or phone_length > 15 or address_length < 5 or address_length > 255",
+      "expected": {
+        "accepted": false,
+        "http_status": 422,
+        "state_unchanged": true,
+        "data_unchanged": true
+      },
+      "rule_refs": [
+        "BSR-ORDER-03"
+      ],
+      "mutant_refs": []
+    },
+    {
+      "id": "NT15",
+      "source": "CART",
+      "event": "update_quantity",
+      "base_transition": "T02",
+      "invalid_condition": "cart_item_exists == False",
+      "expected": {
+        "accepted": false,
+        "http_status": 404,
+        "state_unchanged": true,
+        "data_unchanged": true
+      },
+      "rule_refs": [
+        "BSR-CART-04"
+      ],
+      "mutant_refs": []
+    },
+    {
+      "id": "NT16",
+      "source": "CART",
+      "event": "update_quantity",
+      "base_transition": "T02",
+      "invalid_condition": "quantity > stock",
+      "expected": {
+        "accepted": false,
+        "http_status": 400,
+        "state_unchanged": true,
+        "data_unchanged": true
+      },
+      "rule_refs": [
+        "BSR-CART-02"
+      ],
+      "mutant_refs": []
+    },
+    {
+      "id": "NT17",
+      "source": "CART",
+      "event": "update_quantity",
+      "base_transition": "T02",
+      "invalid_condition": "quantity <= 0",
+      "expected": {
+        "accepted": false,
+        "http_status": 422,
+        "state_unchanged": true,
+        "data_unchanged": true
+      },
+      "rule_refs": [
+        "BSR-CART-01"
+      ],
+      "mutant_refs": []
+    },
+    {
+      "id": "NT18",
+      "source": "CART",
+      "event": "remove_item",
+      "base_transition": "T03",
+      "invalid_condition": "cart_item_exists == False",
+      "expected": {
+        "accepted": false,
+        "http_status": 404,
+        "state_unchanged": true,
+        "data_unchanged": true
+      },
+      "rule_refs": [
+        "BSR-CART-05"
+      ],
+      "mutant_refs": []
+    },
+    {
+      "id": "NT19",
+      "source": "CART",
+      "event": "add_item",
+      "base_transition": "T01",
+      "invalid_condition": "product_exists == False",
+      "expected": {
+        "accepted": false,
+        "http_status": 404,
+        "state_unchanged": true,
+        "data_unchanged": true
+      },
+      "rule_refs": [
+        "BSR-CART-03"
+      ],
+      "mutant_refs": [
+        "BUG-02A"
+      ]
+    },
+    {
+      "id": "NT20",
+      "source": "PAID",
+      "event": "confirm_order",
+      "base_transition": "T05",
+      "invalid_condition": "order_status == PAID",
+      "expected": {
+        "accepted": false,
+        "http_status": 409,
+        "state_unchanged": true,
+        "data_unchanged": true
+      },
+      "rule_refs": [
+        "BSR-ORDER-05"
+      ],
+      "mutant_refs": []
+    }
+  ]
+}

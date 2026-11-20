@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Đặt hàng | BlueMart</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/checkout.js" defer></script>
+</head>
+<body>
+  <div class="announcement">BLUEMART · MUA SẮM ĐƠN GIẢN, AN TÂM MỖI NGÀY</div>
+  <header class="site-header">
+    <a class="brand" href="/"><span class="brand-mark">B</span><span>Blue<span class="brand-blue">Mart</span></span></a>
+    <nav class="main-nav" aria-label="Điều hướng chính"><a class="nav-link" href="/">Trang chủ</a><a class="nav-link" href="/static/cart.html">Giỏ hàng</a><a class="nav-link active" href="/static/checkout.html">Đặt hàng</a></nav>
+    <a class="icon-button" href="/static/cart.html">← <span>Quay lại giỏ</span></a>
+  </header>
+  <main class="page-container cart-page">
+    <div class="cart-page-heading"><div><span class="section-kicker">BLUEMART / THANH TOÁN</span><h1>Thông tin đặt hàng</h1><p>Nhập thông tin người nhận để tạo đơn hàng.</p></div><a class="secondary-button" href="/static/cart.html">← Quay lại giỏ hàng</a></div>
+    <div id="checkout-status" class="cart-status" role="status">Đang tải thông tin giỏ hàng...</div>
+    <div id="checkout-content" class="checkout-layout"></div>
+  </main>
+  <footer class="site-footer"><a class="brand footer-brand" href="/"><span class="brand-mark">B</span><span>Blue<span class="brand-blue">Mart</span></span></a><p>© <span id="year"></span> BlueMart. Giao diện demo phục vụ học tập.</p><a href="/docs">API Docs</a></footer>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

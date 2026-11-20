@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#2563eb">
+  <title>Đơn hàng của tôi | BlueMoon</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="announcement">BLUEMOON · MUA SẮM DỄ DÀNG, AN TÂM MỖI NGÀY</div>
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="BlueMoon trang chủ"><span class="brand-mark">B</span><span>blue<span class="brand-blue">moon.</span></span></a>
+    <nav class="main-nav" aria-label="Điều hướng chính">
+      <a class="nav-link" href="/">Trang chủ</a>
+      <a class="nav-link" href="/static/cart.html">Giỏ hàng</a>
+      <a class="nav-link active" href="/static/orders.html">Đơn hàng của tôi</a>
+    </nav>
+    <div class="header-actions"><a class="icon-button" href="/static/cart.html"><span>🛒</span><span>Giỏ hàng</span></a></div>
+  </header>
+
+  <main class="page-container orders-page">
+    <div class="cart-page-heading">
+      <div><span class="section-kicker">THEO DÕI MUA SẮM</span><h1>Đơn hàng của tôi</h1><p>Xem trạng thái, thanh toán mô phỏng hoặc hủy đơn chưa hoàn tất.</p></div>
+      <button class="secondary-button orders-refresh" id="refresh-orders" type="button">↻ Làm mới</button>
+    </div>
+    <div class="cart-status" id="orders-status" role="status" aria-live="polite">Đang tải đơn hàng...</div>
+    <div class="orders-list" id="orders-list"></div>
+    <div class="orders-footnote">Lưu ý: Đây là website demo. Thanh toán chỉ được mô phỏng, chưa kết nối ngân hàng hoặc cổng thanh toán thật.</div>
+  </main>
+
+  <footer class="site-footer"><a class="brand footer-brand" href="/"><span class="brand-mark">B</span><span>blue<span class="brand-blue">moon.</span></span></a><p>© <span id="year"></span> BlueMoon. Website bán hàng mô phỏng.</p><a href="/">Tiếp tục mua sắm →</a></footer>
+  <script src="/static/orders.js" defer></script>
+</body>
+</html>

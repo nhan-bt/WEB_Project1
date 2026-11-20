@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Giỏ hàng | BlueMart</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/cart.js" defer></script>
+</head>
+<body>
+  <div class="announcement">BLUEMART · MUA SẮM ĐƠN GIẢN, AN TÂM MỖI NGÀY</div>
+  <header class="site-header">
+    <a class="brand" href="/"><span class="brand-mark">B</span><span>Blue<span class="brand-blue">Mart</span></span></a>
+    <nav class="main-nav" aria-label="Điều hướng chính">
+      <a class="nav-link" href="/">Trang chủ</a>
+      <a class="nav-link active" href="/static/cart.html">Giỏ hàng</a>
+    </nav>
+    <a class="icon-button" href="/static/cart.html" aria-current="page">🛒 <span>Giỏ hàng</span><span class="cart-count" id="cart-count">0</span></a>
+  </header>
+
+  <main class="page-container cart-page">
+    <div class="cart-page-heading">
+      <div><span class="section-kicker">BLUEMART / GIỎ HÀNG</span><h1>Giỏ hàng của bạn</h1><p>Kiểm tra sản phẩm và số lượng trước khi đặt hàng.</p></div>
+      <a class="secondary-button" href="/">← Tiếp tục mua sắm</a>
+    </div>
+
+    <div id="cart-status" class="cart-status" role="status">Đang tải giỏ hàng...</div>
+    <div id="cart-content" class="cart-layout" aria-live="polite"></div>
+  </main>
+
+  <footer class="site-footer"><a class="brand footer-brand" href="/"><span class="brand-mark">B</span><span>Blue<span class="brand-blue">Mart</span></span></a><p>© <span id="year"></span> BlueMart. Giao diện demo phục vụ học tập.</p><a href="/docs">API Docs</a></footer>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

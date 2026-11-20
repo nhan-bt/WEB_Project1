@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#2563eb">
+  <title>BlueMart | Mua sắm dễ dàng</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <div class="announcement">Ưu đãi mỗi ngày · Mua sắm đơn giản, an tâm</div>
+
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="BlueMart trang chủ">
+      <span class="brand-mark">B</span><span>Blue<span class="brand-blue">Mart</span></span>
+    </a>
+    <nav class="main-nav" aria-label="Điều hướng chính">
+      <a class="nav-link active" href="/">Trang chủ</a>
+      <a class="nav-link" href="#products">Sản phẩm</a>
+      <a class="nav-link" href="#benefits">Về chúng tôi</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-button cart-trigger" id="open-cart" type="button" aria-label="Mở giỏ hàng">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.1 10.1a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 1.9-1.4L21 8H6"/><circle cx="10" cy="20" r="1.2"/><circle cx="18" cy="20" r="1.2"/></svg>
+        <span>Giỏ hàng</span><span class="cart-count" id="cart-count">0</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero page-container">
+      <div class="hero-copy">
+        <span class="eyebrow"><span class="eyebrow-dot"></span> CHÀO MỪNG ĐẾN BLUEMART</span>
+        <h1>Mua sắm thông minh.<br><span>Vui sống mỗi ngày.</span></h1>
+        <p>Khám phá những sản phẩm thiết yếu với mức giá hợp lý. Chọn món bạn thích, thêm vào giỏ và đặt hàng chỉ trong vài bước.</p>
+        <a class="primary-button hero-button" href="#products">Khám phá sản phẩm <span aria-hidden="true">→</span></a>
+        <div class="hero-note"><span class="avatar-stack"><i>✓</i><i>✓</i><i>✓</i></span><span><strong>Mua sắm thuận tiện</strong><br><small>Trải nghiệm đơn giản, rõ ràng</small></span></div>
+      </div>
+      <div class="hero-art" aria-label="Minh họa mua sắm">
+        <div class="art-orbit orbit-one"></div><div class="art-orbit orbit-two"></div>
+        <div class="art-circle circle-blue"></div><div class="art-circle circle-pale"></div>
+        <div class="floating-card floating-top"><span class="floating-icon">✦</span><span><b>Chọn sản phẩm</b><small>Dễ dàng, nhanh chóng</small></span></div>
+        <div class="product-illustration"><div class="illustration-bag"><span class="bag-handle"></span><span class="bag-letter">B</span></div><div class="illustration-spark spark-a">✦</div><div class="illustration-spark spark-b">✧</div></div>
+        <div class="floating-card floating-bottom"><span class="check-circle">✓</span><span><b>Đặt hàng dễ dàng</b><small>Chỉ với vài thao tác</small></span></div>
+      </div>
+    </section>
+
+    <section class="benefits page-container" id="benefits" aria-label="Lợi ích mua sắm">
+      <article class="benefit"><span class="benefit-icon">◇</span><span><strong>Sản phẩm rõ ràng</strong><small>Giá và tồn kho minh bạch</small></span></article>
+      <article class="benefit"><span class="benefit-icon">↗</span><span><strong>Đặt hàng tiện lợi</strong><small>Thao tác nhanh gọn</small></span></article>
+      <article class="benefit"><span class="benefit-icon">♡</span><span><strong>Trải nghiệm thân thiện</strong><small>Thiết kế dễ sử dụng</small></span></article>
+    </section>
+
+    <section class="products-section page-container" id="products">
+      <div class="section-heading">
+        <div><span class="section-kicker">BỘ SƯU TẬP CỦA CHÚNG TÔI</span><h2>Sản phẩm nổi bật</h2><p>Chọn sản phẩm phù hợp với nhu cầu của bạn.</p></div>
+        <div class="search-box"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="product-search" type="search" placeholder="Tìm sản phẩm..." aria-label="Tìm sản phẩm"></div>
+      </div>
+      <div class="product-status" id="product-status" role="status">Đang tải sản phẩm...</div>
+      <div class="product-grid" id="product-grid" aria-live="polite"></div>
+      <div class="empty-state hidden" id="empty-state"><span>⌕</span><h3>Không tìm thấy sản phẩm</h3><p>Thử tìm với từ khóa khác nhé.</p></div>
+    </section>
+
+    <section class="bottom-cta page-container">
+      <div><span class="section-kicker light-kicker">SẴN SÀNG MUA SẮM?</span><h2>Tìm món đồ phù hợp với bạn.</h2><p>Bắt đầu từ danh sách sản phẩm bên trên và thêm món yêu thích vào giỏ hàng.</p></div>
+      <a href="#products" class="secondary-button">Xem sản phẩm <span aria-hidden="true">→</span></a>
+      <div class="cta-decoration">B</div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><a class="brand footer-brand" href="/"><span class="brand-mark">B</span><span>Blue<span class="brand-blue">Mart</span></span></a><p>© <span id="year"></span> BlueMart. Website bán hàng demo phục vụ học tập.</p><a href="/docs" target="_blank" rel="noopener">API Docs</a></footer>
+
+  <div class="modal-backdrop hidden" id="cart-modal" role="dialog" aria-modal="true" aria-labelledby="cart-modal-title">
+    <section class="cart-panel">
+      <div class="cart-panel-heading"><div><span class="section-kicker">BLUEMART</span><h2 id="cart-modal-title">Giỏ hàng của bạn</h2></div><button class="close-button" id="close-cart" type="button" aria-label="Đóng giỏ hàng">×</button></div>
+      <div id="cart-modal-content"><p class="muted">Đang tải giỏ hàng...</p></div>
+      <div class="cart-panel-footer"><div class="cart-total-row"><span>Tạm tính</span><strong id="cart-modal-total">0 ₫</strong></div><a class="primary-button checkout-link" href="/static/cart.html">Xem giỏ hàng đầy đủ <span aria-hidden="true">→</span></a><p class="modal-note">Đơn hàng và tồn kho được xử lý bởi API của hệ thống.</p></div>
+    </section>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

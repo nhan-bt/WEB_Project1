@@ -1,0 +1,5822 @@
+{
+  "generator": "TestDataGenerator",
+  "schema_version": "1.0",
+  "scope": "guard-level data for one transition at a time; not path-level",
+  "model": {
+    "name": "BlueMoon_EFSM",
+    "schema_version": "2.0",
+    "sha256": "b5ae83972566f29944be134ddc1e467c9e3c61826801f1a13f70a6372b0583e9"
+  },
+  "configuration": {
+    "max_nodes": 20000,
+    "max_dnf_terms": 256,
+    "int_pool": [
+      0,
+      1,
+      -1,
+      2,
+      5,
+      10,
+      100
+    ],
+    "context_file": "test_data_context.bluemoon.json",
+    "include_negative": true,
+    "include_malformed": true
+  },
+  "summary": {
+    "transitions": 10,
+    "guards_analyzed": 9,
+    "guards_supported": 9,
+    "guards_unsupported": 0,
+    "transitions_without_guard": 1,
+    "datasets_by_status": {
+      "NO_GUARD": 1,
+      "OK": 9
+    },
+    "samples_total": 119,
+    "valid_samples": 40,
+    "invalid_samples": 55,
+    "malformed_samples": 24,
+    "verification": {
+      "VERIFIED_VALID": 40,
+      "VERIFIED_INVALID": 79,
+      "UNVERIFIED": 0,
+      "UNSUPPORTED": 0
+    },
+    "verified_by_guard_evaluator": 119,
+    "single_condition_violations_verified": 55,
+    "unsolved": []
+  },
+  "rules_index": {
+    "BSR-CANCEL-01": {
+      "name": "Cancellation Allowed Only in Defined States",
+      "category": "CANCEL",
+      "severity": "HIGH"
+    },
+    "BSR-CANCEL-02": {
+      "name": "Paid Order Cancellation Prevention",
+      "category": "CANCEL",
+      "severity": "HIGH"
+    },
+    "BSR-CANCEL-03": {
+      "name": "Cancellation State Update",
+      "category": "CANCEL",
+      "severity": "HIGH"
+    },
+    "BSR-CART-01": {
+      "name": "Positive Cart Quantity",
+      "category": "CART",
+      "severity": "HIGH"
+    },
+    "BSR-CART-02": {
+      "name": "Cart Quantity Must Not Exceed Stock",
+      "category": "CART",
+      "severity": "HIGH"
+    },
+    "BSR-CART-03": {
+      "name": "Cart Product Must Exist",
+      "category": "CART",
+      "severity": "HIGH"
+    },
+    "BSR-CART-04": {
+      "name": "Update Only Existing Cart Item",
+      "category": "CART",
+      "severity": "MEDIUM"
+    },
+    "BSR-CART-05": {
+      "name": "Delete Only Existing Cart Item",
+      "category": "CART",
+      "severity": "MEDIUM"
+    },
+    "BSR-ORDER-01": {
+      "name": "Order Requires Non-empty Cart",
+      "category": "ORDER",
+      "severity": "HIGH"
+    },
+    "BSR-ORDER-02": {
+      "name": "Allowed Payment Method",
+      "category": "ORDER",
+      "severity": "MEDIUM"
+    },
+    "BSR-ORDER-03": {
+      "name": "Valid Customer Order Fields",
+      "category": "ORDER",
+      "severity": "MEDIUM"
+    },
+    "BSR-ORDER-04": {
+      "name": "Order Initial State",
+      "category": "ORDER",
+      "severity": "HIGH"
+    },
+    "BSR-ORDER-05": {
+      "name": "Confirm Only Pending Confirmation Order",
+      "category": "ORDER",
+      "severity": "HIGH"
+    },
+    "BSR-ORDER-06": {
+      "name": "Order Creation Uses Server-side Product Price",
+      "category": "ORDER",
+      "severity": "HIGH"
+    },
+    "BSR-PAYMENT-01": {
+      "name": "Payment Only for Confirmed Order",
+      "category": "PAYMENT",
+      "severity": "HIGH"
+    },
+    "BSR-PAYMENT-02": {
+      "name": "Successful Payment Sets Order Paid",
+      "category": "PAYMENT",
+      "severity": "HIGH"
+    },
+    "BSR-PAYMENT-03": {
+      "name": "Failed Payment Does Not Set Order Paid",
+      "category": "PAYMENT",
+      "severity": "HIGH"
+    },
+    "BSR-PAYMENT-04": {
+      "name": "Prevent Payment for Cancelled or Non-confirmed Order",
+      "category": "PAYMENT",
+      "severity": "HIGH"
+    },
+    "BSR-PAYMENT-06": {
+      "name": "Payment Amount Derived from Order Total",
+      "category": "PAYMENT",
+      "severity": "HIGH"
+    },
+    "BSR-PAYMENT-07": {
+      "name": "Payment Simulation Result Must Be Valid",
+      "category": "PAYMENT",
+      "severity": "MEDIUM"
+    },
+    "BSR-STOCK-01": {
+      "name": "Stock Must Cover Order Quantity",
+      "category": "STOCK",
+      "severity": "HIGH"
+    },
+    "BSR-STOCK-02": {
+      "name": "Order Creation Deducts Stock Exactly",
+      "category": "STOCK",
+      "severity": "HIGH"
+    },
+    "BSR-STOCK-03": {
+      "name": "Stock Must Remain Non-negative",
+      "category": "STOCK",
+      "severity": "HIGH"
+    },
+    "BSR-STOCK-04": {
+      "name": "Cancellation Restores Stock",
+      "category": "STOCK",
+      "severity": "HIGH"
+    },
+    "BSR-STOCK-05": {
+      "name": "Stock Restoration Must Not Be Duplicated",
+      "category": "STOCK",
+      "severity": "HIGH"
+    }
+  },
+  "invariant_analysis": [
+    {
+      "invariant_id": "INV-01",
+      "scope": "CART",
+      "kind": "state_predicate",
+      "variables": [
+        "quantity"
+      ],
+      "runtime_origins": {
+        "quantity": "request"
+      },
+      "generator_support": "SUPPORTED",
+      "note": null
+    },
+    {
+      "invariant_id": "INV-02",
+      "scope": "ORDER",
+      "kind": "state_predicate",
+      "variables": [
+        "ordered_quantity",
+        "stock_before"
+      ],
+      "runtime_origins": {
+        "ordered_quantity": "derived",
+        "stock_before": "derived"
+      },
+      "generator_support": "SUPPORTED",
+      "note": null
+    },
+    {
+      "invariant_id": "INV-03",
+      "scope": "ORDER",
+      "kind": "state_predicate",
+      "variables": [
+        "order_items",
+        "order_total"
+      ],
+      "runtime_origins": {
+        "order_items": "database",
+        "order_total": "database"
+      },
+      "generator_support": "UNSUPPORTED",
+      "note": "function 'SUM_PRODUCT' is not supported by the data generator"
+    },
+    {
+      "invariant_id": "INV-04",
+      "scope": "PAYMENT",
+      "kind": "state_predicate",
+      "variables": [
+        "order_status",
+        "payment_count"
+      ],
+      "runtime_origins": {
+        "order_status": "database",
+        "payment_count": "derived"
+      },
+      "generator_support": "SUPPORTED",
+      "note": null
+    },
+    {
+      "invariant_id": "INV-05",
+      "scope": "ORDER",
+      "kind": "state_predicate",
+      "variables": [
+        "order_status",
+        "stock_restoration_count"
+      ],
+      "runtime_origins": {
+        "order_status": "database",
+        "stock_restoration_count": "derived"
+      },
+      "generator_support": "SUPPORTED",
+      "note": null
+    },
+    {
+      "invariant_id": "INV-06",
+      "scope": "ORDER",
+      "kind": "model_structure",
+      "variables": [],
+      "generator_support": "NOT_APPLICABLE",
+      "note": "checks the model structure, not runtime data"
+    },
+    {
+      "invariant_id": "INV-07",
+      "scope": "ORDER",
+      "kind": "model_structure",
+      "variables": [],
+      "generator_support": "NOT_APPLICABLE",
+      "note": "checks the model structure, not runtime data"
+    },
+    {
+      "invariant_id": "INV-08",
+      "scope": "PAYMENT",
+      "kind": "model_structure",
+      "variables": [],
+      "generator_support": "NOT_APPLICABLE",
+      "note": "checks the model structure, not runtime data"
+    },
+    {
+      "invariant_id": "INV-09",
+      "scope": "PAYMENT",
+      "kind": "state_predicate",
+      "variables": [
+        "payment_count"
+      ],
+      "runtime_origins": {
+        "payment_count": "derived"
+      },
+      "generator_support": "SUPPORTED",
+      "note": null
+    },
+    {
+      "invariant_id": "INV-10",
+      "scope": "ORDER",
+      "kind": "model_structure",
+      "variables": [],
+      "generator_support": "NOT_APPLICABLE",
+      "note": "checks the model structure, not runtime data"
+    },
+    {
+      "invariant_id": "INV-11",
+      "scope": "GLOBAL",
+      "kind": "state_predicate",
+      "variables": [
+        "stock_after"
+      ],
+      "runtime_origins": {
+        "stock_after": "derived"
+      },
+      "generator_support": "SUPPORTED",
+      "note": null
+    },
+    {
+      "invariant_id": "INV-12",
+      "scope": "PAYMENT",
+      "kind": "state_predicate",
+      "variables": [
+        "order_status",
+        "order_total",
+        "payment_amount"
+      ],
+      "runtime_origins": {
+        "order_status": "database",
+        "order_total": "database",
+        "payment_amount": "database"
+      },
+      "generator_support": "SUPPORTED",
+      "note": null
+    }
+  ],
+  "datasets": [
+    {
+      "schema_version": "1.0",
+      "transition_id": "T01",
+      "label": "T01",
+      "source_state": "CART",
+      "event": "add_item",
+      "rule_ids": [
+        "BSR-CART-01",
+        "BSR-CART-02",
+        "BSR-CART-03"
+      ],
+      "guard": {
+        "all": [
+          {
+            "var": "product_exists",
+            "op": "==",
+            "value": true
+          },
+          {
+            "var": "quantity",
+            "op": ">",
+            "value": 0
+          },
+          {
+            "expr": "current_qty + quantity <= stock"
+          }
+        ]
+      },
+      "status": "OK",
+      "reason": null,
+      "analysis": {
+        "supported": true,
+        "reason": null,
+        "expression": "{\"all\": [{\"op\": \"==\", \"value\": true, \"var\": \"product_exists\"}, {\"op\": \">\", \"value\": 0, \"var\": \"quantity\"}, {\"expr\": \"current_qty + quantity <= stock\"}]}",
+        "variables": [
+          {
+            "name": "product_exists",
+            "type": "boolean",
+            "origin": "database",
+            "role": "context",
+            "domain": {
+              "kind": "boolean",
+              "values": [
+                true,
+                false
+              ],
+              "complete": true,
+              "range": "DECLARED_TYPE"
+            },
+            "constraints": [
+              {
+                "condition": "product_exists == true",
+                "operator": "==",
+                "constant_bound": true,
+                "depends_on_variables": [],
+                "linear": false
+              }
+            ]
+          },
+          {
+            "name": "quantity",
+            "type": "integer",
+            "origin": "request",
+            "role": "input",
+            "domain": {
+              "kind": "integer",
+              "values": null,
+              "complete": false,
+              "range": "UNDETERMINED_IN_EFSM"
+            },
+            "constraints": [
+              {
+                "condition": "quantity > 0",
+                "operator": ">",
+                "constant_bound": 0,
+                "depends_on_variables": [],
+                "linear": true
+              },
+              {
+                "condition": "current_qty + quantity <= stock",
+                "operator": "<=",
+                "constant_bound": null,
+                "depends_on_variables": [
+                  "current_qty",
+                  "stock"
+                ],
+                "linear": true
+              }
+            ]
+          },
+          {
+            "name": "current_qty",
+            "type": "integer",
+            "origin": "database",
+            "role": "context",
+            "domain": {
+              "kind": "integer",
+              "values": null,
+              "complete": false,
+              "range": "UNDETERMINED_IN_EFSM"
+            },
+            "constraints": [
+              {
+                "condition": "current_qty + quantity <= stock",
+                "operator": "<=",
+                "constant_bound": null,
+                "depends_on_variables": [
+                  "quantity",
+                  "stock"
+                ],
+                "linear": true
+              }
+            ]
+          },
+          {
+            "name": "stock",
+            "type": "integer",
+            "origin": "database",
+            "role": "context",
+            "domain": {
+              "kind": "integer",
+              "values": null,
+              "complete": false,
+              "range": "UNDETERMINED_IN_EFSM"
+            },
+            "constraints": [
+              {
+                "condition": "current_qty + quantity <= stock",
+                "operator": "<=",
+                "constant_bound": null,
+                "depends_on_variables": [
+                  "current_qty",
+                  "quantity"
+                ],
+                "linear": true
+              }
+            ]
+          }
+        ],
+        "conjuncts": [
+          {
+            "index": 0,
+            "condition": "product_exists == true",
+            "variables": [
+              "product_exists"
+            ]
+          },
+          {
+            "index": 1,
+            "condition": "quantity > 0",
+            "variables": [
+              "quantity"
+            ]
+          },
+          {
+            "index": 2,
+            "condition": "current_qty + quantity <= stock",
+            "variables": [
+              "current_qty",
+              "quantity",
+              "stock"
+            ]
+          }
+        ],
+        "notes": [
+          "Numeric/string value ranges are not declared in the EFSM (UNDETERMINED_IN_EFSM); no business range was assumed.",
+          "Some constraints are non-linear; boundary values for them come from search candidates only."
+        ]
+      },
+      "base": {
+        "status": "SAT",
+        "mode": "context_fixed",
+        "assignment": {
+          "product_exists": true,
+          "quantity": 5,
+          "current_qty": 0,
+          "stock": 10
+        },
+        "context_given": {
+          "product_exists": true,
+          "stock": 10,
+          "current_qty": 0
+        },
+        "context_adjusted": [],
+        "search_nodes": 1,
+        "varied_variables": [
+          "product_exists",
+          "quantity"
+        ]
+      },
+      "conjunct_notes": [],
+      "samples": [
+        {
+          "sample_id": "GD001",
+          "data": {
+            "product_exists": true,
+            "quantity": 5,
+            "current_qty": 0,
+            "stock": 10
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BASE",
+          "techniques": [
+            "BASE",
+            "EP"
+          ],
+          "partition": {
+            "description": "nominal valid assignment found by search"
+          },
+          "target_variable": null,
+          "changed_variables": [],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD002",
+          "data": {
+            "product_exists": false,
+            "quantity": 5,
+            "current_qty": 0,
+            "stock": 10
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "product_exists",
+            "partition": "value False"
+          },
+          "target_variable": "product_exists",
+          "changed_variables": [
+            "product_exists"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "product_exists == true"
+            ],
+            "verified": [
+              "product_exists == true"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD003",
+          "data": {
+            "product_exists": true,
+            "quantity": -1,
+            "current_qty": 0,
+            "stock": 10
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA",
+            "EP"
+          ],
+          "partition": {
+            "variable": "quantity",
+            "partition": "quantity in [-inf, 0]"
+          },
+          "target_variable": "quantity",
+          "changed_variables": [
+            "quantity"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "quantity > 0"
+            ],
+            "verified": [
+              "quantity > 0"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD004",
+          "data": {
+            "product_exists": true,
+            "quantity": 0,
+            "current_qty": 0,
+            "stock": 10
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "quantity",
+            "partition": "quantity in [-inf, 0]"
+          },
+          "target_variable": "quantity",
+          "changed_variables": [
+            "quantity"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "quantity > 0"
+            ],
+            "verified": [
+              "quantity > 0"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD005",
+          "data": {
+            "product_exists": true,
+            "quantity": 1,
+            "current_qty": 0,
+            "stock": 10
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "quantity",
+            "partition": "quantity in [1, 10]"
+          },
+          "target_variable": "quantity",
+          "changed_variables": [
+            "quantity"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD006",
+          "data": {
+            "product_exists": true,
+            "quantity": 2,
+            "current_qty": 0,
+            "stock": 10
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "quantity",
+            "partition": "quantity in [1, 10]"
+          },
+          "target_variable": "quantity",
+          "changed_variables": [
+            "quantity"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD007",
+          "data": {
+            "product_exists": true,
+            "quantity": 9,
+            "current_qty": 0,
+            "stock": 10
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "quantity",
+            "partition": "quantity in [1, 10]"
+          },
+          "target_variable": "quantity",
+          "changed_variables": [
+            "quantity"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD008",
+          "data": {
+            "product_exists": true,
+            "quantity": 10,
+            "current_qty": 0,
+            "stock": 10
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "quantity",
+            "partition": "quantity in [1, 10]"
+          },
+          "target_variable": "quantity",
+          "changed_variables": [
+            "quantity"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD009",
+          "data": {
+            "product_exists": true,
+            "quantity": 11,
+            "current_qty": 0,
+            "stock": 10
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "quantity",
+            "partition": "quantity in [11, +inf]"
+          },
+          "target_variable": "quantity",
+          "changed_variables": [
+            "quantity"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "current_qty + quantity <= stock"
+            ],
+            "verified": [
+              "current_qty + quantity <= stock"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD010",
+          "data": {
+            "product_exists": true,
+            "quantity": 12,
+            "current_qty": 0,
+            "stock": 10
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA",
+            "EP"
+          ],
+          "partition": {
+            "variable": "quantity",
+            "partition": "quantity in [11, +inf]"
+          },
+          "target_variable": "quantity",
+          "changed_variables": [
+            "quantity"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "current_qty + quantity <= stock"
+            ],
+            "verified": [
+              "current_qty + quantity <= stock"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD011",
+          "data": {
+            "product_exists": true,
+            "quantity": null,
+            "current_qty": 0,
+            "stock": 10
+          },
+          "expected_guard": null,
+          "expected_status": "TYPE_ERROR",
+          "technique": "EP_NULL",
+          "techniques": [
+            "EP_NULL"
+          ],
+          "partition": {
+            "variable": "quantity",
+            "partition": "null"
+          },
+          "target_variable": "quantity",
+          "changed_variables": [
+            "quantity"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "TYPE_ERROR",
+            "guard_result": null
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD012",
+          "data": {
+            "product_exists": true,
+            "current_qty": 0,
+            "stock": 10
+          },
+          "expected_guard": null,
+          "expected_status": "MISSING_VARIABLE",
+          "technique": "EP_MISSING",
+          "techniques": [
+            "EP_MISSING"
+          ],
+          "partition": {
+            "variable": "quantity",
+            "partition": "missing"
+          },
+          "target_variable": "quantity",
+          "changed_variables": [
+            "quantity"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "MISSING_VARIABLE",
+            "guard_result": null
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD013",
+          "data": {
+            "product_exists": true,
+            "quantity": "not_a_number",
+            "current_qty": 0,
+            "stock": 10
+          },
+          "expected_guard": null,
+          "expected_status": "TYPE_ERROR",
+          "technique": "EP_WRONG_TYPE",
+          "techniques": [
+            "EP_WRONG_TYPE"
+          ],
+          "partition": {
+            "variable": "quantity",
+            "partition": "wrong_type"
+          },
+          "target_variable": "quantity",
+          "changed_variables": [
+            "quantity"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "TYPE_ERROR",
+            "guard_result": null
+          },
+          "notes": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "transition_id": "T02",
+      "label": "T02",
+      "source_state": "CART",
+      "event": "update_quantity",
+      "rule_ids": [
+        "BSR-CART-01",
+        "BSR-CART-02",
+        "BSR-CART-03",
+        "BSR-CART-04"
+      ],
+      "guard": {
+        "all": [
+          {
+            "var": "product_exists",
+            "op": "==",
+            "value": true
+          },
+          {
+            "var": "cart_item_exists",
+            "op": "==",
+            "value": true
+          },
+          {
+            "var": "quantity",
+            "op": ">",
+            "value": 0
+          },
+          {
+            "var": "quantity",
+            "op": "<=",
+            "value_var": "stock"
+          }
+        ]
+      },
+      "status": "OK",
+      "reason": null,
+      "analysis": {
+        "supported": true,
+        "reason": null,
+        "expression": "{\"all\": [{\"op\": \"==\", \"value\": true, \"var\": \"product_exists\"}, {\"op\": \"==\", \"value\": true, \"var\": \"cart_item_exists\"}, {\"op\": \">\", \"value\": 0, \"var\": \"quantity\"}, {\"op\": \"<=\", \"value_var\": \"stock\", \"var\": \"quantity\"}]}",
+        "variables": [
+          {
+            "name": "product_exists",
+            "type": "boolean",
+            "origin": "database",
+            "role": "context",
+            "domain": {
+              "kind": "boolean",
+              "values": [
+                true,
+                false
+              ],
+              "complete": true,
+              "range": "DECLARED_TYPE"
+            },
+            "constraints": [
+              {
+                "condition": "product_exists == true",
+                "operator": "==",
+                "constant_bound": true,
+                "depends_on_variables": [],
+                "linear": false
+              }
+            ]
+          },
+          {
+            "name": "cart_item_exists",
+            "type": "boolean",
+            "origin": "derived",
+            "role": "context",
+            "domain": {
+              "kind": "boolean",
+              "values": [
+                true,
+                false
+              ],
+              "complete": true,
+              "range": "DECLARED_TYPE"
+            },
+            "constraints": [
+              {
+                "condition": "cart_item_exists == true",
+                "operator": "==",
+                "constant_bound": true,
+                "depends_on_variables": [],
+                "linear": false
+              }
+            ]
+          },
+          {
+            "name": "quantity",
+            "type": "integer",
+            "origin": "request",
+            "role": "input",
+            "domain": {
+              "kind": "integer",
+              "values": null,
+              "complete": false,
+              "range": "UNDETERMINED_IN_EFSM"
+            },
+            "constraints": [
+              {
+                "condition": "quantity > 0",
+                "operator": ">",
+                "constant_bound": 0,
+                "depends_on_variables": [],
+                "linear": true
+              },
+              {
+                "condition": "quantity <= stock",
+                "operator": "<=",
+                "constant_bound": null,
+                "depends_on_variables": [
+                  "stock"
+                ],
+                "linear": true
+              }
+            ]
+          },
+          {
+            "name": "stock",
+            "type": "integer",
+            "origin": "database",
+            "role": "context",
+            "domain": {
+              "kind": "integer",
+              "values": null,
+              "complete": false,
+              "range": "UNDETERMINED_IN_EFSM"
+            },
+            "constraints": [
+              {
+                "condition": "quantity <= stock",
+                "operator": "<=",
+                "constant_bound": null,
+                "depends_on_variables": [
+                  "quantity"
+                ],
+                "linear": true
+              }
+            ]
+          }
+        ],
+        "conjuncts": [
+          {
+            "index": 0,
+            "condition": "product_exists == true",
+            "variables": [
+              "product_exists"
+            ]
+          },
+          {
+            "index": 1,
+            "condition": "cart_item_exists == true",
+            "variables": [
+              "cart_item_exists"
+            ]
+          },
+          {
+            "index": 2,
+            "condition": "quantity > 0",
+            "variables": [
+              "quantity"
+            ]
+          },
+          {
+            "index": 3,
+            "condition": "quantity <= stock",
+            "variables": [
+              "quantity",
+              "stock"
+            ]
+          }
+        ],
+        "notes": [
+          "Numeric/string value ranges are not declared in the EFSM (UNDETERMINED_IN_EFSM); no business range was assumed.",
+          "Some constraints are non-linear; boundary values for them come from search candidates only."
+        ]
+      },
+      "base": {
+        "status": "SAT",
+        "mode": "context_fixed",
+        "assignment": {
+          "product_exists": true,
+          "cart_item_exists": true,
+          "quantity": 5,
+          "stock": 10
+        },
+        "context_given": {
+          "product_exists": true,
+          "cart_item_exists": true,
+          "stock": 10
+        },
+        "context_adjusted": [],
+        "search_nodes": 1,
+        "varied_variables": [
+          "product_exists",
+          "cart_item_exists",
+          "quantity"
+        ]
+      },
+      "conjunct_notes": [],
+      "samples": [
+        {
+          "sample_id": "GD014",
+          "data": {
+            "product_exists": true,
+            "cart_item_exists": true,
+            "quantity": 5,
+            "stock": 10
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BASE",
+          "techniques": [
+            "BASE",
+            "EP"
+          ],
+          "partition": {
+            "description": "nominal valid assignment found by search"
+          },
+          "target_variable": null,
+          "changed_variables": [],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD015",
+          "data": {
+            "product_exists": false,
+            "cart_item_exists": true,
+            "quantity": 5,
+            "stock": 10
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "product_exists",
+            "partition": "value False"
+          },
+          "target_variable": "product_exists",
+          "changed_variables": [
+            "product_exists"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "product_exists == true"
+            ],
+            "verified": [
+              "product_exists == true"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD016",
+          "data": {
+            "product_exists": true,
+            "cart_item_exists": false,
+            "quantity": 5,
+            "stock": 10
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "cart_item_exists",
+            "partition": "value False"
+          },
+          "target_variable": "cart_item_exists",
+          "changed_variables": [
+            "cart_item_exists"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "cart_item_exists == true"
+            ],
+            "verified": [
+              "cart_item_exists == true"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD017",
+          "data": {
+            "product_exists": true,
+            "cart_item_exists": true,
+            "quantity": -1,
+            "stock": 10
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA",
+            "EP"
+          ],
+          "partition": {
+            "variable": "quantity",
+            "partition": "quantity in [-inf, 0]"
+          },
+          "target_variable": "quantity",
+          "changed_variables": [
+            "quantity"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "quantity > 0"
+            ],
+            "verified": [
+              "quantity > 0"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD018",
+          "data": {
+            "product_exists": true,
+            "cart_item_exists": true,
+            "quantity": 0,
+            "stock": 10
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "quantity",
+            "partition": "quantity in [-inf, 0]"
+          },
+          "target_variable": "quantity",
+          "changed_variables": [
+            "quantity"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "quantity > 0"
+            ],
+            "verified": [
+              "quantity > 0"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD019",
+          "data": {
+            "product_exists": true,
+            "cart_item_exists": true,
+            "quantity": 1,
+            "stock": 10
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "quantity",
+            "partition": "quantity in [1, 10]"
+          },
+          "target_variable": "quantity",
+          "changed_variables": [
+            "quantity"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD020",
+          "data": {
+            "product_exists": true,
+            "cart_item_exists": true,
+            "quantity": 2,
+            "stock": 10
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "quantity",
+            "partition": "quantity in [1, 10]"
+          },
+          "target_variable": "quantity",
+          "changed_variables": [
+            "quantity"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD021",
+          "data": {
+            "product_exists": true,
+            "cart_item_exists": true,
+            "quantity": 9,
+            "stock": 10
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "quantity",
+            "partition": "quantity in [1, 10]"
+          },
+          "target_variable": "quantity",
+          "changed_variables": [
+            "quantity"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD022",
+          "data": {
+            "product_exists": true,
+            "cart_item_exists": true,
+            "quantity": 10,
+            "stock": 10
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "quantity",
+            "partition": "quantity in [1, 10]"
+          },
+          "target_variable": "quantity",
+          "changed_variables": [
+            "quantity"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD023",
+          "data": {
+            "product_exists": true,
+            "cart_item_exists": true,
+            "quantity": 11,
+            "stock": 10
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "quantity",
+            "partition": "quantity in [11, +inf]"
+          },
+          "target_variable": "quantity",
+          "changed_variables": [
+            "quantity"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "quantity <= stock"
+            ],
+            "verified": [
+              "quantity <= stock"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD024",
+          "data": {
+            "product_exists": true,
+            "cart_item_exists": true,
+            "quantity": 12,
+            "stock": 10
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA",
+            "EP"
+          ],
+          "partition": {
+            "variable": "quantity",
+            "partition": "quantity in [11, +inf]"
+          },
+          "target_variable": "quantity",
+          "changed_variables": [
+            "quantity"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "quantity <= stock"
+            ],
+            "verified": [
+              "quantity <= stock"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD025",
+          "data": {
+            "product_exists": true,
+            "cart_item_exists": true,
+            "quantity": null,
+            "stock": 10
+          },
+          "expected_guard": null,
+          "expected_status": "TYPE_ERROR",
+          "technique": "EP_NULL",
+          "techniques": [
+            "EP_NULL"
+          ],
+          "partition": {
+            "variable": "quantity",
+            "partition": "null"
+          },
+          "target_variable": "quantity",
+          "changed_variables": [
+            "quantity"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "TYPE_ERROR",
+            "guard_result": null
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD026",
+          "data": {
+            "product_exists": true,
+            "cart_item_exists": true,
+            "stock": 10
+          },
+          "expected_guard": null,
+          "expected_status": "MISSING_VARIABLE",
+          "technique": "EP_MISSING",
+          "techniques": [
+            "EP_MISSING"
+          ],
+          "partition": {
+            "variable": "quantity",
+            "partition": "missing"
+          },
+          "target_variable": "quantity",
+          "changed_variables": [
+            "quantity"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "MISSING_VARIABLE",
+            "guard_result": null
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD027",
+          "data": {
+            "product_exists": true,
+            "cart_item_exists": true,
+            "quantity": "not_a_number",
+            "stock": 10
+          },
+          "expected_guard": null,
+          "expected_status": "TYPE_ERROR",
+          "technique": "EP_WRONG_TYPE",
+          "techniques": [
+            "EP_WRONG_TYPE"
+          ],
+          "partition": {
+            "variable": "quantity",
+            "partition": "wrong_type"
+          },
+          "target_variable": "quantity",
+          "changed_variables": [
+            "quantity"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "TYPE_ERROR",
+            "guard_result": null
+          },
+          "notes": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "transition_id": "T03",
+      "label": "T03",
+      "source_state": "CART",
+      "event": "remove_item",
+      "rule_ids": [
+        "BSR-CART-05"
+      ],
+      "guard": {
+        "var": "cart_item_exists",
+        "op": "==",
+        "value": true
+      },
+      "status": "OK",
+      "reason": null,
+      "analysis": {
+        "supported": true,
+        "reason": null,
+        "expression": "{\"op\": \"==\", \"value\": true, \"var\": \"cart_item_exists\"}",
+        "variables": [
+          {
+            "name": "cart_item_exists",
+            "type": "boolean",
+            "origin": "derived",
+            "role": "context",
+            "domain": {
+              "kind": "boolean",
+              "values": [
+                true,
+                false
+              ],
+              "complete": true,
+              "range": "DECLARED_TYPE"
+            },
+            "constraints": [
+              {
+                "condition": "cart_item_exists == true",
+                "operator": "==",
+                "constant_bound": true,
+                "depends_on_variables": [],
+                "linear": false
+              }
+            ]
+          }
+        ],
+        "conjuncts": [
+          {
+            "index": 0,
+            "condition": "cart_item_exists == true",
+            "variables": [
+              "cart_item_exists"
+            ]
+          }
+        ],
+        "notes": [
+          "Some constraints are non-linear; boundary values for them come from search candidates only."
+        ]
+      },
+      "base": {
+        "status": "SAT",
+        "mode": "context_fixed",
+        "assignment": {
+          "cart_item_exists": true
+        },
+        "context_given": {
+          "cart_item_exists": true
+        },
+        "context_adjusted": [],
+        "search_nodes": 0,
+        "varied_variables": [
+          "cart_item_exists"
+        ]
+      },
+      "conjunct_notes": [],
+      "samples": [
+        {
+          "sample_id": "GD028",
+          "data": {
+            "cart_item_exists": true
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BASE",
+          "techniques": [
+            "BASE",
+            "EP"
+          ],
+          "partition": {
+            "description": "nominal valid assignment found by search"
+          },
+          "target_variable": null,
+          "changed_variables": [],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD029",
+          "data": {
+            "cart_item_exists": false
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "cart_item_exists",
+            "partition": "value False"
+          },
+          "target_variable": "cart_item_exists",
+          "changed_variables": [
+            "cart_item_exists"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "cart_item_exists == true"
+            ],
+            "verified": [
+              "cart_item_exists == true"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "transition_id": "T10",
+      "label": "T10",
+      "source_state": "CART",
+      "event": "clear_cart",
+      "rule_ids": [],
+      "guard": null,
+      "status": "NO_GUARD",
+      "reason": null,
+      "analysis": {
+        "supported": true,
+        "reason": null,
+        "expression": "(no guard)",
+        "variables": [],
+        "conjuncts": [],
+        "notes": [
+          "Transition has no guard: always enabled."
+        ]
+      },
+      "base": {},
+      "conjunct_notes": [],
+      "samples": [
+        {
+          "sample_id": "GD030",
+          "data": {},
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "NO_GUARD",
+          "techniques": [
+            "NO_GUARD"
+          ],
+          "partition": {},
+          "target_variable": null,
+          "changed_variables": [],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "transition_id": "T04",
+      "label": "T04",
+      "source_state": "CART",
+      "event": "create_order",
+      "rule_ids": [
+        "BSR-ORDER-01",
+        "BSR-ORDER-02",
+        "BSR-ORDER-03",
+        "BSR-ORDER-04",
+        "BSR-ORDER-06",
+        "BSR-STOCK-01",
+        "BSR-STOCK-02",
+        "BSR-STOCK-03"
+      ],
+      "guard": {
+        "all": [
+          {
+            "var": "cart_items_count",
+            "op": ">",
+            "value": 0
+          },
+          {
+            "var": "ordered_quantity",
+            "op": ">",
+            "value": 0
+          },
+          {
+            "var": "ordered_quantity",
+            "op": "<=",
+            "value_var": "stock"
+          },
+          {
+            "var": "payment_method",
+            "op": "in",
+            "value": [
+              "MOCK",
+              "COD"
+            ]
+          },
+          {
+            "var": "customer_name_length",
+            "op": ">=",
+            "value": 2
+          },
+          {
+            "var": "customer_name_length",
+            "op": "<=",
+            "value": 100
+          },
+          {
+            "var": "phone_length",
+            "op": ">=",
+            "value": 9
+          },
+          {
+            "var": "phone_length",
+            "op": "<=",
+            "value": 15
+          },
+          {
+            "var": "address_length",
+            "op": ">=",
+            "value": 5
+          },
+          {
+            "var": "address_length",
+            "op": "<=",
+            "value": 255
+          }
+        ]
+      },
+      "status": "OK",
+      "reason": null,
+      "analysis": {
+        "supported": true,
+        "reason": null,
+        "expression": "{\"all\": [{\"op\": \">\", \"value\": 0, \"var\": \"cart_items_count\"}, {\"op\": \">\", \"value\": 0, \"var\": \"ordered_quantity\"}, {\"op\": \"<=\", \"value_var\": \"stock\", \"var\": \"ordered_quantity\"}, {\"op\": \"in\", \"value\": [\"MOCK\", \"COD\"], \"var\": \"payment_method\"}, {\"op\": \">=\", \"value\": 2, \"var\": \"customer_name_length\"}, {\"op\": \"<=\", \"value\": 100, \"var\": \"customer_name_length\"}, {\"op\": \">=\", \"value\": 9, \"var\": \"phone_length\"}, {\"op\": \"<=\", \"value\": 15, \"var\": \"phone_length\"}, {\"op\": \">=\", \"value\": 5, \"var\": \"address_length\"}, {\"op\": \"<=\", \"value\": 255, \"var\": \"address_length\"}]}",
+        "variables": [
+          {
+            "name": "cart_items_count",
+            "type": "integer",
+            "origin": "derived",
+            "role": "context",
+            "domain": {
+              "kind": "integer",
+              "values": null,
+              "complete": false,
+              "range": "UNDETERMINED_IN_EFSM"
+            },
+            "constraints": [
+              {
+                "condition": "cart_items_count > 0",
+                "operator": ">",
+                "constant_bound": 0,
+                "depends_on_variables": [],
+                "linear": true
+              }
+            ]
+          },
+          {
+            "name": "ordered_quantity",
+            "type": "integer",
+            "origin": "derived",
+            "role": "context",
+            "domain": {
+              "kind": "integer",
+              "values": null,
+              "complete": false,
+              "range": "UNDETERMINED_IN_EFSM"
+            },
+            "constraints": [
+              {
+                "condition": "ordered_quantity > 0",
+                "operator": ">",
+                "constant_bound": 0,
+                "depends_on_variables": [],
+                "linear": true
+              },
+              {
+                "condition": "ordered_quantity <= stock",
+                "operator": "<=",
+                "constant_bound": null,
+                "depends_on_variables": [
+                  "stock"
+                ],
+                "linear": true
+              }
+            ]
+          },
+          {
+            "name": "stock",
+            "type": "integer",
+            "origin": "database",
+            "role": "context",
+            "domain": {
+              "kind": "integer",
+              "values": null,
+              "complete": false,
+              "range": "UNDETERMINED_IN_EFSM"
+            },
+            "constraints": [
+              {
+                "condition": "ordered_quantity <= stock",
+                "operator": "<=",
+                "constant_bound": null,
+                "depends_on_variables": [
+                  "ordered_quantity"
+                ],
+                "linear": true
+              }
+            ]
+          },
+          {
+            "name": "payment_method",
+            "type": "string",
+            "origin": "request",
+            "role": "input",
+            "domain": {
+              "kind": "enum",
+              "values": [
+                "MOCK",
+                "COD"
+              ],
+              "complete": true,
+              "range": "DECLARED_ALLOWED_VALUES"
+            },
+            "constraints": [
+              {
+                "condition": "payment_method in [\"MOCK\", \"COD\"]",
+                "operator": "in",
+                "constant_bound": [
+                  "MOCK",
+                  "COD"
+                ],
+                "depends_on_variables": [],
+                "linear": true
+              }
+            ]
+          },
+          {
+            "name": "customer_name_length",
+            "type": "integer",
+            "origin": "request",
+            "role": "input",
+            "domain": {
+              "kind": "integer",
+              "values": null,
+              "complete": false,
+              "range": "UNDETERMINED_IN_EFSM"
+            },
+            "constraints": [
+              {
+                "condition": "customer_name_length >= 2",
+                "operator": ">=",
+                "constant_bound": 2,
+                "depends_on_variables": [],
+                "linear": true
+              },
+              {
+                "condition": "customer_name_length <= 100",
+                "operator": "<=",
+                "constant_bound": 100,
+                "depends_on_variables": [],
+                "linear": true
+              }
+            ]
+          },
+          {
+            "name": "phone_length",
+            "type": "integer",
+            "origin": "request",
+            "role": "input",
+            "domain": {
+              "kind": "integer",
+              "values": null,
+              "complete": false,
+              "range": "UNDETERMINED_IN_EFSM"
+            },
+            "constraints": [
+              {
+                "condition": "phone_length >= 9",
+                "operator": ">=",
+                "constant_bound": 9,
+                "depends_on_variables": [],
+                "linear": true
+              },
+              {
+                "condition": "phone_length <= 15",
+                "operator": "<=",
+                "constant_bound": 15,
+                "depends_on_variables": [],
+                "linear": true
+              }
+            ]
+          },
+          {
+            "name": "address_length",
+            "type": "integer",
+            "origin": "request",
+            "role": "input",
+            "domain": {
+              "kind": "integer",
+              "values": null,
+              "complete": false,
+              "range": "UNDETERMINED_IN_EFSM"
+            },
+            "constraints": [
+              {
+                "condition": "address_length >= 5",
+                "operator": ">=",
+                "constant_bound": 5,
+                "depends_on_variables": [],
+                "linear": true
+              },
+              {
+                "condition": "address_length <= 255",
+                "operator": "<=",
+                "constant_bound": 255,
+                "depends_on_variables": [],
+                "linear": true
+              }
+            ]
+          }
+        ],
+        "conjuncts": [
+          {
+            "index": 0,
+            "condition": "cart_items_count > 0",
+            "variables": [
+              "cart_items_count"
+            ]
+          },
+          {
+            "index": 1,
+            "condition": "ordered_quantity > 0",
+            "variables": [
+              "ordered_quantity"
+            ]
+          },
+          {
+            "index": 2,
+            "condition": "ordered_quantity <= stock",
+            "variables": [
+              "ordered_quantity",
+              "stock"
+            ]
+          },
+          {
+            "index": 3,
+            "condition": "payment_method in [\"MOCK\", \"COD\"]",
+            "variables": [
+              "payment_method"
+            ]
+          },
+          {
+            "index": 4,
+            "condition": "customer_name_length >= 2",
+            "variables": [
+              "customer_name_length"
+            ]
+          },
+          {
+            "index": 5,
+            "condition": "customer_name_length <= 100",
+            "variables": [
+              "customer_name_length"
+            ]
+          },
+          {
+            "index": 6,
+            "condition": "phone_length >= 9",
+            "variables": [
+              "phone_length"
+            ]
+          },
+          {
+            "index": 7,
+            "condition": "phone_length <= 15",
+            "variables": [
+              "phone_length"
+            ]
+          },
+          {
+            "index": 8,
+            "condition": "address_length >= 5",
+            "variables": [
+              "address_length"
+            ]
+          },
+          {
+            "index": 9,
+            "condition": "address_length <= 255",
+            "variables": [
+              "address_length"
+            ]
+          }
+        ],
+        "notes": [
+          "Numeric/string value ranges are not declared in the EFSM (UNDETERMINED_IN_EFSM); no business range was assumed."
+        ]
+      },
+      "base": {
+        "status": "SAT",
+        "mode": "context_fixed",
+        "assignment": {
+          "cart_items_count": 1,
+          "ordered_quantity": 2,
+          "stock": 10,
+          "payment_method": "MOCK",
+          "customer_name_length": 51,
+          "phone_length": 12,
+          "address_length": 130
+        },
+        "context_given": {
+          "stock": 10,
+          "cart_items_count": 1,
+          "ordered_quantity": 2
+        },
+        "context_adjusted": [],
+        "search_nodes": 4,
+        "varied_variables": [
+          "cart_items_count",
+          "ordered_quantity",
+          "stock",
+          "payment_method",
+          "customer_name_length",
+          "phone_length",
+          "address_length"
+        ]
+      },
+      "conjunct_notes": [],
+      "samples": [
+        {
+          "sample_id": "GD031",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BASE",
+          "techniques": [
+            "BASE",
+            "BVA",
+            "EP"
+          ],
+          "partition": {
+            "description": "nominal valid assignment found by search"
+          },
+          "target_variable": null,
+          "changed_variables": [],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD032",
+          "data": {
+            "cart_items_count": -1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA",
+            "EP"
+          ],
+          "partition": {
+            "variable": "cart_items_count",
+            "partition": "cart_items_count in [-inf, 0]"
+          },
+          "target_variable": "cart_items_count",
+          "changed_variables": [
+            "cart_items_count"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "cart_items_count > 0"
+            ],
+            "verified": [
+              "cart_items_count > 0"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD033",
+          "data": {
+            "cart_items_count": 0,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "cart_items_count",
+            "partition": "cart_items_count in [-inf, 0]"
+          },
+          "target_variable": "cart_items_count",
+          "changed_variables": [
+            "cart_items_count"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "cart_items_count > 0"
+            ],
+            "verified": [
+              "cart_items_count > 0"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD034",
+          "data": {
+            "cart_items_count": 2,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA",
+            "EP"
+          ],
+          "partition": {
+            "variable": "cart_items_count",
+            "partition": "cart_items_count in [1, +inf]"
+          },
+          "target_variable": "cart_items_count",
+          "changed_variables": [
+            "cart_items_count"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD035",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": -1,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA",
+            "EP"
+          ],
+          "partition": {
+            "variable": "ordered_quantity",
+            "partition": "ordered_quantity in [-inf, 0]"
+          },
+          "target_variable": "ordered_quantity",
+          "changed_variables": [
+            "ordered_quantity"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "ordered_quantity > 0"
+            ],
+            "verified": [
+              "ordered_quantity > 0"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD036",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 0,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "ordered_quantity",
+            "partition": "ordered_quantity in [-inf, 0]"
+          },
+          "target_variable": "ordered_quantity",
+          "changed_variables": [
+            "ordered_quantity"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "ordered_quantity > 0"
+            ],
+            "verified": [
+              "ordered_quantity > 0"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD037",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 1,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "ordered_quantity",
+            "partition": "ordered_quantity in [1, 10]"
+          },
+          "target_variable": "ordered_quantity",
+          "changed_variables": [
+            "ordered_quantity"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD038",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 5,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "ordered_quantity",
+            "partition": "ordered_quantity in [1, 10]"
+          },
+          "target_variable": "ordered_quantity",
+          "changed_variables": [
+            "ordered_quantity"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD039",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 9,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "ordered_quantity",
+            "partition": "ordered_quantity in [1, 10]"
+          },
+          "target_variable": "ordered_quantity",
+          "changed_variables": [
+            "ordered_quantity"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD040",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 10,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "ordered_quantity",
+            "partition": "ordered_quantity in [1, 10]"
+          },
+          "target_variable": "ordered_quantity",
+          "changed_variables": [
+            "ordered_quantity"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD041",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 11,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "ordered_quantity",
+            "partition": "ordered_quantity in [11, +inf]"
+          },
+          "target_variable": "ordered_quantity",
+          "changed_variables": [
+            "ordered_quantity"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "ordered_quantity <= stock"
+            ],
+            "verified": [
+              "ordered_quantity <= stock"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD042",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 12,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA",
+            "EP"
+          ],
+          "partition": {
+            "variable": "ordered_quantity",
+            "partition": "ordered_quantity in [11, +inf]"
+          },
+          "target_variable": "ordered_quantity",
+          "changed_variables": [
+            "ordered_quantity"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "ordered_quantity <= stock"
+            ],
+            "verified": [
+              "ordered_quantity <= stock"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD043",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 0,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA",
+            "EP"
+          ],
+          "partition": {
+            "variable": "stock",
+            "partition": "stock in [-inf, 1]"
+          },
+          "target_variable": "stock",
+          "changed_variables": [
+            "stock"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "ordered_quantity <= stock"
+            ],
+            "verified": [
+              "ordered_quantity <= stock"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD044",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 1,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "stock",
+            "partition": "stock in [-inf, 1]"
+          },
+          "target_variable": "stock",
+          "changed_variables": [
+            "stock"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "ordered_quantity <= stock"
+            ],
+            "verified": [
+              "ordered_quantity <= stock"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD045",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 2,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "stock",
+            "partition": "stock in [2, +inf]"
+          },
+          "target_variable": "stock",
+          "changed_variables": [
+            "stock"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD046",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 3,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA",
+            "EP"
+          ],
+          "partition": {
+            "variable": "stock",
+            "partition": "stock in [2, +inf]"
+          },
+          "target_variable": "stock",
+          "changed_variables": [
+            "stock"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD047",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "COD",
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "payment_method",
+            "partition": "IN_DOMAIN"
+          },
+          "target_variable": "payment_method",
+          "changed_variables": [
+            "payment_method"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD048",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "__OUT_OF_DOMAIN__",
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "payment_method",
+            "partition": "OUT_OF_DECLARED_DOMAIN"
+          },
+          "target_variable": "payment_method",
+          "changed_variables": [
+            "payment_method"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "payment_method in [\"MOCK\", \"COD\"]"
+            ],
+            "verified": [
+              "payment_method in [\"MOCK\", \"COD\"]"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD049",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 0,
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA",
+            "EP"
+          ],
+          "partition": {
+            "variable": "customer_name_length",
+            "partition": "customer_name_length in [-inf, 1]"
+          },
+          "target_variable": "customer_name_length",
+          "changed_variables": [
+            "customer_name_length"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "customer_name_length >= 2"
+            ],
+            "verified": [
+              "customer_name_length >= 2"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD050",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 1,
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "customer_name_length",
+            "partition": "customer_name_length in [-inf, 1]"
+          },
+          "target_variable": "customer_name_length",
+          "changed_variables": [
+            "customer_name_length"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "customer_name_length >= 2"
+            ],
+            "verified": [
+              "customer_name_length >= 2"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD051",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 2,
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "customer_name_length",
+            "partition": "customer_name_length in [2, 100]"
+          },
+          "target_variable": "customer_name_length",
+          "changed_variables": [
+            "customer_name_length"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD052",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 3,
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "customer_name_length",
+            "partition": "customer_name_length in [2, 100]"
+          },
+          "target_variable": "customer_name_length",
+          "changed_variables": [
+            "customer_name_length"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD053",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 99,
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "customer_name_length",
+            "partition": "customer_name_length in [2, 100]"
+          },
+          "target_variable": "customer_name_length",
+          "changed_variables": [
+            "customer_name_length"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD054",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 100,
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "customer_name_length",
+            "partition": "customer_name_length in [2, 100]"
+          },
+          "target_variable": "customer_name_length",
+          "changed_variables": [
+            "customer_name_length"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD055",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 101,
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "customer_name_length",
+            "partition": "customer_name_length in [101, +inf]"
+          },
+          "target_variable": "customer_name_length",
+          "changed_variables": [
+            "customer_name_length"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "customer_name_length <= 100"
+            ],
+            "verified": [
+              "customer_name_length <= 100"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD056",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 102,
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA",
+            "EP"
+          ],
+          "partition": {
+            "variable": "customer_name_length",
+            "partition": "customer_name_length in [101, +inf]"
+          },
+          "target_variable": "customer_name_length",
+          "changed_variables": [
+            "customer_name_length"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "customer_name_length <= 100"
+            ],
+            "verified": [
+              "customer_name_length <= 100"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD057",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 7,
+            "address_length": 130
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA",
+            "EP"
+          ],
+          "partition": {
+            "variable": "phone_length",
+            "partition": "phone_length in [-inf, 8]"
+          },
+          "target_variable": "phone_length",
+          "changed_variables": [
+            "phone_length"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "phone_length >= 9"
+            ],
+            "verified": [
+              "phone_length >= 9"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD058",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 8,
+            "address_length": 130
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "phone_length",
+            "partition": "phone_length in [-inf, 8]"
+          },
+          "target_variable": "phone_length",
+          "changed_variables": [
+            "phone_length"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "phone_length >= 9"
+            ],
+            "verified": [
+              "phone_length >= 9"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD059",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 9,
+            "address_length": 130
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "phone_length",
+            "partition": "phone_length in [9, 15]"
+          },
+          "target_variable": "phone_length",
+          "changed_variables": [
+            "phone_length"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD060",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 10,
+            "address_length": 130
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "phone_length",
+            "partition": "phone_length in [9, 15]"
+          },
+          "target_variable": "phone_length",
+          "changed_variables": [
+            "phone_length"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD061",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 14,
+            "address_length": 130
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "phone_length",
+            "partition": "phone_length in [9, 15]"
+          },
+          "target_variable": "phone_length",
+          "changed_variables": [
+            "phone_length"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD062",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 15,
+            "address_length": 130
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "phone_length",
+            "partition": "phone_length in [9, 15]"
+          },
+          "target_variable": "phone_length",
+          "changed_variables": [
+            "phone_length"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD063",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 16,
+            "address_length": 130
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "phone_length",
+            "partition": "phone_length in [16, +inf]"
+          },
+          "target_variable": "phone_length",
+          "changed_variables": [
+            "phone_length"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "phone_length <= 15"
+            ],
+            "verified": [
+              "phone_length <= 15"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD064",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 17,
+            "address_length": 130
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA",
+            "EP"
+          ],
+          "partition": {
+            "variable": "phone_length",
+            "partition": "phone_length in [16, +inf]"
+          },
+          "target_variable": "phone_length",
+          "changed_variables": [
+            "phone_length"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "phone_length <= 15"
+            ],
+            "verified": [
+              "phone_length <= 15"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD065",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": 3
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA",
+            "EP"
+          ],
+          "partition": {
+            "variable": "address_length",
+            "partition": "address_length in [-inf, 4]"
+          },
+          "target_variable": "address_length",
+          "changed_variables": [
+            "address_length"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "address_length >= 5"
+            ],
+            "verified": [
+              "address_length >= 5"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD066",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": 4
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "address_length",
+            "partition": "address_length in [-inf, 4]"
+          },
+          "target_variable": "address_length",
+          "changed_variables": [
+            "address_length"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "address_length >= 5"
+            ],
+            "verified": [
+              "address_length >= 5"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD067",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": 5
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "address_length",
+            "partition": "address_length in [5, 255]"
+          },
+          "target_variable": "address_length",
+          "changed_variables": [
+            "address_length"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD068",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": 6
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "address_length",
+            "partition": "address_length in [5, 255]"
+          },
+          "target_variable": "address_length",
+          "changed_variables": [
+            "address_length"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD069",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": 254
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "address_length",
+            "partition": "address_length in [5, 255]"
+          },
+          "target_variable": "address_length",
+          "changed_variables": [
+            "address_length"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD070",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": 255
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "address_length",
+            "partition": "address_length in [5, 255]"
+          },
+          "target_variable": "address_length",
+          "changed_variables": [
+            "address_length"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD071",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": 256
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA"
+          ],
+          "partition": {
+            "variable": "address_length",
+            "partition": "address_length in [256, +inf]"
+          },
+          "target_variable": "address_length",
+          "changed_variables": [
+            "address_length"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "address_length <= 255"
+            ],
+            "verified": [
+              "address_length <= 255"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD072",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": 257
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "BVA",
+          "techniques": [
+            "BVA",
+            "EP"
+          ],
+          "partition": {
+            "variable": "address_length",
+            "partition": "address_length in [256, +inf]"
+          },
+          "target_variable": "address_length",
+          "changed_variables": [
+            "address_length"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "address_length <= 255"
+            ],
+            "verified": [
+              "address_length <= 255"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD073",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": 12345,
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": null,
+          "expected_status": "TYPE_ERROR",
+          "technique": "EP_WRONG_TYPE",
+          "techniques": [
+            "EP_WRONG_TYPE"
+          ],
+          "partition": {
+            "variable": "payment_method",
+            "partition": "wrong_type"
+          },
+          "target_variable": "payment_method",
+          "changed_variables": [
+            "payment_method"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "TYPE_ERROR",
+            "guard_result": null
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD074",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": null,
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": null,
+          "expected_status": "TYPE_ERROR",
+          "technique": "EP_NULL",
+          "techniques": [
+            "EP_NULL"
+          ],
+          "partition": {
+            "variable": "payment_method",
+            "partition": "null"
+          },
+          "target_variable": "payment_method",
+          "changed_variables": [
+            "payment_method"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "TYPE_ERROR",
+            "guard_result": null
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD075",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": null,
+          "expected_status": "MISSING_VARIABLE",
+          "technique": "EP_MISSING",
+          "techniques": [
+            "EP_MISSING"
+          ],
+          "partition": {
+            "variable": "payment_method",
+            "partition": "missing"
+          },
+          "target_variable": "payment_method",
+          "changed_variables": [
+            "payment_method"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "MISSING_VARIABLE",
+            "guard_result": null
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD076",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": null,
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": null,
+          "expected_status": "TYPE_ERROR",
+          "technique": "EP_NULL",
+          "techniques": [
+            "EP_NULL"
+          ],
+          "partition": {
+            "variable": "customer_name_length",
+            "partition": "null"
+          },
+          "target_variable": "customer_name_length",
+          "changed_variables": [
+            "customer_name_length"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "TYPE_ERROR",
+            "guard_result": null
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD077",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": null,
+          "expected_status": "MISSING_VARIABLE",
+          "technique": "EP_MISSING",
+          "techniques": [
+            "EP_MISSING"
+          ],
+          "partition": {
+            "variable": "customer_name_length",
+            "partition": "missing"
+          },
+          "target_variable": "customer_name_length",
+          "changed_variables": [
+            "customer_name_length"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "MISSING_VARIABLE",
+            "guard_result": null
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD078",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": "not_a_number",
+            "phone_length": 12,
+            "address_length": 130
+          },
+          "expected_guard": null,
+          "expected_status": "TYPE_ERROR",
+          "technique": "EP_WRONG_TYPE",
+          "techniques": [
+            "EP_WRONG_TYPE"
+          ],
+          "partition": {
+            "variable": "customer_name_length",
+            "partition": "wrong_type"
+          },
+          "target_variable": "customer_name_length",
+          "changed_variables": [
+            "customer_name_length"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "TYPE_ERROR",
+            "guard_result": null
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD079",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": null,
+            "address_length": 130
+          },
+          "expected_guard": null,
+          "expected_status": "TYPE_ERROR",
+          "technique": "EP_NULL",
+          "techniques": [
+            "EP_NULL"
+          ],
+          "partition": {
+            "variable": "phone_length",
+            "partition": "null"
+          },
+          "target_variable": "phone_length",
+          "changed_variables": [
+            "phone_length"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "TYPE_ERROR",
+            "guard_result": null
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD080",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "address_length": 130
+          },
+          "expected_guard": null,
+          "expected_status": "MISSING_VARIABLE",
+          "technique": "EP_MISSING",
+          "techniques": [
+            "EP_MISSING"
+          ],
+          "partition": {
+            "variable": "phone_length",
+            "partition": "missing"
+          },
+          "target_variable": "phone_length",
+          "changed_variables": [
+            "phone_length"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "MISSING_VARIABLE",
+            "guard_result": null
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD081",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": "not_a_number",
+            "address_length": 130
+          },
+          "expected_guard": null,
+          "expected_status": "TYPE_ERROR",
+          "technique": "EP_WRONG_TYPE",
+          "techniques": [
+            "EP_WRONG_TYPE"
+          ],
+          "partition": {
+            "variable": "phone_length",
+            "partition": "wrong_type"
+          },
+          "target_variable": "phone_length",
+          "changed_variables": [
+            "phone_length"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "TYPE_ERROR",
+            "guard_result": null
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD082",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": null
+          },
+          "expected_guard": null,
+          "expected_status": "TYPE_ERROR",
+          "technique": "EP_NULL",
+          "techniques": [
+            "EP_NULL"
+          ],
+          "partition": {
+            "variable": "address_length",
+            "partition": "null"
+          },
+          "target_variable": "address_length",
+          "changed_variables": [
+            "address_length"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "TYPE_ERROR",
+            "guard_result": null
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD083",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 12
+          },
+          "expected_guard": null,
+          "expected_status": "MISSING_VARIABLE",
+          "technique": "EP_MISSING",
+          "techniques": [
+            "EP_MISSING"
+          ],
+          "partition": {
+            "variable": "address_length",
+            "partition": "missing"
+          },
+          "target_variable": "address_length",
+          "changed_variables": [
+            "address_length"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "MISSING_VARIABLE",
+            "guard_result": null
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD084",
+          "data": {
+            "cart_items_count": 1,
+            "ordered_quantity": 2,
+            "stock": 10,
+            "payment_method": "MOCK",
+            "customer_name_length": 51,
+            "phone_length": 12,
+            "address_length": "not_a_number"
+          },
+          "expected_guard": null,
+          "expected_status": "TYPE_ERROR",
+          "technique": "EP_WRONG_TYPE",
+          "techniques": [
+            "EP_WRONG_TYPE"
+          ],
+          "partition": {
+            "variable": "address_length",
+            "partition": "wrong_type"
+          },
+          "target_variable": "address_length",
+          "changed_variables": [
+            "address_length"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "TYPE_ERROR",
+            "guard_result": null
+          },
+          "notes": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "transition_id": "T05",
+      "label": "T05",
+      "source_state": "PENDING_CONFIRMATION",
+      "event": "confirm_order",
+      "rule_ids": [
+        "BSR-ORDER-05"
+      ],
+      "guard": {
+        "var": "order_status",
+        "op": "==",
+        "value": "PENDING_CONFIRMATION"
+      },
+      "status": "OK",
+      "reason": null,
+      "analysis": {
+        "supported": true,
+        "reason": null,
+        "expression": "{\"op\": \"==\", \"value\": \"PENDING_CONFIRMATION\", \"var\": \"order_status\"}",
+        "variables": [
+          {
+            "name": "order_status",
+            "type": "string",
+            "origin": "database",
+            "role": "context",
+            "domain": {
+              "kind": "enum",
+              "values": [
+                "PENDING_CONFIRMATION",
+                "CONFIRMED",
+                "PAID",
+                "CANCELLED"
+              ],
+              "complete": true,
+              "range": "DECLARED_ALLOWED_VALUES"
+            },
+            "constraints": [
+              {
+                "condition": "order_status == \"PENDING_CONFIRMATION\"",
+                "operator": "==",
+                "constant_bound": "PENDING_CONFIRMATION",
+                "depends_on_variables": [],
+                "linear": false
+              }
+            ]
+          }
+        ],
+        "conjuncts": [
+          {
+            "index": 0,
+            "condition": "order_status == \"PENDING_CONFIRMATION\"",
+            "variables": [
+              "order_status"
+            ]
+          }
+        ],
+        "notes": [
+          "Some constraints are non-linear; boundary values for them come from search candidates only."
+        ]
+      },
+      "base": {
+        "status": "SAT",
+        "mode": "context_as_hint",
+        "assignment": {
+          "order_status": "PENDING_CONFIRMATION"
+        },
+        "context_given": {},
+        "context_adjusted": [],
+        "search_nodes": 1,
+        "varied_variables": [
+          "order_status"
+        ]
+      },
+      "conjunct_notes": [],
+      "samples": [
+        {
+          "sample_id": "GD085",
+          "data": {
+            "order_status": "PENDING_CONFIRMATION"
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BASE",
+          "techniques": [
+            "BASE",
+            "EP"
+          ],
+          "partition": {
+            "description": "nominal valid assignment found by search"
+          },
+          "target_variable": null,
+          "changed_variables": [],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD086",
+          "data": {
+            "order_status": "CANCELLED"
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "order_status",
+            "partition": "IN_DOMAIN"
+          },
+          "target_variable": "order_status",
+          "changed_variables": [
+            "order_status"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "order_status == \"PENDING_CONFIRMATION\""
+            ],
+            "verified": [
+              "order_status == \"PENDING_CONFIRMATION\""
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD087",
+          "data": {
+            "order_status": "CONFIRMED"
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "order_status",
+            "partition": "IN_DOMAIN"
+          },
+          "target_variable": "order_status",
+          "changed_variables": [
+            "order_status"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "order_status == \"PENDING_CONFIRMATION\""
+            ],
+            "verified": [
+              "order_status == \"PENDING_CONFIRMATION\""
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD088",
+          "data": {
+            "order_status": "PAID"
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "order_status",
+            "partition": "IN_DOMAIN"
+          },
+          "target_variable": "order_status",
+          "changed_variables": [
+            "order_status"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "order_status == \"PENDING_CONFIRMATION\""
+            ],
+            "verified": [
+              "order_status == \"PENDING_CONFIRMATION\""
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD089",
+          "data": {
+            "order_status": "__OUT_OF_DOMAIN__"
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "order_status",
+            "partition": "OUT_OF_DECLARED_DOMAIN"
+          },
+          "target_variable": "order_status",
+          "changed_variables": [
+            "order_status"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "order_status == \"PENDING_CONFIRMATION\""
+            ],
+            "verified": [
+              "order_status == \"PENDING_CONFIRMATION\""
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "transition_id": "T06",
+      "label": "T06",
+      "source_state": "CONFIRMED",
+      "event": "pay",
+      "rule_ids": [
+        "BSR-PAYMENT-01",
+        "BSR-PAYMENT-02",
+        "BSR-PAYMENT-04",
+        "BSR-PAYMENT-06",
+        "BSR-PAYMENT-07"
+      ],
+      "guard": {
+        "all": [
+          {
+            "var": "order_status",
+            "op": "==",
+            "value": "CONFIRMED"
+          },
+          {
+            "var": "payment_result",
+            "op": "==",
+            "value": "SUCCESS"
+          }
+        ]
+      },
+      "status": "OK",
+      "reason": null,
+      "analysis": {
+        "supported": true,
+        "reason": null,
+        "expression": "{\"all\": [{\"op\": \"==\", \"value\": \"CONFIRMED\", \"var\": \"order_status\"}, {\"op\": \"==\", \"value\": \"SUCCESS\", \"var\": \"payment_result\"}]}",
+        "variables": [
+          {
+            "name": "order_status",
+            "type": "string",
+            "origin": "database",
+            "role": "context",
+            "domain": {
+              "kind": "enum",
+              "values": [
+                "PENDING_CONFIRMATION",
+                "CONFIRMED",
+                "PAID",
+                "CANCELLED"
+              ],
+              "complete": true,
+              "range": "DECLARED_ALLOWED_VALUES"
+            },
+            "constraints": [
+              {
+                "condition": "order_status == \"CONFIRMED\"",
+                "operator": "==",
+                "constant_bound": "CONFIRMED",
+                "depends_on_variables": [],
+                "linear": false
+              }
+            ]
+          },
+          {
+            "name": "payment_result",
+            "type": "string",
+            "origin": "request",
+            "role": "input",
+            "domain": {
+              "kind": "enum",
+              "values": [
+                "SUCCESS",
+                "FAILED"
+              ],
+              "complete": true,
+              "range": "DECLARED_ALLOWED_VALUES"
+            },
+            "constraints": [
+              {
+                "condition": "payment_result == \"SUCCESS\"",
+                "operator": "==",
+                "constant_bound": "SUCCESS",
+                "depends_on_variables": [],
+                "linear": false
+              }
+            ]
+          }
+        ],
+        "conjuncts": [
+          {
+            "index": 0,
+            "condition": "order_status == \"CONFIRMED\"",
+            "variables": [
+              "order_status"
+            ]
+          },
+          {
+            "index": 1,
+            "condition": "payment_result == \"SUCCESS\"",
+            "variables": [
+              "payment_result"
+            ]
+          }
+        ],
+        "notes": [
+          "Some constraints are non-linear; boundary values for them come from search candidates only."
+        ]
+      },
+      "base": {
+        "status": "SAT",
+        "mode": "context_as_hint",
+        "assignment": {
+          "order_status": "CONFIRMED",
+          "payment_result": "SUCCESS"
+        },
+        "context_given": {},
+        "context_adjusted": [],
+        "search_nodes": 3,
+        "varied_variables": [
+          "order_status",
+          "payment_result"
+        ]
+      },
+      "conjunct_notes": [],
+      "samples": [
+        {
+          "sample_id": "GD090",
+          "data": {
+            "order_status": "CONFIRMED",
+            "payment_result": "SUCCESS"
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BASE",
+          "techniques": [
+            "BASE",
+            "EP"
+          ],
+          "partition": {
+            "description": "nominal valid assignment found by search"
+          },
+          "target_variable": null,
+          "changed_variables": [],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD091",
+          "data": {
+            "order_status": "CANCELLED",
+            "payment_result": "SUCCESS"
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "order_status",
+            "partition": "IN_DOMAIN"
+          },
+          "target_variable": "order_status",
+          "changed_variables": [
+            "order_status"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "order_status == \"CONFIRMED\""
+            ],
+            "verified": [
+              "order_status == \"CONFIRMED\""
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD092",
+          "data": {
+            "order_status": "PAID",
+            "payment_result": "SUCCESS"
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "order_status",
+            "partition": "IN_DOMAIN"
+          },
+          "target_variable": "order_status",
+          "changed_variables": [
+            "order_status"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "order_status == \"CONFIRMED\""
+            ],
+            "verified": [
+              "order_status == \"CONFIRMED\""
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD093",
+          "data": {
+            "order_status": "PENDING_CONFIRMATION",
+            "payment_result": "SUCCESS"
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "order_status",
+            "partition": "IN_DOMAIN"
+          },
+          "target_variable": "order_status",
+          "changed_variables": [
+            "order_status"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "order_status == \"CONFIRMED\""
+            ],
+            "verified": [
+              "order_status == \"CONFIRMED\""
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD094",
+          "data": {
+            "order_status": "__OUT_OF_DOMAIN__",
+            "payment_result": "SUCCESS"
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "order_status",
+            "partition": "OUT_OF_DECLARED_DOMAIN"
+          },
+          "target_variable": "order_status",
+          "changed_variables": [
+            "order_status"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "order_status == \"CONFIRMED\""
+            ],
+            "verified": [
+              "order_status == \"CONFIRMED\""
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD095",
+          "data": {
+            "order_status": "CONFIRMED",
+            "payment_result": "FAILED"
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "payment_result",
+            "partition": "IN_DOMAIN"
+          },
+          "target_variable": "payment_result",
+          "changed_variables": [
+            "payment_result"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "payment_result == \"SUCCESS\""
+            ],
+            "verified": [
+              "payment_result == \"SUCCESS\""
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD096",
+          "data": {
+            "order_status": "CONFIRMED",
+            "payment_result": "__OUT_OF_DOMAIN__"
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "payment_result",
+            "partition": "OUT_OF_DECLARED_DOMAIN"
+          },
+          "target_variable": "payment_result",
+          "changed_variables": [
+            "payment_result"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "payment_result == \"SUCCESS\""
+            ],
+            "verified": [
+              "payment_result == \"SUCCESS\""
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD097",
+          "data": {
+            "order_status": "CONFIRMED",
+            "payment_result": 12345
+          },
+          "expected_guard": null,
+          "expected_status": "TYPE_ERROR",
+          "technique": "EP_WRONG_TYPE",
+          "techniques": [
+            "EP_WRONG_TYPE"
+          ],
+          "partition": {
+            "variable": "payment_result",
+            "partition": "wrong_type"
+          },
+          "target_variable": "payment_result",
+          "changed_variables": [
+            "payment_result"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "TYPE_ERROR",
+            "guard_result": null
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD098",
+          "data": {
+            "order_status": "CONFIRMED",
+            "payment_result": null
+          },
+          "expected_guard": null,
+          "expected_status": "TYPE_ERROR",
+          "technique": "EP_NULL",
+          "techniques": [
+            "EP_NULL"
+          ],
+          "partition": {
+            "variable": "payment_result",
+            "partition": "null"
+          },
+          "target_variable": "payment_result",
+          "changed_variables": [
+            "payment_result"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "TYPE_ERROR",
+            "guard_result": null
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD099",
+          "data": {
+            "order_status": "CONFIRMED"
+          },
+          "expected_guard": null,
+          "expected_status": "MISSING_VARIABLE",
+          "technique": "EP_MISSING",
+          "techniques": [
+            "EP_MISSING"
+          ],
+          "partition": {
+            "variable": "payment_result",
+            "partition": "missing"
+          },
+          "target_variable": "payment_result",
+          "changed_variables": [
+            "payment_result"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "MISSING_VARIABLE",
+            "guard_result": null
+          },
+          "notes": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "transition_id": "T07",
+      "label": "T07",
+      "source_state": "CONFIRMED",
+      "event": "pay",
+      "rule_ids": [
+        "BSR-PAYMENT-03",
+        "BSR-PAYMENT-04",
+        "BSR-PAYMENT-07"
+      ],
+      "guard": {
+        "all": [
+          {
+            "var": "order_status",
+            "op": "==",
+            "value": "CONFIRMED"
+          },
+          {
+            "var": "payment_result",
+            "op": "==",
+            "value": "FAILED"
+          }
+        ]
+      },
+      "status": "OK",
+      "reason": null,
+      "analysis": {
+        "supported": true,
+        "reason": null,
+        "expression": "{\"all\": [{\"op\": \"==\", \"value\": \"CONFIRMED\", \"var\": \"order_status\"}, {\"op\": \"==\", \"value\": \"FAILED\", \"var\": \"payment_result\"}]}",
+        "variables": [
+          {
+            "name": "order_status",
+            "type": "string",
+            "origin": "database",
+            "role": "context",
+            "domain": {
+              "kind": "enum",
+              "values": [
+                "PENDING_CONFIRMATION",
+                "CONFIRMED",
+                "PAID",
+                "CANCELLED"
+              ],
+              "complete": true,
+              "range": "DECLARED_ALLOWED_VALUES"
+            },
+            "constraints": [
+              {
+                "condition": "order_status == \"CONFIRMED\"",
+                "operator": "==",
+                "constant_bound": "CONFIRMED",
+                "depends_on_variables": [],
+                "linear": false
+              }
+            ]
+          },
+          {
+            "name": "payment_result",
+            "type": "string",
+            "origin": "request",
+            "role": "input",
+            "domain": {
+              "kind": "enum",
+              "values": [
+                "SUCCESS",
+                "FAILED"
+              ],
+              "complete": true,
+              "range": "DECLARED_ALLOWED_VALUES"
+            },
+            "constraints": [
+              {
+                "condition": "payment_result == \"FAILED\"",
+                "operator": "==",
+                "constant_bound": "FAILED",
+                "depends_on_variables": [],
+                "linear": false
+              }
+            ]
+          }
+        ],
+        "conjuncts": [
+          {
+            "index": 0,
+            "condition": "order_status == \"CONFIRMED\"",
+            "variables": [
+              "order_status"
+            ]
+          },
+          {
+            "index": 1,
+            "condition": "payment_result == \"FAILED\"",
+            "variables": [
+              "payment_result"
+            ]
+          }
+        ],
+        "notes": [
+          "Some constraints are non-linear; boundary values for them come from search candidates only."
+        ]
+      },
+      "base": {
+        "status": "SAT",
+        "mode": "context_as_hint",
+        "assignment": {
+          "order_status": "CONFIRMED",
+          "payment_result": "FAILED"
+        },
+        "context_given": {},
+        "context_adjusted": [],
+        "search_nodes": 4,
+        "varied_variables": [
+          "order_status",
+          "payment_result"
+        ]
+      },
+      "conjunct_notes": [],
+      "samples": [
+        {
+          "sample_id": "GD100",
+          "data": {
+            "order_status": "CONFIRMED",
+            "payment_result": "FAILED"
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BASE",
+          "techniques": [
+            "BASE",
+            "EP"
+          ],
+          "partition": {
+            "description": "nominal valid assignment found by search"
+          },
+          "target_variable": null,
+          "changed_variables": [],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD101",
+          "data": {
+            "order_status": "CANCELLED",
+            "payment_result": "FAILED"
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "order_status",
+            "partition": "IN_DOMAIN"
+          },
+          "target_variable": "order_status",
+          "changed_variables": [
+            "order_status"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "order_status == \"CONFIRMED\""
+            ],
+            "verified": [
+              "order_status == \"CONFIRMED\""
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD102",
+          "data": {
+            "order_status": "PAID",
+            "payment_result": "FAILED"
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "order_status",
+            "partition": "IN_DOMAIN"
+          },
+          "target_variable": "order_status",
+          "changed_variables": [
+            "order_status"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "order_status == \"CONFIRMED\""
+            ],
+            "verified": [
+              "order_status == \"CONFIRMED\""
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD103",
+          "data": {
+            "order_status": "PENDING_CONFIRMATION",
+            "payment_result": "FAILED"
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "order_status",
+            "partition": "IN_DOMAIN"
+          },
+          "target_variable": "order_status",
+          "changed_variables": [
+            "order_status"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "order_status == \"CONFIRMED\""
+            ],
+            "verified": [
+              "order_status == \"CONFIRMED\""
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD104",
+          "data": {
+            "order_status": "__OUT_OF_DOMAIN__",
+            "payment_result": "FAILED"
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "order_status",
+            "partition": "OUT_OF_DECLARED_DOMAIN"
+          },
+          "target_variable": "order_status",
+          "changed_variables": [
+            "order_status"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "order_status == \"CONFIRMED\""
+            ],
+            "verified": [
+              "order_status == \"CONFIRMED\""
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD105",
+          "data": {
+            "order_status": "CONFIRMED",
+            "payment_result": "SUCCESS"
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "payment_result",
+            "partition": "IN_DOMAIN"
+          },
+          "target_variable": "payment_result",
+          "changed_variables": [
+            "payment_result"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "payment_result == \"FAILED\""
+            ],
+            "verified": [
+              "payment_result == \"FAILED\""
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD106",
+          "data": {
+            "order_status": "CONFIRMED",
+            "payment_result": "__OUT_OF_DOMAIN__"
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "payment_result",
+            "partition": "OUT_OF_DECLARED_DOMAIN"
+          },
+          "target_variable": "payment_result",
+          "changed_variables": [
+            "payment_result"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "payment_result == \"FAILED\""
+            ],
+            "verified": [
+              "payment_result == \"FAILED\""
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD107",
+          "data": {
+            "order_status": "CONFIRMED",
+            "payment_result": 12345
+          },
+          "expected_guard": null,
+          "expected_status": "TYPE_ERROR",
+          "technique": "EP_WRONG_TYPE",
+          "techniques": [
+            "EP_WRONG_TYPE"
+          ],
+          "partition": {
+            "variable": "payment_result",
+            "partition": "wrong_type"
+          },
+          "target_variable": "payment_result",
+          "changed_variables": [
+            "payment_result"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "TYPE_ERROR",
+            "guard_result": null
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD108",
+          "data": {
+            "order_status": "CONFIRMED",
+            "payment_result": null
+          },
+          "expected_guard": null,
+          "expected_status": "TYPE_ERROR",
+          "technique": "EP_NULL",
+          "techniques": [
+            "EP_NULL"
+          ],
+          "partition": {
+            "variable": "payment_result",
+            "partition": "null"
+          },
+          "target_variable": "payment_result",
+          "changed_variables": [
+            "payment_result"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "TYPE_ERROR",
+            "guard_result": null
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD109",
+          "data": {
+            "order_status": "CONFIRMED"
+          },
+          "expected_guard": null,
+          "expected_status": "MISSING_VARIABLE",
+          "technique": "EP_MISSING",
+          "techniques": [
+            "EP_MISSING"
+          ],
+          "partition": {
+            "variable": "payment_result",
+            "partition": "missing"
+          },
+          "target_variable": "payment_result",
+          "changed_variables": [
+            "payment_result"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "MISSING_VARIABLE",
+            "guard_result": null
+          },
+          "notes": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "transition_id": "T08",
+      "label": "T08",
+      "source_state": "PENDING_CONFIRMATION",
+      "event": "cancel_order",
+      "rule_ids": [
+        "BSR-CANCEL-01",
+        "BSR-CANCEL-02",
+        "BSR-CANCEL-03",
+        "BSR-STOCK-04",
+        "BSR-STOCK-05"
+      ],
+      "guard": {
+        "var": "order_status",
+        "op": "in",
+        "value": [
+          "PENDING_CONFIRMATION",
+          "CONFIRMED"
+        ]
+      },
+      "status": "OK",
+      "reason": null,
+      "analysis": {
+        "supported": true,
+        "reason": null,
+        "expression": "{\"op\": \"in\", \"value\": [\"PENDING_CONFIRMATION\", \"CONFIRMED\"], \"var\": \"order_status\"}",
+        "variables": [
+          {
+            "name": "order_status",
+            "type": "string",
+            "origin": "database",
+            "role": "context",
+            "domain": {
+              "kind": "enum",
+              "values": [
+                "PENDING_CONFIRMATION",
+                "CONFIRMED",
+                "PAID",
+                "CANCELLED"
+              ],
+              "complete": true,
+              "range": "DECLARED_ALLOWED_VALUES"
+            },
+            "constraints": [
+              {
+                "condition": "order_status in [\"PENDING_CONFIRMATION\", \"CONFIRMED\"]",
+                "operator": "in",
+                "constant_bound": [
+                  "PENDING_CONFIRMATION",
+                  "CONFIRMED"
+                ],
+                "depends_on_variables": [],
+                "linear": true
+              }
+            ]
+          }
+        ],
+        "conjuncts": [
+          {
+            "index": 0,
+            "condition": "order_status in [\"PENDING_CONFIRMATION\", \"CONFIRMED\"]",
+            "variables": [
+              "order_status"
+            ]
+          }
+        ],
+        "notes": []
+      },
+      "base": {
+        "status": "SAT",
+        "mode": "context_as_hint",
+        "assignment": {
+          "order_status": "PENDING_CONFIRMATION"
+        },
+        "context_given": {},
+        "context_adjusted": [],
+        "search_nodes": 1,
+        "varied_variables": [
+          "order_status"
+        ]
+      },
+      "conjunct_notes": [],
+      "samples": [
+        {
+          "sample_id": "GD110",
+          "data": {
+            "order_status": "PENDING_CONFIRMATION"
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BASE",
+          "techniques": [
+            "BASE",
+            "EP"
+          ],
+          "partition": {
+            "description": "nominal valid assignment found by search"
+          },
+          "target_variable": null,
+          "changed_variables": [],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD111",
+          "data": {
+            "order_status": "CANCELLED"
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "order_status",
+            "partition": "IN_DOMAIN"
+          },
+          "target_variable": "order_status",
+          "changed_variables": [
+            "order_status"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "order_status in [\"PENDING_CONFIRMATION\", \"CONFIRMED\"]"
+            ],
+            "verified": [
+              "order_status in [\"PENDING_CONFIRMATION\", \"CONFIRMED\"]"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD112",
+          "data": {
+            "order_status": "CONFIRMED"
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "order_status",
+            "partition": "IN_DOMAIN"
+          },
+          "target_variable": "order_status",
+          "changed_variables": [
+            "order_status"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD113",
+          "data": {
+            "order_status": "PAID"
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "order_status",
+            "partition": "IN_DOMAIN"
+          },
+          "target_variable": "order_status",
+          "changed_variables": [
+            "order_status"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "order_status in [\"PENDING_CONFIRMATION\", \"CONFIRMED\"]"
+            ],
+            "verified": [
+              "order_status in [\"PENDING_CONFIRMATION\", \"CONFIRMED\"]"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD114",
+          "data": {
+            "order_status": "__OUT_OF_DOMAIN__"
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "order_status",
+            "partition": "OUT_OF_DECLARED_DOMAIN"
+          },
+          "target_variable": "order_status",
+          "changed_variables": [
+            "order_status"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "order_status in [\"PENDING_CONFIRMATION\", \"CONFIRMED\"]"
+            ],
+            "verified": [
+              "order_status in [\"PENDING_CONFIRMATION\", \"CONFIRMED\"]"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "transition_id": "T09",
+      "label": "T09",
+      "source_state": "CONFIRMED",
+      "event": "cancel_order",
+      "rule_ids": [
+        "BSR-CANCEL-01",
+        "BSR-CANCEL-02",
+        "BSR-CANCEL-03",
+        "BSR-STOCK-04",
+        "BSR-STOCK-05"
+      ],
+      "guard": {
+        "var": "order_status",
+        "op": "in",
+        "value": [
+          "PENDING_CONFIRMATION",
+          "CONFIRMED"
+        ]
+      },
+      "status": "OK",
+      "reason": null,
+      "analysis": {
+        "supported": true,
+        "reason": null,
+        "expression": "{\"op\": \"in\", \"value\": [\"PENDING_CONFIRMATION\", \"CONFIRMED\"], \"var\": \"order_status\"}",
+        "variables": [
+          {
+            "name": "order_status",
+            "type": "string",
+            "origin": "database",
+            "role": "context",
+            "domain": {
+              "kind": "enum",
+              "values": [
+                "PENDING_CONFIRMATION",
+                "CONFIRMED",
+                "PAID",
+                "CANCELLED"
+              ],
+              "complete": true,
+              "range": "DECLARED_ALLOWED_VALUES"
+            },
+            "constraints": [
+              {
+                "condition": "order_status in [\"PENDING_CONFIRMATION\", \"CONFIRMED\"]",
+                "operator": "in",
+                "constant_bound": [
+                  "PENDING_CONFIRMATION",
+                  "CONFIRMED"
+                ],
+                "depends_on_variables": [],
+                "linear": true
+              }
+            ]
+          }
+        ],
+        "conjuncts": [
+          {
+            "index": 0,
+            "condition": "order_status in [\"PENDING_CONFIRMATION\", \"CONFIRMED\"]",
+            "variables": [
+              "order_status"
+            ]
+          }
+        ],
+        "notes": []
+      },
+      "base": {
+        "status": "SAT",
+        "mode": "context_as_hint",
+        "assignment": {
+          "order_status": "PENDING_CONFIRMATION"
+        },
+        "context_given": {},
+        "context_adjusted": [],
+        "search_nodes": 1,
+        "varied_variables": [
+          "order_status"
+        ]
+      },
+      "conjunct_notes": [],
+      "samples": [
+        {
+          "sample_id": "GD115",
+          "data": {
+            "order_status": "PENDING_CONFIRMATION"
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "BASE",
+          "techniques": [
+            "BASE",
+            "EP"
+          ],
+          "partition": {
+            "description": "nominal valid assignment found by search"
+          },
+          "target_variable": null,
+          "changed_variables": [],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD116",
+          "data": {
+            "order_status": "CANCELLED"
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "order_status",
+            "partition": "IN_DOMAIN"
+          },
+          "target_variable": "order_status",
+          "changed_variables": [
+            "order_status"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "order_status in [\"PENDING_CONFIRMATION\", \"CONFIRMED\"]"
+            ],
+            "verified": [
+              "order_status in [\"PENDING_CONFIRMATION\", \"CONFIRMED\"]"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD117",
+          "data": {
+            "order_status": "CONFIRMED"
+          },
+          "expected_guard": true,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "order_status",
+            "partition": "IN_DOMAIN"
+          },
+          "target_variable": "order_status",
+          "changed_variables": [
+            "order_status"
+          ],
+          "violated_conditions": {},
+          "verification_status": "VERIFIED_VALID",
+          "evaluator_verdict": {
+            "status": "GUARD_SATISFIED",
+            "guard_result": true
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD118",
+          "data": {
+            "order_status": "PAID"
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "order_status",
+            "partition": "IN_DOMAIN"
+          },
+          "target_variable": "order_status",
+          "changed_variables": [
+            "order_status"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "order_status in [\"PENDING_CONFIRMATION\", \"CONFIRMED\"]"
+            ],
+            "verified": [
+              "order_status in [\"PENDING_CONFIRMATION\", \"CONFIRMED\"]"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        },
+        {
+          "sample_id": "GD119",
+          "data": {
+            "order_status": "__OUT_OF_DOMAIN__"
+          },
+          "expected_guard": false,
+          "expected_status": null,
+          "technique": "EP",
+          "techniques": [
+            "EP"
+          ],
+          "partition": {
+            "variable": "order_status",
+            "partition": "OUT_OF_DECLARED_DOMAIN"
+          },
+          "target_variable": "order_status",
+          "changed_variables": [
+            "order_status"
+          ],
+          "violated_conditions": {
+            "predicted": [
+              "order_status in [\"PENDING_CONFIRMATION\", \"CONFIRMED\"]"
+            ],
+            "verified": [
+              "order_status in [\"PENDING_CONFIRMATION\", \"CONFIRMED\"]"
+            ],
+            "single_condition": true,
+            "prediction_matches_evaluator": true
+          },
+          "verification_status": "VERIFIED_INVALID",
+          "evaluator_verdict": {
+            "status": "GUARD_NOT_SATISFIED",
+            "guard_result": false
+          },
+          "notes": []
+        }
+      ]
+    }
+  ]
+}

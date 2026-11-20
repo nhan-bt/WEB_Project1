@@ -1,0 +1,1497 @@
+<!DOCTYPE html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Fault Detection Report</title><style>:root{--bg:#fff;--fg:#1d2430;--mut:#5b6678;--line:#d9dee7;--card:#f5f7fa;--ok:#17653a;--bad:#a1260f;--warn:#8a5a00;--acc:#1f4fa3}
+@media (prefers-color-scheme:dark){:root{--bg:#12161c;--fg:#e6eaf0;--mut:#9aa6b8;--line:#2b3340;--card:#1a2029;--ok:#6fd39a;--bad:#ff8c78;--warn:#f1c068;--acc:#8db4ff}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,Segoe UI,sans-serif}
+main{max-width:1000px;margin:0 auto;padding:24px 16px 64px}h1{font-size:1.6rem}h2{margin-top:2rem;border-bottom:1px solid var(--line);padding-bottom:.3rem}
+table{border-collapse:collapse;width:100%;margin:.6rem 0}th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}th{background:var(--card)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:.7rem 0}.mut{color:var(--mut)}
+.ok{color:var(--ok)}.bad{color:var(--bad)}.warn{color:var(--warn)}.tag{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:0 8px;font-size:.8rem}
+code,pre{font:13px/1.45 ui-monospace,Consolas,monospace}pre{white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px}
+.table-wrap{overflow-x:auto}@media(max-width:600px){main{padding:16px 12px}}</style></head><body><main><h1>Báo cáo phát hiện sai lệch logic nghiệp vụ – BShop</h1><p class="mut">Nguồn dữ liệu: <span class="tag">REAL_EXECUTION</span> · Tính lại từ <code>test_validation_results.json</code></p><h2>1. Tổng quan kết quả</h2><div class="card"><strong class="ok">Không phát hiện sai lệch logic nghiệp vụ trong phạm vi các trường hợp đã thực thi và xác minh.</strong><p class="mut">Phạm vi: 122 test case đã thực thi; 49 chưa thực thi, 0 chưa kết luận được. PASS không có nghĩa hệ thống an toàn tuyệt đối.</p></div><h2>2. Thống kê test case</h2><div class="table-wrap"><table><thead><tr><th>Trạng thái</th><th>Số lượng</th></tr></thead><tbody><tr><td>Tổng</td><td>171</td></tr><tr><td>PASS</td><td>122</td></tr><tr><td>FAIL</td><td>0</td></tr><tr><td>SKIPPED (chưa kiểm chứng)</td><td>49</td></tr><tr><td>INCONCLUSIVE</td><td>0</td></tr></tbody></table></div><h2>3. Thống kê assertion</h2><div class="table-wrap"><table><thead><tr><th>Tổng</th><th>Đã đánh giá</th><th>PASS</th><th>FAIL</th><th>Không thể đánh giá</th></tr></thead><tbody><tr><td>6431</td><td>6431</td><td>6431</td><td>0</td><td>0</td></tr></tbody></table></div><p>Ba chỉ số khác nhau: <strong>0</strong> assertion FAIL, <strong>0</strong> test case FAIL, <strong>0</strong> finding sau khi gộp trùng lặp.</p><h2>4. Độ bao phủ</h2><div class="table-wrap"><table><thead><tr><th>Chỉ số</th><th>Thực thi</th><th>Chưa thực thi</th></tr></thead><tbody><tr><td>Trạng thái</td><td>5/5</td><td>-</td></tr><tr><td>Transition</td><td>10/10</td><td>-</td></tr><tr><td>Negative transition</td><td>20/20</td><td>-</td></tr><tr><td>Cặp transition (theo mô hình)</td><td>21/28</td><td>T01&gt;T10, T02&gt;T10, T03&gt;T10, T10&gt;T02, T10&gt;T03, T10&gt;T04, T10&gt;T10</td></tr><tr><td>Rule xác minh bằng PASS</td><td>26/26</td><td>-</td></tr></tbody></table></div><p class="mut">Độ bao phủ cấu trúc, khả thi và thực thi là ba khái niệm khác nhau; bao phủ transition không đồng nghĩa bảo mật nghiệp vụ đầy đủ.</p><h2>5. Phân loại lỗi theo hai nhóm nghiên cứu</h2><div class="table-wrap"><table><thead><tr><th>Nhóm</th><th>Số finding</th></tr></thead><tbody><tr><td>LIMITS_AUTHORIZATION</td><td>0</td></tr><tr><td>STATE_RESOURCE_LIFECYCLE</td><td>0</td></tr><tr><td>UNCLASSIFIED</td><td>0</td></tr></tbody></table></div><p class="mut">BShop không triển khai xác thực/phân quyền theo người dùng (quy tắc BSR-AUTH-01 bị loại khỏi phạm vi: không áp dụng). Vì vậy nhóm LIMITS_AUTHORIZATION chỉ phản ánh giới hạn và ràng buộc nghiệp vụ; không có finding nào được gắn nhãn lỗi ownership hay authentication.</p><h2>6. Mức độ nghiêm trọng</h2><div class="table-wrap"><table><thead><tr><th>Severity</th><th>Số finding</th></tr></thead><tbody><tr><td>CRITICAL</td><td>0</td></tr><tr><td>HIGH</td><td>0</td></tr><tr><td>MEDIUM</td><td>0</td></tr><tr><td>LOW</td><td>0</td></tr><tr><td>INFO</td><td>0</td></tr><tr><td>UNDETERMINED</td><td>0</td></tr></tbody></table></div><h2>7. Findings thực tế và bằng chứng</h2><div class="card ok">Không phát hiện sai lệch logic nghiệp vụ trong phạm vi các trường hợp đã thực thi và xác minh.</div><h2>8. Fault injection <span class='tag'>SYNTHETIC_INJECTION</span></h2><p class="warn">Lỗi cài đặt có chủ đích vào bản sao dữ liệu thực thi; KHÔNG phải lỗ hổng của BShop.</p><div class="table-wrap"><table><thead><tr><th>ID</th><th>Kịch bản</th><th>Test case</th><th>Phát hiện</th><th>Đúng nhãn</th><th>Đúng nhóm</th><th>Severity</th></tr></thead><tbody><tr><td>FI01</td><td>Hủy đơn đã thanh toán (PAID → CANCELLED)</td><td>TC110</td><td>có</td><td>có</td><td>có</td><td>HIGH, MEDIUM</td></tr><tr><td>FI02</td><td>Thanh toán lại đơn đã PAID thành công</td><td>TC109</td><td>có</td><td>có</td><td>có</td><td>HIGH</td></tr><tr><td>FI03</td><td>Hủy hai lần làm tồn kho được hoàn hai lần</td><td>TC111</td><td>có</td><td>có</td><td>có</td><td>HIGH</td></tr><tr><td>FI04</td><td>Chấp nhận số lượng vượt tồn kho</td><td>TC104</td><td>có</td><td>có</td><td>có</td><td>MEDIUM</td></tr><tr><td>FI05</td><td>Thanh toán thất bại nhưng đơn chuyển PAID</td><td>TC006</td><td>có</td><td>có</td><td>có</td><td>HIGH</td></tr><tr><td>FI06</td><td>Mã từ chối hợp lệ nhưng dữ liệu vẫn bị thay đổi</td><td>TC103</td><td>có</td><td>có</td><td>có</td><td>MEDIUM</td></tr></tbody></table></div><div class="card"><h3>FI01-001 – HTTP_STATUS_MISMATCH tại NT08 (order_status == PAID): HTTP</h3><p><span class="tag">SYNTHETIC_INJECTION</span> <span class="tag">STATE_RESOURCE_LIFECYCLE</span> <span class="tag">HTTP_STATUS_MISMATCH</span> <span class="tag">severity LOW</span> <span class="tag">confidence MEDIUM</span></p><p class="mut">Cơ sở phân loại: negative_category=INVALID_STATE_TRANSITION · Severity: tổng điểm = unauthorized_operation_accepted:0 + impact:0 + rule_severity:2 + persisted_state_or_data_change:0 + reproducible_in_multiple_cases:0</p><p>Transition T08; negative NT08; rule BSR-CANCEL-01, BSR-CANCEL-02; 1 assertion FAIL / 1 test case</p><ul><li>TC110 / S5.HTTP: expected <code>409</code> — actual <code>200</code></li></ul><details><summary>Bằng chứng</summary><pre>{
+ &quot;expected_ref&quot;: {
+  &quot;step_no&quot;: 5,
+  &quot;test_case_id&quot;: &quot;TC110&quot;
+ },
+ &quot;observed_state_after&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [
+   {
+    &quot;id&quot;: 1,
+    &quot;items&quot;: [
+     {
+      &quot;product_id&quot;: 1,
+      &quot;quantity&quot;: 2,
+      &quot;subtotal&quot;: 300000,
+      &quot;unit_price&quot;: 150000
+     }
+    ],
+    &quot;payment_method&quot;: &quot;MOCK&quot;,
+    &quot;status&quot;: &quot;CANCELLED&quot;,
+    &quot;total_amount&quot;: 300000
+   }
+  ],
+  &quot;payments&quot;: [
+   {
+    &quot;amount&quot;: 300000,
+    &quot;id&quot;: 1,
+    &quot;order_id&quot;: 1,
+    &quot;result&quot;: &quot;SUCCESS&quot;
+   }
+  ],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 8,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;observed_state_before&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [
+   {
+    &quot;id&quot;: 1,
+    &quot;items&quot;: [
+     {
+      &quot;product_id&quot;: 1,
+      &quot;quantity&quot;: 2,
+      &quot;subtotal&quot;: 300000,
+      &quot;unit_price&quot;: 150000
+     }
+    ],
+    &quot;payment_method&quot;: &quot;MOCK&quot;,
+    &quot;status&quot;: &quot;PAID&quot;,
+    &quot;total_amount&quot;: 300000
+   }
+  ],
+  &quot;payments&quot;: [
+   {
+    &quot;amount&quot;: 300000,
+    &quot;id&quot;: 1,
+    &quot;order_id&quot;: 1,
+    &quot;result&quot;: &quot;SUCCESS&quot;
+   }
+  ],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 8,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;request&quot;: {
+  &quot;body&quot;: {},
+  &quot;method&quot;: &quot;POST&quot;,
+  &quot;path_template&quot;: &quot;/api/orders/{order_id}/cancel&quot;,
+  &quot;url&quot;: &quot;/api/orders/1/cancel&quot;
+ },
+ &quot;response&quot;: {
+  &quot;status_class&quot;: &quot;2xx&quot;,
+  &quot;status_code&quot;: 200
+ }
+}</pre></details></div><div class="card"><h3>FI01-002 – INVALID_STATE_TRANSITION tại NT08 (order_status == PAID): REJECTED</h3><p><span class="tag">SYNTHETIC_INJECTION</span> <span class="tag">STATE_RESOURCE_LIFECYCLE</span> <span class="tag">INVALID_STATE_TRANSITION</span> <span class="tag">severity HIGH</span> <span class="tag">confidence HIGH</span></p><p class="mut">Cơ sở phân loại: validator_category=INVALID_STATE_TRANSITION · Severity: tổng điểm = unauthorized_operation_accepted:2 + impact:2 + rule_severity:2 + persisted_state_or_data_change:0 + reproducible_in_multiple_cases:0</p><p>Transition T08; negative NT08; rule BSR-CANCEL-01, BSR-CANCEL-02; 1 assertion FAIL / 1 test case</p><ul><li>TC110 / S5.REJECTED: expected <code>{&quot;accepted&quot;: false}</code> — actual <code>{&quot;accepted&quot;: true, &quot;http_status&quot;: 200}</code></li></ul><details><summary>Bằng chứng</summary><pre>{
+ &quot;expected_ref&quot;: {
+  &quot;step_no&quot;: 5,
+  &quot;test_case_id&quot;: &quot;TC110&quot;
+ },
+ &quot;observed_state_after&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [
+   {
+    &quot;id&quot;: 1,
+    &quot;items&quot;: [
+     {
+      &quot;product_id&quot;: 1,
+      &quot;quantity&quot;: 2,
+      &quot;subtotal&quot;: 300000,
+      &quot;unit_price&quot;: 150000
+     }
+    ],
+    &quot;payment_method&quot;: &quot;MOCK&quot;,
+    &quot;status&quot;: &quot;CANCELLED&quot;,
+    &quot;total_amount&quot;: 300000
+   }
+  ],
+  &quot;payments&quot;: [
+   {
+    &quot;amount&quot;: 300000,
+    &quot;id&quot;: 1,
+    &quot;order_id&quot;: 1,
+    &quot;result&quot;: &quot;SUCCESS&quot;
+   }
+  ],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 8,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;observed_state_before&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [
+   {
+    &quot;id&quot;: 1,
+    &quot;items&quot;: [
+     {
+      &quot;product_id&quot;: 1,
+      &quot;quantity&quot;: 2,
+      &quot;subtotal&quot;: 300000,
+      &quot;unit_price&quot;: 150000
+     }
+    ],
+    &quot;payment_method&quot;: &quot;MOCK&quot;,
+    &quot;status&quot;: &quot;PAID&quot;,
+    &quot;total_amount&quot;: 300000
+   }
+  ],
+  &quot;payments&quot;: [
+   {
+    &quot;amount&quot;: 300000,
+    &quot;id&quot;: 1,
+    &quot;order_id&quot;: 1,
+    &quot;result&quot;: &quot;SUCCESS&quot;
+   }
+  ],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 8,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;request&quot;: {
+  &quot;body&quot;: {},
+  &quot;method&quot;: &quot;POST&quot;,
+  &quot;path_template&quot;: &quot;/api/orders/{order_id}/cancel&quot;,
+  &quot;url&quot;: &quot;/api/orders/1/cancel&quot;
+ },
+ &quot;response&quot;: {
+  &quot;status_class&quot;: &quot;2xx&quot;,
+  &quot;status_code&quot;: 200
+ }
+}</pre></details></div><div class="card"><h3>FI01-003 – INVALID_STATE_TRANSITION tại NT08 (order_status == PAID): STATE</h3><p><span class="tag">SYNTHETIC_INJECTION</span> <span class="tag">STATE_RESOURCE_LIFECYCLE</span> <span class="tag">INVALID_STATE_TRANSITION</span> <span class="tag">severity MEDIUM</span> <span class="tag">confidence HIGH</span></p><p class="mut">Cơ sở phân loại: validator_category=INVALID_STATE_TRANSITION · Severity: tổng điểm = unauthorized_operation_accepted:0 + impact:2 + rule_severity:2 + persisted_state_or_data_change:1 + reproducible_in_multiple_cases:0</p><p>Transition T08; negative NT08; rule BSR-CANCEL-01, BSR-CANCEL-02; 1 assertion FAIL / 1 test case</p><ul><li>TC110 / S5.STATE: expected <code>{&quot;order_status&quot;: {&quot;1&quot;: &quot;PAID&quot;}, &quot;state_after&quot;: &quot;PAID&quot;, &quot;state_unchanged&quot;: true}</code> — actual <code>{&quot;order_status&quot;: {&quot;1&quot;: &quot;CANCELLED&quot;}}</code></li></ul><details><summary>Bằng chứng</summary><pre>{
+ &quot;expected_ref&quot;: {
+  &quot;step_no&quot;: 5,
+  &quot;test_case_id&quot;: &quot;TC110&quot;
+ },
+ &quot;observed_state_after&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [
+   {
+    &quot;id&quot;: 1,
+    &quot;items&quot;: [
+     {
+      &quot;product_id&quot;: 1,
+      &quot;quantity&quot;: 2,
+      &quot;subtotal&quot;: 300000,
+      &quot;unit_price&quot;: 150000
+     }
+    ],
+    &quot;payment_method&quot;: &quot;MOCK&quot;,
+    &quot;status&quot;: &quot;CANCELLED&quot;,
+    &quot;total_amount&quot;: 300000
+   }
+  ],
+  &quot;payments&quot;: [
+   {
+    &quot;amount&quot;: 300000,
+    &quot;id&quot;: 1,
+    &quot;order_id&quot;: 1,
+    &quot;result&quot;: &quot;SUCCESS&quot;
+   }
+  ],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 8,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;observed_state_before&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [
+   {
+    &quot;id&quot;: 1,
+    &quot;items&quot;: [
+     {
+      &quot;product_id&quot;: 1,
+      &quot;quantity&quot;: 2,
+      &quot;subtotal&quot;: 300000,
+      &quot;unit_price&quot;: 150000
+     }
+    ],
+    &quot;payment_method&quot;: &quot;MOCK&quot;,
+    &quot;status&quot;: &quot;PAID&quot;,
+    &quot;total_amount&quot;: 300000
+   }
+  ],
+  &quot;payments&quot;: [
+   {
+    &quot;amount&quot;: 300000,
+    &quot;id&quot;: 1,
+    &quot;order_id&quot;: 1,
+    &quot;result&quot;: &quot;SUCCESS&quot;
+   }
+  ],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 8,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;request&quot;: {
+  &quot;body&quot;: {},
+  &quot;method&quot;: &quot;POST&quot;,
+  &quot;path_template&quot;: &quot;/api/orders/{order_id}/cancel&quot;,
+  &quot;url&quot;: &quot;/api/orders/1/cancel&quot;
+ },
+ &quot;response&quot;: {
+  &quot;status_class&quot;: &quot;2xx&quot;,
+  &quot;status_code&quot;: 200
+ }
+}</pre></details></div><div class="card"><h3>FI01-004 – INVARIANT_VIOLATION tại NT08 (order_status == PAID): INV-06</h3><p><span class="tag">SYNTHETIC_INJECTION</span> <span class="tag">STATE_RESOURCE_LIFECYCLE</span> <span class="tag">INVARIANT_VIOLATION</span> <span class="tag">severity MEDIUM</span> <span class="tag">confidence HIGH</span></p><p class="mut">Cơ sở phân loại: negative_category=INVALID_STATE_TRANSITION · Severity: tổng điểm = unauthorized_operation_accepted:0 + impact:2 + rule_severity:2 + persisted_state_or_data_change:1 + reproducible_in_multiple_cases:0</p><p>Transition T08; negative NT08; rule BSR-CANCEL-01, BSR-CANCEL-02; 1 assertion FAIL / 1 test case</p><ul><li>TC110 / INV-06: expected <code>&quot;order_status == PAID =&gt; cancel rejected&quot;</code> — actual <code>{&quot;negative_transition_rejected_with_state_unchanged&quot;: false}</code></li></ul><details><summary>Bằng chứng</summary><pre>{
+ &quot;expected_ref&quot;: {
+  &quot;step_no&quot;: 5,
+  &quot;test_case_id&quot;: &quot;TC110&quot;
+ },
+ &quot;observed_state_after&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [
+   {
+    &quot;id&quot;: 1,
+    &quot;items&quot;: [
+     {
+      &quot;product_id&quot;: 1,
+      &quot;quantity&quot;: 2,
+      &quot;subtotal&quot;: 300000,
+      &quot;unit_price&quot;: 150000
+     }
+    ],
+    &quot;payment_method&quot;: &quot;MOCK&quot;,
+    &quot;status&quot;: &quot;CANCELLED&quot;,
+    &quot;total_amount&quot;: 300000
+   }
+  ],
+  &quot;payments&quot;: [
+   {
+    &quot;amount&quot;: 300000,
+    &quot;id&quot;: 1,
+    &quot;order_id&quot;: 1,
+    &quot;result&quot;: &quot;SUCCESS&quot;
+   }
+  ],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 8,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;observed_state_before&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [
+   {
+    &quot;id&quot;: 1,
+    &quot;items&quot;: [
+     {
+      &quot;product_id&quot;: 1,
+      &quot;quantity&quot;: 2,
+      &quot;subtotal&quot;: 300000,
+      &quot;unit_price&quot;: 150000
+     }
+    ],
+    &quot;payment_method&quot;: &quot;MOCK&quot;,
+    &quot;status&quot;: &quot;PAID&quot;,
+    &quot;total_amount&quot;: 300000
+   }
+  ],
+  &quot;payments&quot;: [
+   {
+    &quot;amount&quot;: 300000,
+    &quot;id&quot;: 1,
+    &quot;order_id&quot;: 1,
+    &quot;result&quot;: &quot;SUCCESS&quot;
+   }
+  ],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 8,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;request&quot;: {
+  &quot;body&quot;: {},
+  &quot;method&quot;: &quot;POST&quot;,
+  &quot;path_template&quot;: &quot;/api/orders/{order_id}/cancel&quot;,
+  &quot;url&quot;: &quot;/api/orders/1/cancel&quot;
+ },
+ &quot;response&quot;: {
+  &quot;status_class&quot;: &quot;2xx&quot;,
+  &quot;status_code&quot;: 200
+ }
+}</pre></details></div><div class="card"><h3>FI01-005 – RESOURCE_LIFECYCLE_VIOLATION tại NT08 (order_status == PAID): orders.status của các đơn hiện có không đổi; không có đơn mới</h3><p><span class="tag">SYNTHETIC_INJECTION</span> <span class="tag">STATE_RESOURCE_LIFECYCLE</span> <span class="tag">RESOURCE_LIFECYCLE_VIOLATION</span> <span class="tag">severity HIGH</span> <span class="tag">confidence HIGH</span></p><p class="mut">Cơ sở phân loại: validator_category=RESOURCE_LIFECYCLE_VIOLATION · Severity: tổng điểm = unauthorized_operation_accepted:0 + impact:3 + rule_severity:2 + persisted_state_or_data_change:1 + reproducible_in_multiple_cases:0</p><p>Transition T08; negative NT08; rule BSR-CANCEL-01, BSR-CANCEL-02, BSR-CART-01, BSR-CART-02, BSR-CART-03, BSR-ORDER-01, BSR-ORDER-02, BSR-ORDER-03, BSR-ORDER-04, BSR-ORDER-05, BSR-ORDER-06, BSR-PAYMENT-01, BSR-PAYMENT-02, BSR-PAYMENT-04, BSR-PAYMENT-06, BSR-PAYMENT-07, BSR-STOCK-01, BSR-STOCK-02, BSR-STOCK-03; 1 assertion FAIL / 1 test case</p><ul><li>TC110 / A7: expected <code>{&quot;1&quot;: {&quot;items&quot;: [[1, 2, 150000]], &quot;status&quot;: &quot;PAID&quot;, &quot;total&quot;: 300000}}</code> — actual <code>{&quot;1&quot;: {&quot;items&quot;: [[1, 2, 150000]], &quot;status&quot;: &quot;CANCELLED&quot;, &quot;total&quot;: 300000}}</code></li></ul><details><summary>Bằng chứng</summary><pre>{
+ &quot;expected_ref&quot;: {
+  &quot;step_no&quot;: 5,
+  &quot;test_case_id&quot;: &quot;TC110&quot;
+ },
+ &quot;observed_state_after&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [
+   {
+    &quot;id&quot;: 1,
+    &quot;items&quot;: [
+     {
+      &quot;product_id&quot;: 1,
+      &quot;quantity&quot;: 2,
+      &quot;subtotal&quot;: 300000,
+      &quot;unit_price&quot;: 150000
+     }
+    ],
+    &quot;payment_method&quot;: &quot;MOCK&quot;,
+    &quot;status&quot;: &quot;CANCELLED&quot;,
+    &quot;total_amount&quot;: 300000
+   }
+  ],
+  &quot;payments&quot;: [
+   {
+    &quot;amount&quot;: 300000,
+    &quot;id&quot;: 1,
+    &quot;order_id&quot;: 1,
+    &quot;result&quot;: &quot;SUCCESS&quot;
+   }
+  ],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 8,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;observed_state_before&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [
+   {
+    &quot;id&quot;: 1,
+    &quot;items&quot;: [
+     {
+      &quot;product_id&quot;: 1,
+      &quot;quantity&quot;: 2,
+      &quot;subtotal&quot;: 300000,
+      &quot;unit_price&quot;: 150000
+     }
+    ],
+    &quot;payment_method&quot;: &quot;MOCK&quot;,
+    &quot;status&quot;: &quot;PAID&quot;,
+    &quot;total_amount&quot;: 300000
+   }
+  ],
+  &quot;payments&quot;: [
+   {
+    &quot;amount&quot;: 300000,
+    &quot;id&quot;: 1,
+    &quot;order_id&quot;: 1,
+    &quot;result&quot;: &quot;SUCCESS&quot;
+   }
+  ],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 8,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;request&quot;: {
+  &quot;body&quot;: {},
+  &quot;method&quot;: &quot;POST&quot;,
+  &quot;path_template&quot;: &quot;/api/orders/{order_id}/cancel&quot;,
+  &quot;url&quot;: &quot;/api/orders/1/cancel&quot;
+ },
+ &quot;response&quot;: {
+  &quot;status_class&quot;: &quot;2xx&quot;,
+  &quot;status_code&quot;: 200
+ }
+}</pre></details></div><div class="card"><h3>FI02-001 – HTTP_STATUS_MISMATCH tại NT07 (order_status == PAID): HTTP</h3><p><span class="tag">SYNTHETIC_INJECTION</span> <span class="tag">STATE_RESOURCE_LIFECYCLE</span> <span class="tag">HTTP_STATUS_MISMATCH</span> <span class="tag">severity LOW</span> <span class="tag">confidence MEDIUM</span></p><p class="mut">Cơ sở phân loại: negative_category=INVALID_STATE_TRANSITION · Severity: tổng điểm = unauthorized_operation_accepted:0 + impact:0 + rule_severity:2 + persisted_state_or_data_change:0 + reproducible_in_multiple_cases:0</p><p>Transition T06; negative NT07; rule BSR-PAYMENT-05; 1 assertion FAIL / 1 test case</p><ul><li>TC109 / S5.HTTP: expected <code>409</code> — actual <code>200</code></li></ul><details><summary>Bằng chứng</summary><pre>{
+ &quot;expected_ref&quot;: {
+  &quot;step_no&quot;: 5,
+  &quot;test_case_id&quot;: &quot;TC109&quot;
+ },
+ &quot;observed_state_after&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [
+   {
+    &quot;id&quot;: 1,
+    &quot;items&quot;: [
+     {
+      &quot;product_id&quot;: 1,
+      &quot;quantity&quot;: 2,
+      &quot;subtotal&quot;: 300000,
+      &quot;unit_price&quot;: 150000
+     }
+    ],
+    &quot;payment_method&quot;: &quot;MOCK&quot;,
+    &quot;status&quot;: &quot;PAID&quot;,
+    &quot;total_amount&quot;: 300000
+   }
+  ],
+  &quot;payments&quot;: [
+   {
+    &quot;amount&quot;: 300000,
+    &quot;id&quot;: 1,
+    &quot;order_id&quot;: 1,
+    &quot;result&quot;: &quot;SUCCESS&quot;
+   },
+   {
+    &quot;amount&quot;: 300000,
+    &quot;id&quot;: 1001,
+    &quot;order_id&quot;: 1,
+    &quot;result&quot;: &quot;SUCCESS&quot;
+   }
+  ],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 8,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;observed_state_before&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [
+   {
+    &quot;id&quot;: 1,
+    &quot;items&quot;: [
+     {
+      &quot;product_id&quot;: 1,
+      &quot;quantity&quot;: 2,
+      &quot;subtotal&quot;: 300000,
+      &quot;unit_price&quot;: 150000
+     }
+    ],
+    &quot;payment_method&quot;: &quot;MOCK&quot;,
+    &quot;status&quot;: &quot;PAID&quot;,
+    &quot;total_amount&quot;: 300000
+   }
+  ],
+  &quot;payments&quot;: [
+   {
+    &quot;amount&quot;: 300000,
+    &quot;id&quot;: 1,
+    &quot;order_id&quot;: 1,
+    &quot;result&quot;: &quot;SUCCESS&quot;
+   }
+  ],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 8,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;request&quot;: {
+  &quot;body&quot;: {
+   &quot;simulate_result&quot;: &quot;SUCCESS&quot;
+  },
+  &quot;method&quot;: &quot;POST&quot;,
+  &quot;path_template&quot;: &quot;/api/orders/{order_id}/pay&quot;,
+  &quot;url&quot;: &quot;/api/orders/1/pay&quot;
+ },
+ &quot;response&quot;: {
+  &quot;status_class&quot;: &quot;2xx&quot;,
+  &quot;status_code&quot;: 200
+ }
+}</pre></details></div><div class="card"><h3>FI02-002 – INVALID_STATE_TRANSITION tại NT07 (order_status == PAID): REJECTED</h3><p><span class="tag">SYNTHETIC_INJECTION</span> <span class="tag">STATE_RESOURCE_LIFECYCLE</span> <span class="tag">INVALID_STATE_TRANSITION</span> <span class="tag">severity HIGH</span> <span class="tag">confidence HIGH</span></p><p class="mut">Cơ sở phân loại: validator_category=INVALID_STATE_TRANSITION · Severity: tổng điểm = unauthorized_operation_accepted:2 + impact:3 + rule_severity:2 + persisted_state_or_data_change:0 + reproducible_in_multiple_cases:0</p><p>Transition T06; negative NT07; rule BSR-PAYMENT-05; 1 assertion FAIL / 1 test case</p><ul><li>TC109 / S5.REJECTED: expected <code>{&quot;accepted&quot;: false}</code> — actual <code>{&quot;accepted&quot;: true, &quot;http_status&quot;: 200}</code></li></ul><details><summary>Bằng chứng</summary><pre>{
+ &quot;expected_ref&quot;: {
+  &quot;step_no&quot;: 5,
+  &quot;test_case_id&quot;: &quot;TC109&quot;
+ },
+ &quot;observed_state_after&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [
+   {
+    &quot;id&quot;: 1,
+    &quot;items&quot;: [
+     {
+      &quot;product_id&quot;: 1,
+      &quot;quantity&quot;: 2,
+      &quot;subtotal&quot;: 300000,
+      &quot;unit_price&quot;: 150000
+     }
+    ],
+    &quot;payment_method&quot;: &quot;MOCK&quot;,
+    &quot;status&quot;: &quot;PAID&quot;,
+    &quot;total_amount&quot;: 300000
+   }
+  ],
+  &quot;payments&quot;: [
+   {
+    &quot;amount&quot;: 300000,
+    &quot;id&quot;: 1,
+    &quot;order_id&quot;: 1,
+    &quot;result&quot;: &quot;SUCCESS&quot;
+   },
+   {
+    &quot;amount&quot;: 300000,
+    &quot;id&quot;: 1001,
+    &quot;order_id&quot;: 1,
+    &quot;result&quot;: &quot;SUCCESS&quot;
+   }
+  ],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 8,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;observed_state_before&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [
+   {
+    &quot;id&quot;: 1,
+    &quot;items&quot;: [
+     {
+      &quot;product_id&quot;: 1,
+      &quot;quantity&quot;: 2,
+      &quot;subtotal&quot;: 300000,
+      &quot;unit_price&quot;: 150000
+     }
+    ],
+    &quot;payment_method&quot;: &quot;MOCK&quot;,
+    &quot;status&quot;: &quot;PAID&quot;,
+    &quot;total_amount&quot;: 300000
+   }
+  ],
+  &quot;payments&quot;: [
+   {
+    &quot;amount&quot;: 300000,
+    &quot;id&quot;: 1,
+    &quot;order_id&quot;: 1,
+    &quot;result&quot;: &quot;SUCCESS&quot;
+   }
+  ],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 8,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;request&quot;: {
+  &quot;body&quot;: {
+   &quot;simulate_result&quot;: &quot;SUCCESS&quot;
+  },
+  &quot;method&quot;: &quot;POST&quot;,
+  &quot;path_template&quot;: &quot;/api/orders/{order_id}/pay&quot;,
+  &quot;url&quot;: &quot;/api/orders/1/pay&quot;
+ },
+ &quot;response&quot;: {
+  &quot;status_class&quot;: &quot;2xx&quot;,
+  &quot;status_code&quot;: 200
+ }
+}</pre></details></div><div class="card"><h3>FI02-003 – INVARIANT_VIOLATION tại NT07 (order_status == PAID): INV-08</h3><p><span class="tag">SYNTHETIC_INJECTION</span> <span class="tag">STATE_RESOURCE_LIFECYCLE</span> <span class="tag">INVARIANT_VIOLATION</span> <span class="tag">severity HIGH</span> <span class="tag">confidence HIGH</span></p><p class="mut">Cơ sở phân loại: negative_category=INVALID_STATE_TRANSITION · Severity: tổng điểm = unauthorized_operation_accepted:0 + impact:3 + rule_severity:2 + persisted_state_or_data_change:1 + reproducible_in_multiple_cases:0</p><p>Transition T06; negative NT07; rule BSR-PAYMENT-01, BSR-PAYMENT-04, BSR-PAYMENT-05; 1 assertion FAIL / 1 test case</p><ul><li>TC109 / INV-08: expected <code>&quot;pay allowed only when order_status == CONFIRMED&quot;</code> — actual <code>{&quot;negative_transition_rejected_with_state_unchanged&quot;: false}</code></li></ul><details><summary>Bằng chứng</summary><pre>{
+ &quot;expected_ref&quot;: {
+  &quot;step_no&quot;: 5,
+  &quot;test_case_id&quot;: &quot;TC109&quot;
+ },
+ &quot;observed_state_after&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [
+   {
+    &quot;id&quot;: 1,
+    &quot;items&quot;: [
+     {
+      &quot;product_id&quot;: 1,
+      &quot;quantity&quot;: 2,
+      &quot;subtotal&quot;: 300000,
+      &quot;unit_price&quot;: 150000
+     }
+    ],
+    &quot;payment_method&quot;: &quot;MOCK&quot;,
+    &quot;status&quot;: &quot;PAID&quot;,
+    &quot;total_amount&quot;: 300000
+   }
+  ],
+  &quot;payments&quot;: [
+   {
+    &quot;amount&quot;: 300000,
+    &quot;id&quot;: 1,
+    &quot;order_id&quot;: 1,
+    &quot;result&quot;: &quot;SUCCESS&quot;
+   },
+   {
+    &quot;amount&quot;: 300000,
+    &quot;id&quot;: 1001,
+    &quot;order_id&quot;: 1,
+    &quot;result&quot;: &quot;SUCCESS&quot;
+   }
+  ],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 8,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;observed_state_before&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [
+   {
+    &quot;id&quot;: 1,
+    &quot;items&quot;: [
+     {
+      &quot;product_id&quot;: 1,
+      &quot;quantity&quot;: 2,
+      &quot;subtotal&quot;: 300000,
+      &quot;unit_price&quot;: 150000
+     }
+    ],
+    &quot;payment_method&quot;: &quot;MOCK&quot;,
+    &quot;status&quot;: &quot;PAID&quot;,
+    &quot;total_amount&quot;: 300000
+   }
+  ],
+  &quot;payments&quot;: [
+   {
+    &quot;amount&quot;: 300000,
+    &quot;id&quot;: 1,
+    &quot;order_id&quot;: 1,
+    &quot;result&quot;: &quot;SUCCESS&quot;
+   }
+  ],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 8,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;request&quot;: {
+  &quot;body&quot;: {
+   &quot;simulate_result&quot;: &quot;SUCCESS&quot;
+  },
+  &quot;method&quot;: &quot;POST&quot;,
+  &quot;path_template&quot;: &quot;/api/orders/{order_id}/pay&quot;,
+  &quot;url&quot;: &quot;/api/orders/1/pay&quot;
+ },
+ &quot;response&quot;: {
+  &quot;status_class&quot;: &quot;2xx&quot;,
+  &quot;status_code&quot;: 200
+ }
+}</pre></details></div><div class="card"><h3>FI02-004 – PAYMENT_LIFECYCLE_VIOLATION tại NT07 (order_status == PAID): DATA.payments</h3><p><span class="tag">SYNTHETIC_INJECTION</span> <span class="tag">STATE_RESOURCE_LIFECYCLE</span> <span class="tag">PAYMENT_LIFECYCLE_VIOLATION</span> <span class="tag">severity HIGH</span> <span class="tag">confidence HIGH</span></p><p class="mut">Cơ sở phân loại: validator_category=PAYMENT_LIFECYCLE_VIOLATION · Severity: tổng điểm = unauthorized_operation_accepted:0 + impact:3 + rule_severity:2 + persisted_state_or_data_change:1 + reproducible_in_multiple_cases:0</p><p>Transition T06; negative NT07; rule BSR-PAYMENT-05; 1 assertion FAIL / 1 test case</p><ul><li>TC109 / S5.DATA.payments: expected <code>[[1, 300000, &quot;SUCCESS&quot;]]</code> — actual <code>[[1, 300000, &quot;SUCCESS&quot;], [1, 300000, &quot;SUCCESS&quot;]]</code></li></ul><details><summary>Bằng chứng</summary><pre>{
+ &quot;expected_ref&quot;: {
+  &quot;step_no&quot;: 5,
+  &quot;test_case_id&quot;: &quot;TC109&quot;
+ },
+ &quot;observed_state_after&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [
+   {
+    &quot;id&quot;: 1,
+    &quot;items&quot;: [
+     {
+      &quot;product_id&quot;: 1,
+      &quot;quantity&quot;: 2,
+      &quot;subtotal&quot;: 300000,
+      &quot;unit_price&quot;: 150000
+     }
+    ],
+    &quot;payment_method&quot;: &quot;MOCK&quot;,
+    &quot;status&quot;: &quot;PAID&quot;,
+    &quot;total_amount&quot;: 300000
+   }
+  ],
+  &quot;payments&quot;: [
+   {
+    &quot;amount&quot;: 300000,
+    &quot;id&quot;: 1,
+    &quot;order_id&quot;: 1,
+    &quot;result&quot;: &quot;SUCCESS&quot;
+   },
+   {
+    &quot;amount&quot;: 300000,
+    &quot;id&quot;: 1001,
+    &quot;order_id&quot;: 1,
+    &quot;result&quot;: &quot;SUCCESS&quot;
+   }
+  ],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 8,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;observed_state_before&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [
+   {
+    &quot;id&quot;: 1,
+    &quot;items&quot;: [
+     {
+      &quot;product_id&quot;: 1,
+      &quot;quantity&quot;: 2,
+      &quot;subtotal&quot;: 300000,
+      &quot;unit_price&quot;: 150000
+     }
+    ],
+    &quot;payment_method&quot;: &quot;MOCK&quot;,
+    &quot;status&quot;: &quot;PAID&quot;,
+    &quot;total_amount&quot;: 300000
+   }
+  ],
+  &quot;payments&quot;: [
+   {
+    &quot;amount&quot;: 300000,
+    &quot;id&quot;: 1,
+    &quot;order_id&quot;: 1,
+    &quot;result&quot;: &quot;SUCCESS&quot;
+   }
+  ],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 8,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;request&quot;: {
+  &quot;body&quot;: {
+   &quot;simulate_result&quot;: &quot;SUCCESS&quot;
+  },
+  &quot;method&quot;: &quot;POST&quot;,
+  &quot;path_template&quot;: &quot;/api/orders/{order_id}/pay&quot;,
+  &quot;url&quot;: &quot;/api/orders/1/pay&quot;
+ },
+ &quot;response&quot;: {
+  &quot;status_class&quot;: &quot;2xx&quot;,
+  &quot;status_code&quot;: 200
+ }
+}</pre></details></div><div class="card"><h3>FI02-005 – PAYMENT_LIFECYCLE_VIOLATION tại NT07 (order_status == PAID): INV-09</h3><p><span class="tag">SYNTHETIC_INJECTION</span> <span class="tag">STATE_RESOURCE_LIFECYCLE</span> <span class="tag">PAYMENT_LIFECYCLE_VIOLATION</span> <span class="tag">severity HIGH</span> <span class="tag">confidence HIGH</span></p><p class="mut">Cơ sở phân loại: validator_category=PAYMENT_LIFECYCLE_VIOLATION · Severity: tổng điểm = unauthorized_operation_accepted:0 + impact:3 + rule_severity:2 + persisted_state_or_data_change:1 + reproducible_in_multiple_cases:0</p><p>Transition T06; negative NT07; rule BSR-PAYMENT-05; 1 assertion FAIL / 1 test case</p><ul><li>TC109 / INV-09: expected <code>&quot;successful_payment_count_per_order &lt;= 1&quot;</code> — actual <code>{&quot;violations&quot;: [{&quot;order_id&quot;: 1, &quot;step_no&quot;: 5, &quot;successful_payments&quot;: 2}]}</code></li></ul><details><summary>Bằng chứng</summary><pre>{
+ &quot;expected_ref&quot;: {
+  &quot;step_no&quot;: 5,
+  &quot;test_case_id&quot;: &quot;TC109&quot;
+ },
+ &quot;observed_state_after&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [
+   {
+    &quot;id&quot;: 1,
+    &quot;items&quot;: [
+     {
+      &quot;product_id&quot;: 1,
+      &quot;quantity&quot;: 2,
+      &quot;subtotal&quot;: 300000,
+      &quot;unit_price&quot;: 150000
+     }
+    ],
+    &quot;payment_method&quot;: &quot;MOCK&quot;,
+    &quot;status&quot;: &quot;PAID&quot;,
+    &quot;total_amount&quot;: 300000
+   }
+  ],
+  &quot;payments&quot;: [
+   {
+    &quot;amount&quot;: 300000,
+    &quot;id&quot;: 1,
+    &quot;order_id&quot;: 1,
+    &quot;result&quot;: &quot;SUCCESS&quot;
+   },
+   {
+    &quot;amount&quot;: 300000,
+    &quot;id&quot;: 1001,
+    &quot;order_id&quot;: 1,
+    &quot;result&quot;: &quot;SUCCESS&quot;
+   }
+  ],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 8,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;observed_state_before&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [
+   {
+    &quot;id&quot;: 1,
+    &quot;items&quot;: [
+     {
+      &quot;product_id&quot;: 1,
+      &quot;quantity&quot;: 2,
+      &quot;subtotal&quot;: 300000,
+      &quot;unit_price&quot;: 150000
+     }
+    ],
+    &quot;payment_method&quot;: &quot;MOCK&quot;,
+    &quot;status&quot;: &quot;PAID&quot;,
+    &quot;total_amount&quot;: 300000
+   }
+  ],
+  &quot;payments&quot;: [
+   {
+    &quot;amount&quot;: 300000,
+    &quot;id&quot;: 1,
+    &quot;order_id&quot;: 1,
+    &quot;result&quot;: &quot;SUCCESS&quot;
+   }
+  ],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 8,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;request&quot;: {
+  &quot;body&quot;: {
+   &quot;simulate_result&quot;: &quot;SUCCESS&quot;
+  },
+  &quot;method&quot;: &quot;POST&quot;,
+  &quot;path_template&quot;: &quot;/api/orders/{order_id}/pay&quot;,
+  &quot;url&quot;: &quot;/api/orders/1/pay&quot;
+ },
+ &quot;response&quot;: {
+  &quot;status_class&quot;: &quot;2xx&quot;,
+  &quot;status_code&quot;: 200
+ }
+}</pre></details></div><div class="card"><h3>FI03-001 – INVARIANT_VIOLATION tại NT09 (order_status == CANCELLED): INV-10</h3><p><span class="tag">SYNTHETIC_INJECTION</span> <span class="tag">STATE_RESOURCE_LIFECYCLE</span> <span class="tag">INVARIANT_VIOLATION</span> <span class="tag">severity MEDIUM</span> <span class="tag">confidence HIGH</span></p><p class="mut">Cơ sở phân loại: negative_category=INVALID_STATE_TRANSITION · Severity: tổng điểm = unauthorized_operation_accepted:0 + impact:2 + rule_severity:2 + persisted_state_or_data_change:1 + reproducible_in_multiple_cases:0</p><p>Transition T08; negative NT09; rule BSR-CANCEL-01, BSR-STOCK-05; 1 assertion FAIL / 1 test case</p><ul><li>TC111 / INV-10: expected <code>&quot;CANCELLED is absorbing for confirm, pay, cancel events&quot;</code> — actual <code>{&quot;negative_transition_rejected_with_state_unchanged&quot;: false}</code></li></ul><details><summary>Bằng chứng</summary><pre>{
+ &quot;expected_ref&quot;: {
+  &quot;step_no&quot;: 4,
+  &quot;test_case_id&quot;: &quot;TC111&quot;
+ },
+ &quot;observed_state_after&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [
+   {
+    &quot;id&quot;: 1,
+    &quot;items&quot;: [
+     {
+      &quot;product_id&quot;: 1,
+      &quot;quantity&quot;: 2,
+      &quot;subtotal&quot;: 300000,
+      &quot;unit_price&quot;: 150000
+     }
+    ],
+    &quot;payment_method&quot;: &quot;MOCK&quot;,
+    &quot;status&quot;: &quot;CANCELLED&quot;,
+    &quot;total_amount&quot;: 300000
+   }
+  ],
+  &quot;payments&quot;: [],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 12,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;observed_state_before&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [
+   {
+    &quot;id&quot;: 1,
+    &quot;items&quot;: [
+     {
+      &quot;product_id&quot;: 1,
+      &quot;quantity&quot;: 2,
+      &quot;subtotal&quot;: 300000,
+      &quot;unit_price&quot;: 150000
+     }
+    ],
+    &quot;payment_method&quot;: &quot;MOCK&quot;,
+    &quot;status&quot;: &quot;CANCELLED&quot;,
+    &quot;total_amount&quot;: 300000
+   }
+  ],
+  &quot;payments&quot;: [],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 10,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;request&quot;: {
+  &quot;body&quot;: {},
+  &quot;method&quot;: &quot;POST&quot;,
+  &quot;path_template&quot;: &quot;/api/orders/{order_id}/cancel&quot;,
+  &quot;url&quot;: &quot;/api/orders/1/cancel&quot;
+ },
+ &quot;response&quot;: {
+  &quot;status_class&quot;: &quot;4xx&quot;,
+  &quot;status_code&quot;: 409
+ }
+}</pre></details></div><div class="card"><h3>FI03-002 – STOCK_INTEGRITY_VIOLATION tại NT09 (order_status == CANCELLED): products.stock của mọi sản phẩm bằng ảnh chụp trước bước âm tính</h3><p><span class="tag">SYNTHETIC_INJECTION</span> <span class="tag">STATE_RESOURCE_LIFECYCLE</span> <span class="tag">STOCK_INTEGRITY_VIOLATION</span> <span class="tag">severity HIGH</span> <span class="tag">confidence HIGH</span></p><p class="mut">Cơ sở phân loại: validator_category=STOCK_INTEGRITY_VIOLATION · Severity: tổng điểm = unauthorized_operation_accepted:0 + impact:3 + rule_severity:2 + persisted_state_or_data_change:1 + reproducible_in_multiple_cases:0</p><p>Transition T08; negative NT09; rule BSR-CANCEL-01, BSR-CANCEL-02, BSR-CANCEL-03, BSR-CART-01, BSR-CART-02, BSR-CART-03, BSR-ORDER-01, BSR-ORDER-02, BSR-ORDER-03, BSR-ORDER-04, BSR-ORDER-06, BSR-STOCK-01, BSR-STOCK-02, BSR-STOCK-03, BSR-STOCK-04, BSR-STOCK-05; 1 assertion FAIL / 1 test case</p><ul><li>TC111 / A6: expected <code>{&quot;1&quot;: 10, &quot;2&quot;: 5, &quot;3&quot;: 3}</code> — actual <code>{&quot;1&quot;: 12, &quot;2&quot;: 5, &quot;3&quot;: 3}</code></li></ul><details><summary>Bằng chứng</summary><pre>{
+ &quot;expected_ref&quot;: {
+  &quot;step_no&quot;: 4,
+  &quot;test_case_id&quot;: &quot;TC111&quot;
+ },
+ &quot;observed_state_after&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [
+   {
+    &quot;id&quot;: 1,
+    &quot;items&quot;: [
+     {
+      &quot;product_id&quot;: 1,
+      &quot;quantity&quot;: 2,
+      &quot;subtotal&quot;: 300000,
+      &quot;unit_price&quot;: 150000
+     }
+    ],
+    &quot;payment_method&quot;: &quot;MOCK&quot;,
+    &quot;status&quot;: &quot;CANCELLED&quot;,
+    &quot;total_amount&quot;: 300000
+   }
+  ],
+  &quot;payments&quot;: [],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 12,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;observed_state_before&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [
+   {
+    &quot;id&quot;: 1,
+    &quot;items&quot;: [
+     {
+      &quot;product_id&quot;: 1,
+      &quot;quantity&quot;: 2,
+      &quot;subtotal&quot;: 300000,
+      &quot;unit_price&quot;: 150000
+     }
+    ],
+    &quot;payment_method&quot;: &quot;MOCK&quot;,
+    &quot;status&quot;: &quot;CANCELLED&quot;,
+    &quot;total_amount&quot;: 300000
+   }
+  ],
+  &quot;payments&quot;: [],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 10,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;request&quot;: {
+  &quot;body&quot;: {},
+  &quot;method&quot;: &quot;POST&quot;,
+  &quot;path_template&quot;: &quot;/api/orders/{order_id}/cancel&quot;,
+  &quot;url&quot;: &quot;/api/orders/1/cancel&quot;
+ },
+ &quot;response&quot;: {
+  &quot;status_class&quot;: &quot;4xx&quot;,
+  &quot;status_code&quot;: 409
+ }
+}</pre></details></div><div class="card"><h3>FI03-003 – STOCK_INTEGRITY_VIOLATION tại NT09 (order_status == CANCELLED): DATA.stock</h3><p><span class="tag">SYNTHETIC_INJECTION</span> <span class="tag">STATE_RESOURCE_LIFECYCLE</span> <span class="tag">STOCK_INTEGRITY_VIOLATION</span> <span class="tag">severity HIGH</span> <span class="tag">confidence HIGH</span></p><p class="mut">Cơ sở phân loại: validator_category=STOCK_INTEGRITY_VIOLATION · Severity: tổng điểm = unauthorized_operation_accepted:0 + impact:3 + rule_severity:2 + persisted_state_or_data_change:1 + reproducible_in_multiple_cases:0</p><p>Transition T08; negative NT09; rule BSR-CANCEL-01, BSR-STOCK-05; 1 assertion FAIL / 1 test case</p><ul><li>TC111 / S4.DATA.stock: expected <code>{&quot;1&quot;: 10, &quot;2&quot;: 5, &quot;3&quot;: 3}</code> — actual <code>{&quot;1&quot;: 12, &quot;2&quot;: 5, &quot;3&quot;: 3}</code></li></ul><details><summary>Bằng chứng</summary><pre>{
+ &quot;expected_ref&quot;: {
+  &quot;step_no&quot;: 4,
+  &quot;test_case_id&quot;: &quot;TC111&quot;
+ },
+ &quot;observed_state_after&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [
+   {
+    &quot;id&quot;: 1,
+    &quot;items&quot;: [
+     {
+      &quot;product_id&quot;: 1,
+      &quot;quantity&quot;: 2,
+      &quot;subtotal&quot;: 300000,
+      &quot;unit_price&quot;: 150000
+     }
+    ],
+    &quot;payment_method&quot;: &quot;MOCK&quot;,
+    &quot;status&quot;: &quot;CANCELLED&quot;,
+    &quot;total_amount&quot;: 300000
+   }
+  ],
+  &quot;payments&quot;: [],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 12,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;observed_state_before&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [
+   {
+    &quot;id&quot;: 1,
+    &quot;items&quot;: [
+     {
+      &quot;product_id&quot;: 1,
+      &quot;quantity&quot;: 2,
+      &quot;subtotal&quot;: 300000,
+      &quot;unit_price&quot;: 150000
+     }
+    ],
+    &quot;payment_method&quot;: &quot;MOCK&quot;,
+    &quot;status&quot;: &quot;CANCELLED&quot;,
+    &quot;total_amount&quot;: 300000
+   }
+  ],
+  &quot;payments&quot;: [],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 10,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;request&quot;: {
+  &quot;body&quot;: {},
+  &quot;method&quot;: &quot;POST&quot;,
+  &quot;path_template&quot;: &quot;/api/orders/{order_id}/cancel&quot;,
+  &quot;url&quot;: &quot;/api/orders/1/cancel&quot;
+ },
+ &quot;response&quot;: {
+  &quot;status_class&quot;: &quot;4xx&quot;,
+  &quot;status_code&quot;: 409
+ }
+}</pre></details></div><div class="card"><h3>FI03-004 – STOCK_INTEGRITY_VIOLATION tại NT09 (order_status == CANCELLED): INV-05</h3><p><span class="tag">SYNTHETIC_INJECTION</span> <span class="tag">STATE_RESOURCE_LIFECYCLE</span> <span class="tag">STOCK_INTEGRITY_VIOLATION</span> <span class="tag">severity HIGH</span> <span class="tag">confidence HIGH</span></p><p class="mut">Cơ sở phân loại: validator_category=STOCK_INTEGRITY_VIOLATION · Severity: tổng điểm = unauthorized_operation_accepted:0 + impact:3 + rule_severity:2 + persisted_state_or_data_change:1 + reproducible_in_multiple_cases:0</p><p>Transition T08; negative NT09; rule BSR-STOCK-04, BSR-STOCK-05; 1 assertion FAIL / 1 test case</p><ul><li>TC111 / INV-05: expected <code>&quot;order_status == CANCELLED =&gt; stock_restoration_count == 1&quot;</code> — actual <code>{&quot;violations&quot;: [{&quot;actual_stock_delta&quot;: 2, &quot;expected_stock_delta&quot;: 0, &quot;product_id&quot;: &quot;1&quot;, &quot;step_no&quot;: 4}]}</code></li></ul><details><summary>Bằng chứng</summary><pre>{
+ &quot;expected_ref&quot;: {
+  &quot;step_no&quot;: 4,
+  &quot;test_case_id&quot;: &quot;TC111&quot;
+ },
+ &quot;observed_state_after&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [
+   {
+    &quot;id&quot;: 1,
+    &quot;items&quot;: [
+     {
+      &quot;product_id&quot;: 1,
+      &quot;quantity&quot;: 2,
+      &quot;subtotal&quot;: 300000,
+      &quot;unit_price&quot;: 150000
+     }
+    ],
+    &quot;payment_method&quot;: &quot;MOCK&quot;,
+    &quot;status&quot;: &quot;CANCELLED&quot;,
+    &quot;total_amount&quot;: 300000
+   }
+  ],
+  &quot;payments&quot;: [],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 12,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;observed_state_before&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [
+   {
+    &quot;id&quot;: 1,
+    &quot;items&quot;: [
+     {
+      &quot;product_id&quot;: 1,
+      &quot;quantity&quot;: 2,
+      &quot;subtotal&quot;: 300000,
+      &quot;unit_price&quot;: 150000
+     }
+    ],
+    &quot;payment_method&quot;: &quot;MOCK&quot;,
+    &quot;status&quot;: &quot;CANCELLED&quot;,
+    &quot;total_amount&quot;: 300000
+   }
+  ],
+  &quot;payments&quot;: [],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 10,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;request&quot;: {
+  &quot;body&quot;: {},
+  &quot;method&quot;: &quot;POST&quot;,
+  &quot;path_template&quot;: &quot;/api/orders/{order_id}/cancel&quot;,
+  &quot;url&quot;: &quot;/api/orders/1/cancel&quot;
+ },
+ &quot;response&quot;: {
+  &quot;status_class&quot;: &quot;4xx&quot;,
+  &quot;status_code&quot;: 409
+ }
+}</pre></details></div><div class="card"><h3>FI04-001 – GUARD_VIOLATION tại NT02 (current_qty + quantity &gt; stock): REJECTED</h3><p><span class="tag">SYNTHETIC_INJECTION</span> <span class="tag">LIMITS_AUTHORIZATION</span> <span class="tag">GUARD_VIOLATION</span> <span class="tag">severity MEDIUM</span> <span class="tag">confidence HIGH</span></p><p class="mut">Cơ sở phân loại: validator_category=GUARD_VIOLATION · Severity: tổng điểm = unauthorized_operation_accepted:2 + impact:1 + rule_severity:2 + persisted_state_or_data_change:0 + reproducible_in_multiple_cases:0</p><p>Transition T01; negative NT02; rule BSR-CART-02; 1 assertion FAIL / 1 test case</p><ul><li>TC104 / S1.REJECTED: expected <code>{&quot;accepted&quot;: false}</code> — actual <code>{&quot;accepted&quot;: true, &quot;http_status&quot;: 200}</code></li></ul><details><summary>Bằng chứng</summary><pre>{
+ &quot;expected_ref&quot;: {
+  &quot;step_no&quot;: 1,
+  &quot;test_case_id&quot;: &quot;TC104&quot;
+ },
+ &quot;observed_state_after&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [
+    {
+     &quot;product_id&quot;: 1,
+     &quot;quantity&quot;: 11
+    }
+   ],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [],
+  &quot;payments&quot;: [],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 10,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;observed_state_before&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [],
+  &quot;payments&quot;: [],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 10,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;request&quot;: {
+  &quot;body&quot;: {
+   &quot;product_id&quot;: 1,
+   &quot;quantity&quot;: 11
+  },
+  &quot;method&quot;: &quot;POST&quot;,
+  &quot;path_template&quot;: &quot;/api/cart/items&quot;,
+  &quot;url&quot;: &quot;/api/cart/items&quot;
+ },
+ &quot;response&quot;: {
+  &quot;status_class&quot;: &quot;2xx&quot;,
+  &quot;status_code&quot;: 200
+ }
+}</pre></details></div><div class="card"><h3>FI04-002 – HTTP_STATUS_MISMATCH tại NT02 (current_qty + quantity &gt; stock): HTTP</h3><p><span class="tag">SYNTHETIC_INJECTION</span> <span class="tag">LIMITS_AUTHORIZATION</span> <span class="tag">HTTP_STATUS_MISMATCH</span> <span class="tag">severity LOW</span> <span class="tag">confidence MEDIUM</span></p><p class="mut">Cơ sở phân loại: negative_category=BUSINESS_CONSTRAINT_VIOLATION · Severity: tổng điểm = unauthorized_operation_accepted:0 + impact:0 + rule_severity:2 + persisted_state_or_data_change:0 + reproducible_in_multiple_cases:0</p><p>Transition T01; negative NT02; rule BSR-CART-02; 1 assertion FAIL / 1 test case</p><ul><li>TC104 / S1.HTTP: expected <code>400</code> — actual <code>200</code></li></ul><details><summary>Bằng chứng</summary><pre>{
+ &quot;expected_ref&quot;: {
+  &quot;step_no&quot;: 1,
+  &quot;test_case_id&quot;: &quot;TC104&quot;
+ },
+ &quot;observed_state_after&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [
+    {
+     &quot;product_id&quot;: 1,
+     &quot;quantity&quot;: 11
+    }
+   ],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [],
+  &quot;payments&quot;: [],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 10,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;observed_state_before&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [],
+  &quot;payments&quot;: [],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 10,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;request&quot;: {
+  &quot;body&quot;: {
+   &quot;product_id&quot;: 1,
+   &quot;quantity&quot;: 11
+  },
+  &quot;method&quot;: &quot;POST&quot;,
+  &quot;path_template&quot;: &quot;/api/cart/items&quot;,
+  &quot;url&quot;: &quot;/api/cart/items&quot;
+ },
+ &quot;response&quot;: {
+  &quot;status_class&quot;: &quot;2xx&quot;,
+  &quot;status_code&quot;: 200
+ }
+}</pre></details></div><div class="card"><h3>FI04-003 – UNEXPECTED_SIDE_EFFECT tại NT02 (current_qty + quantity &gt; stock): DATA.cart</h3><p><span class="tag">SYNTHETIC_INJECTION</span> <span class="tag">LIMITS_AUTHORIZATION</span> <span class="tag">UNEXPECTED_SIDE_EFFECT</span> <span class="tag">severity MEDIUM</span> <span class="tag">confidence HIGH</span></p><p class="mut">Cơ sở phân loại: negative_category=BUSINESS_CONSTRAINT_VIOLATION · Severity: tổng điểm = unauthorized_operation_accepted:0 + impact:1 + rule_severity:2 + persisted_state_or_data_change:1 + reproducible_in_multiple_cases:0</p><p>Transition T01; negative NT02; rule BSR-CART-02; 1 assertion FAIL / 1 test case</p><ul><li>TC104 / S1.DATA.cart: expected <code>[]</code> — actual <code>[[1, 11]]</code></li></ul><details><summary>Bằng chứng</summary><pre>{
+ &quot;expected_ref&quot;: {
+  &quot;step_no&quot;: 1,
+  &quot;test_case_id&quot;: &quot;TC104&quot;
+ },
+ &quot;observed_state_after&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [
+    {
+     &quot;product_id&quot;: 1,
+     &quot;quantity&quot;: 11
+    }
+   ],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [],
+  &quot;payments&quot;: [],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 10,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;observed_state_before&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [],
+  &quot;payments&quot;: [],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 10,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;request&quot;: {
+  &quot;body&quot;: {
+   &quot;product_id&quot;: 1,
+   &quot;quantity&quot;: 11
+  },
+  &quot;method&quot;: &quot;POST&quot;,
+  &quot;path_template&quot;: &quot;/api/cart/items&quot;,
+  &quot;url&quot;: &quot;/api/cart/items&quot;
+ },
+ &quot;response&quot;: {
+  &quot;status_class&quot;: &quot;2xx&quot;,
+  &quot;status_code&quot;: 200
+ }
+}</pre></details></div><div class="card"><h3>FI05-001 – INVALID_STATE_TRANSITION tại T07: STATE</h3><p><span class="tag">SYNTHETIC_INJECTION</span> <span class="tag">STATE_RESOURCE_LIFECYCLE</span> <span class="tag">INVALID_STATE_TRANSITION</span> <span class="tag">severity HIGH</span> <span class="tag">confidence HIGH</span></p><p class="mut">Cơ sở phân loại: validator_category=INVALID_STATE_TRANSITION · Severity: tổng điểm = unauthorized_operation_accepted:0 + impact:3 + rule_severity:2 + persisted_state_or_data_change:1 + reproducible_in_multiple_cases:0</p><p>Transition T07; negative None; rule BSR-PAYMENT-03, BSR-PAYMENT-04, BSR-PAYMENT-07; 1 assertion FAIL / 1 test case</p><ul><li>TC006 / S4.STATE: expected <code>{&quot;order_status&quot;: {&quot;1&quot;: &quot;CONFIRMED&quot;}, &quot;state_after&quot;: &quot;CONFIRMED&quot;}</code> — actual <code>{&quot;order_status&quot;: {&quot;1&quot;: &quot;PAID&quot;}}</code></li></ul><details><summary>Bằng chứng</summary><pre>{
+ &quot;expected_ref&quot;: {
+  &quot;step_no&quot;: 4,
+  &quot;test_case_id&quot;: &quot;TC006&quot;
+ },
+ &quot;observed_state_after&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [
+   {
+    &quot;id&quot;: 1,
+    &quot;items&quot;: [
+     {
+      &quot;product_id&quot;: 1,
+      &quot;quantity&quot;: 2,
+      &quot;subtotal&quot;: 300000,
+      &quot;unit_price&quot;: 150000
+     }
+    ],
+    &quot;payment_method&quot;: &quot;MOCK&quot;,
+    &quot;status&quot;: &quot;PAID&quot;,
+    &quot;total_amount&quot;: 300000
+   }
+  ],
+  &quot;payments&quot;: [
+   {
+    &quot;amount&quot;: 300000,
+    &quot;id&quot;: 1,
+    &quot;order_id&quot;: 1,
+    &quot;result&quot;: &quot;FAILED&quot;
+   }
+  ],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 8,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;observed_state_before&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [
+   {
+    &quot;id&quot;: 1,
+    &quot;items&quot;: [
+     {
+      &quot;product_id&quot;: 1,
+      &quot;quantity&quot;: 2,
+      &quot;subtotal&quot;: 300000,
+      &quot;unit_price&quot;: 150000
+     }
+    ],
+    &quot;payment_method&quot;: &quot;MOCK&quot;,
+    &quot;status&quot;: &quot;CONFIRMED&quot;,
+    &quot;total_amount&quot;: 300000
+   }
+  ],
+  &quot;payments&quot;: [],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 8,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;request&quot;: {
+  &quot;body&quot;: {
+   &quot;simulate_result&quot;: &quot;FAILED&quot;
+  },
+  &quot;method&quot;: &quot;POST&quot;,
+  &quot;path_template&quot;: &quot;/api/orders/{order_id}/pay&quot;,
+  &quot;url&quot;: &quot;/api/orders/1/pay&quot;
+ },
+ &quot;response&quot;: {
+  &quot;status_class&quot;: &quot;2xx&quot;,
+  &quot;status_code&quot;: 200
+ }
+}</pre></details></div><div class="card"><h3>FI06-001 – UNEXPECTED_SIDE_EFFECT tại NT01 (quantity &lt;= 0): DATA.cart</h3><p><span class="tag">SYNTHETIC_INJECTION</span> <span class="tag">LIMITS_AUTHORIZATION</span> <span class="tag">UNEXPECTED_SIDE_EFFECT</span> <span class="tag">severity MEDIUM</span> <span class="tag">confidence HIGH</span></p><p class="mut">Cơ sở phân loại: negative_category=INPUT_VALIDATION_VIOLATION · Severity: tổng điểm = unauthorized_operation_accepted:0 + impact:1 + rule_severity:2 + persisted_state_or_data_change:1 + reproducible_in_multiple_cases:0</p><p>Transition T01; negative NT01; rule BSR-CART-01; 1 assertion FAIL / 1 test case</p><ul><li>TC103 / S1.DATA.cart: expected <code>[]</code> — actual <code>[[2, 1]]</code></li></ul><details><summary>Bằng chứng</summary><pre>{
+ &quot;expected_ref&quot;: {
+  &quot;step_no&quot;: 1,
+  &quot;test_case_id&quot;: &quot;TC103&quot;
+ },
+ &quot;observed_state_after&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [
+    {
+     &quot;product_id&quot;: 2,
+     &quot;quantity&quot;: 1
+    }
+   ],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [],
+  &quot;payments&quot;: [],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 10,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;observed_state_before&quot;: {
+  &quot;cart&quot;: {
+   &quot;items&quot;: [],
+   &quot;total_amount&quot;: 0,
+   &quot;total_quantity&quot;: 0
+  },
+  &quot;orders&quot;: [],
+  &quot;payments&quot;: [],
+  &quot;product_stock&quot;: {
+   &quot;1&quot;: 10,
+   &quot;2&quot;: 5,
+   &quot;3&quot;: 3
+  }
+ },
+ &quot;request&quot;: {
+  &quot;body&quot;: {
+   &quot;product_id&quot;: 1,
+   &quot;quantity&quot;: 0
+  },
+  &quot;method&quot;: &quot;POST&quot;,
+  &quot;path_template&quot;: &quot;/api/cart/items&quot;,
+  &quot;url&quot;: &quot;/api/cart/items&quot;
+ },
+ &quot;response&quot;: {
+  &quot;status_class&quot;: &quot;4xx&quot;,
+  &quot;status_code&quot;: 422
+ }
+}</pre></details></div><h2>9. Chưa được kiểm chứng</h2><div class="table-wrap"><table><thead><tr><th>Path</th><th>Path key</th><th>Lý do</th></tr></thead><tbody><tr><td>P029</td><td>T01&gt;T10&gt;T04&gt;T05&gt;T06</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P030</td><td>T01&gt;T10&gt;T04&gt;T05&gt;T07&gt;T06</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P031</td><td>T01&gt;T10&gt;T04&gt;T05&gt;T07&gt;T07&gt;T06</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P032</td><td>T01&gt;T10&gt;T04&gt;T05&gt;T07&gt;T07&gt;T09</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P033</td><td>T01&gt;T10&gt;T04&gt;T05&gt;T07&gt;T09</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P034</td><td>T01&gt;T10&gt;T04&gt;T05&gt;T09</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P035</td><td>T01&gt;T10&gt;T04&gt;T08</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P061</td><td>T02&gt;T10&gt;T04&gt;T05&gt;T06</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P062</td><td>T02&gt;T10&gt;T04&gt;T05&gt;T07&gt;T06</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P063</td><td>T02&gt;T10&gt;T04&gt;T05&gt;T07&gt;T07&gt;T06</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P064</td><td>T02&gt;T10&gt;T04&gt;T05&gt;T07&gt;T07&gt;T09</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P065</td><td>T02&gt;T10&gt;T04&gt;T05&gt;T07&gt;T09</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P066</td><td>T02&gt;T10&gt;T04&gt;T05&gt;T09</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P067</td><td>T02&gt;T10&gt;T04&gt;T08</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P096</td><td>T03&gt;T10&gt;T04&gt;T05&gt;T06</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P097</td><td>T03&gt;T10&gt;T04&gt;T05&gt;T07&gt;T06</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P098</td><td>T03&gt;T10&gt;T04&gt;T05&gt;T07&gt;T07&gt;T06</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P099</td><td>T03&gt;T10&gt;T04&gt;T05&gt;T07&gt;T07&gt;T09</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P100</td><td>T03&gt;T10&gt;T04&gt;T05&gt;T07&gt;T09</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P101</td><td>T03&gt;T10&gt;T04&gt;T05&gt;T09</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P102</td><td>T03&gt;T10&gt;T04&gt;T08</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P117</td><td>T10&gt;T02&gt;T04&gt;T05&gt;T06</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P118</td><td>T10&gt;T02&gt;T04&gt;T05&gt;T07&gt;T06</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P119</td><td>T10&gt;T02&gt;T04&gt;T05&gt;T07&gt;T07&gt;T06</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P120</td><td>T10&gt;T02&gt;T04&gt;T05&gt;T07&gt;T07&gt;T09</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P121</td><td>T10&gt;T02&gt;T04&gt;T05&gt;T07&gt;T09</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P122</td><td>T10&gt;T02&gt;T04&gt;T05&gt;T09</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P123</td><td>T10&gt;T02&gt;T04&gt;T08</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P124</td><td>T10&gt;T03&gt;T04&gt;T05&gt;T06</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P125</td><td>T10&gt;T03&gt;T04&gt;T05&gt;T07&gt;T06</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P126</td><td>T10&gt;T03&gt;T04&gt;T05&gt;T07&gt;T07&gt;T06</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P127</td><td>T10&gt;T03&gt;T04&gt;T05&gt;T07&gt;T07&gt;T09</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P128</td><td>T10&gt;T03&gt;T04&gt;T05&gt;T07&gt;T09</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P129</td><td>T10&gt;T03&gt;T04&gt;T05&gt;T09</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P130</td><td>T10&gt;T03&gt;T04&gt;T08</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P131</td><td>T10&gt;T10&gt;T04&gt;T05&gt;T06</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P132</td><td>T10&gt;T10&gt;T04&gt;T05&gt;T07&gt;T06</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P133</td><td>T10&gt;T10&gt;T04&gt;T05&gt;T07&gt;T07&gt;T06</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P134</td><td>T10&gt;T10&gt;T04&gt;T05&gt;T07&gt;T07&gt;T09</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P135</td><td>T10&gt;T10&gt;T04&gt;T05&gt;T07&gt;T09</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P136</td><td>T10&gt;T10&gt;T04&gt;T05&gt;T09</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P137</td><td>T10&gt;T10&gt;T04&gt;T08</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P138</td><td>T10&gt;T04&gt;T05&gt;T06</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P139</td><td>T10&gt;T04&gt;T05&gt;T07&gt;T06</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P140</td><td>T10&gt;T04&gt;T05&gt;T07&gt;T07&gt;T06</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P141</td><td>T10&gt;T04&gt;T05&gt;T07&gt;T07&gt;T09</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P142</td><td>T10&gt;T04&gt;T05&gt;T07&gt;T09</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P143</td><td>T10&gt;T04&gt;T05&gt;T09</td><td>NO_FEASIBLE_DATA_FOUND</td></tr><tr><td>P144</td><td>T10&gt;T04&gt;T08</td><td>NO_FEASIBLE_DATA_FOUND</td></tr></tbody></table></div><h2>10. Giới hạn của kết quả</h2><ul><li>49 test case/path chưa được thực thi (NO_FEASIBLE_DATA_FOUND: 49); khu vực này chưa được kiểm chứng.</li><li>0 test case INCONCLUSIVE (chưa kết luận).</li><li>Kết quả chỉ phản ánh những gì quan sát được qua các GET API của Phần 6 và các assertion đã mô hình hóa; không đọc database trực tiếp.</li><li>40 assertion hậu điều kiện negative dùng final_observed_state thay cho probe độc lập (probe thiếu path param ở Phần 6).</li><li>BShop không triển khai xác thực/phân quyền theo người dùng (quy tắc BSR-AUTH-01 bị loại khỏi phạm vi: không áp dụng). Vì vậy nhóm LIMITS_AUTHORIZATION chỉ phản ánh giới hạn và ràng buộc nghiệp vụ; không có finding nào được gắn nhãn lỗi ownership hay authentication.</li><li>Độ bao phủ cấu trúc, khả thi và thực thi là ba khái niệm khác nhau; bao phủ transition không đồng nghĩa bảo mật nghiệp vụ đầy đủ.</li><li>Fault injection chỉ chứng minh khả năng phát hiện của công cụ trên các mẫu lỗi đã chọn; không phải lỗ hổng thực tế của BShop và không chứng minh phát hiện được mọi lỗi.</li><li>Các cặp transition chưa thực thi: T01&gt;T10, T02&gt;T10, T03&gt;T10, T10&gt;T02, T10&gt;T03, T10&gt;T04, T10&gt;T10.</li></ul><h2>Bốn câu hỏi</h2><ul><li><strong>1_da_kiem_thu_gi</strong>: 122 test case đã thực thi (NEGATIVE: 20, POSITIVE: 102); 6431 assertion; transition thực thi 10/10, negative transition 20/20, rule được xác minh bằng PASS 26/26.</li><li><strong>2_dat_that_bai_chua_kiem_chung</strong>: PASS 122, FAIL 0, SKIPPED 49 (chưa kiểm chứng), INCONCLUSIVE 0 (chưa kết luận).</li><li><strong>3_sai_lech_va_bang_chung</strong>: Không có finding thực tế.</li><li><strong>4_phat_hien_loi_cai_dat</strong>: Phát hiện 6/6 lỗi cài đặt; đúng nhãn 6/6; đúng nhóm nghiên cứu 6/6 (source_type=SYNTHETIC_INJECTION, không phải lỗi thực tế).</li></ul></main></body></html>

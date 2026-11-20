@@ -1,0 +1,362 @@
+{
+  "schema_version": "1.0",
+  "description": "Mô tả cách mỗi transition của EFSM được gọi qua HTTP API và cách dữ liệu được chọn / bắt lại (capture). File chỉ MÔ TẢ lời gọi; Test Data Generator không gửi HTTP request. API Executor (giai đoạn sau) dùng file này cùng test_cases.json.",
+  "provenance": "Đối chiếu với app/routes/*.py, app/service/*.py, app/schemas.py và efsm_model.json. Method/path lấy từ efsm_model.json (transitions[].api); mapping chỉ mô tả cách chọn product, nguồn dữ liệu body/path param, quy tắc cập nhật dữ liệu (ops) và capture. ApiMapping.validate() đối chiếu tên path param / body với EFSM.",
+  "catalog": {
+    "description": "Dữ liệu seed trong app/database.py (init_db). Đây là dữ liệu có sẵn của backend, KHÔNG phải ID bịa; test case chỉ dùng chúng làm product_id vì sản phẩm được tạo bởi seed, không qua API.",
+    "products": [
+      {
+        "id": 1,
+        "name": "Ao thun",
+        "price": 150000,
+        "stock": 10
+      },
+      {
+        "id": 2,
+        "name": "Quan jean",
+        "price": 350000,
+        "stock": 5
+      },
+      {
+        "id": 3,
+        "name": "Giay the thao",
+        "price": 600000,
+        "stock": 3
+      }
+    ],
+    "primary_product": 1,
+    "nonexistent_product_id": 999999
+  },
+  "cleanup": {
+    "type": "fixture",
+    "mechanism": "app.database.reset_database()",
+    "via_api": false,
+    "description": "Backend không có API xóa/reset dữ liệu. Trả DB về trạng thái seed phải làm bằng fixture của executor (hoặc DB kiểm thử riêng) trước mỗi test case."
+  },
+  "fixtures": {
+    "stock": {
+      "table": "products",
+      "column": "stock",
+      "key": "id",
+      "description": "Không có API đặt tồn kho; chỉ đổi được bằng seed/fixture DB."
+    }
+  },
+  "initial_database": {
+    "cart_items": [],
+    "orders": [],
+    "payments": [],
+    "products": "xem catalog.products"
+  },
+  "input_hints": {
+    "quantity": 2,
+    "payment_method": "MOCK",
+    "payment_result": "SUCCESS",
+    "customer_name_length": 10,
+    "phone_length": 10,
+    "address_length": 20
+  },
+  "off_domain_literal": "INVALID_VALUE",
+  "setup_transitions": [
+    "T01"
+  ],
+  "probes": {
+    "cart": {
+      "method": "GET",
+      "path": "/api/cart"
+    },
+    "products": {
+      "method": "GET",
+      "path": "/api/products"
+    },
+    "product": {
+      "method": "GET",
+      "path": "/api/products/{product_id}"
+    },
+    "order": {
+      "method": "GET",
+      "path": "/api/orders/{order_id}"
+    },
+    "payments": {
+      "method": "GET",
+      "path": "/api/payments"
+    }
+  },
+  "transitions": {
+    "T01": {
+      "implemented_by": "API",
+      "select_product": "catalog",
+      "request": {
+        "path_params": {},
+        "body": {
+          "product_id": {
+            "source": "product_id"
+          },
+          "quantity": {
+            "source": "input",
+            "var": "quantity"
+          }
+        }
+      },
+      "ops": [
+        "cart_add"
+      ],
+      "capture": {},
+      "response_checks": [
+        "response.status_code == expected_http_status"
+      ]
+    },
+    "T02": {
+      "implemented_by": "API",
+      "select_product": "cart",
+      "request": {
+        "path_params": {
+          "product_id": {
+            "source": "product_id"
+          }
+        },
+        "body": {
+          "quantity": {
+            "source": "input",
+            "var": "quantity"
+          }
+        }
+      },
+      "ops": [
+        "cart_set"
+      ],
+      "capture": {},
+      "response_checks": [
+        "response.status_code == expected_http_status"
+      ]
+    },
+    "T03": {
+      "implemented_by": "API",
+      "select_product": "cart",
+      "request": {
+        "path_params": {
+          "product_id": {
+            "source": "product_id"
+          }
+        },
+        "body": {}
+      },
+      "ops": [
+        "cart_remove"
+      ],
+      "capture": {},
+      "response_checks": [
+        "response.status_code == expected_http_status"
+      ]
+    },
+    "T10": {
+      "implemented_by": "API",
+      "select_product": "none",
+      "request": {
+        "path_params": {},
+        "body": {}
+      },
+      "ops": [
+        "cart_clear"
+      ],
+      "capture": {},
+      "response_checks": [
+        "response.status_code == expected_http_status"
+      ]
+    },
+    "T04": {
+      "implemented_by": "API",
+      "select_product": "none",
+      "request": {
+        "path_params": {},
+        "body": {
+          "customer_name": {
+            "source": "string_of_length",
+            "var": "customer_name_length",
+            "char": "N"
+          },
+          "phone": {
+            "source": "string_of_length",
+            "var": "phone_length",
+            "char": "9"
+          },
+          "address": {
+            "source": "string_of_length",
+            "var": "address_length",
+            "char": "A"
+          },
+          "payment_method": {
+            "source": "input",
+            "var": "payment_method"
+          }
+        }
+      },
+      "ops": [
+        "order_create"
+      ],
+      "capture": {
+        "order_id": "response.order.id"
+      },
+      "response_checks": [
+        "response.status_code == expected_http_status",
+        "response.order.status == 'PENDING_CONFIRMATION'",
+        "response.order.total_amount == expected.order_total"
+      ],
+      "each_line": true
+    },
+    "T05": {
+      "implemented_by": "API",
+      "select_product": "none",
+      "request": {
+        "path_params": {
+          "order_id": {
+            "source": "ref",
+            "capture": "order_id"
+          }
+        },
+        "body": {}
+      },
+      "ops": [
+        "order_status:CONFIRMED"
+      ],
+      "capture": {},
+      "response_checks": [
+        "response.status_code == expected_http_status",
+        "response.order.status == 'CONFIRMED'"
+      ]
+    },
+    "T06": {
+      "implemented_by": "API",
+      "select_product": "none",
+      "request": {
+        "path_params": {
+          "order_id": {
+            "source": "ref",
+            "capture": "order_id"
+          }
+        },
+        "body": {
+          "simulate_result": {
+            "source": "input",
+            "var": "payment_result"
+          }
+        }
+      },
+      "ops": [
+        "payment_record",
+        "order_status:PAID"
+      ],
+      "capture": {
+        "payment_id": "response.payment.id"
+      },
+      "response_checks": [
+        "response.status_code == expected_http_status",
+        "response.payment.result == 'SUCCESS'",
+        "response.payment.amount == expected.order_total",
+        "response.order.status == 'PAID'"
+      ]
+    },
+    "T07": {
+      "implemented_by": "API",
+      "select_product": "none",
+      "request": {
+        "path_params": {
+          "order_id": {
+            "source": "ref",
+            "capture": "order_id"
+          }
+        },
+        "body": {
+          "simulate_result": {
+            "source": "input",
+            "var": "payment_result"
+          }
+        }
+      },
+      "ops": [
+        "payment_record"
+      ],
+      "capture": {
+        "payment_id": "response.payment.id"
+      },
+      "response_checks": [
+        "response.status_code == expected_http_status",
+        "response.payment.result == 'FAILED'",
+        "response.order.status == 'CONFIRMED'"
+      ]
+    },
+    "T08": {
+      "implemented_by": "API",
+      "select_product": "none",
+      "request": {
+        "path_params": {
+          "order_id": {
+            "source": "ref",
+            "capture": "order_id"
+          }
+        },
+        "body": {}
+      },
+      "ops": [
+        "order_cancel"
+      ],
+      "capture": {},
+      "response_checks": [
+        "response.status_code == expected_http_status",
+        "response.order.status == 'CANCELLED'"
+      ]
+    },
+    "T09": {
+      "implemented_by": "API",
+      "select_product": "none",
+      "request": {
+        "path_params": {
+          "order_id": {
+            "source": "ref",
+            "capture": "order_id"
+          }
+        },
+        "body": {}
+      },
+      "ops": [
+        "order_cancel"
+      ],
+      "capture": {},
+      "response_checks": [
+        "response.status_code == expected_http_status",
+        "response.order.status == 'CANCELLED'"
+      ]
+    }
+  },
+  "negative_postconditions": [
+    {
+      "probe": "cart",
+      "check": "cart.items bằng ảnh chụp trước bước âm tính"
+    },
+    {
+      "probe": "product",
+      "check": "products.stock của mọi sản phẩm bằng ảnh chụp trước bước âm tính"
+    },
+    {
+      "probe": "order",
+      "check": "orders.status của các đơn hiện có không đổi; không có đơn mới"
+    },
+    {
+      "probe": "payments",
+      "check": "danh sách payments không có bản ghi mới"
+    }
+  ],
+  "invariant_assertions": {
+    "INV-01": "Mọi quantity gửi lên giỏ hàng > 0 (kiểm tra trên request đã gửi và trên GET /api/cart sau thực thi).",
+    "INV-02": "Với mỗi dòng của đơn: quantity <= stock_before (stock chụp trước khi tạo đơn, GET /api/products/{id}).",
+    "INV-03": "GET /api/orders/{id}: total_amount == SUM(items.quantity * items.unit_price).",
+    "INV-04": "Đơn PAID có ít nhất một payment result == SUCCESS (GET /api/payments).",
+    "INV-05": "Đơn CANCELLED: stock đã hoàn đúng một lần (so với ảnh chụp tồn kho trước khi hủy).",
+    "INV-06": "Thuộc tính cấu trúc mô hình (PAID không có cancel_order); backend được kiểm chứng bằng NT08.",
+    "INV-07": "Thuộc tính cấu trúc mô hình; backend được kiểm chứng bằng NT05/NT10/NT20.",
+    "INV-08": "Thuộc tính cấu trúc mô hình; backend được kiểm chứng bằng NT06/NT07/NT11.",
+    "INV-09": "GET /api/payments: số payment result == SUCCESS của mỗi order_id <= 1.",
+    "INV-10": "Thuộc tính cấu trúc mô hình; backend được kiểm chứng bằng NT09/NT10/NT11.",
+    "INV-11": "GET /api/products/{id}: stock >= 0 sau mỗi bước.",
+    "INV-12": "Đơn PAID: payment SUCCESS có amount == orders.total_amount (GET /api/payments, GET /api/orders/{id})."
+  }
+}

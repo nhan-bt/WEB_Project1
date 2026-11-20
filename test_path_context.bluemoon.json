@@ -1,0 +1,48 @@
+{
+  "description": "Context VÍ DỤ cho BlueMoon: giỏ rỗng, tồn kho 10, đơn giá 150000. Dùng để chứng minh tính khả thi trên mô phỏng EFSM; KHÔNG phải dữ liệu kiểm thử do test_data_generator sinh ra.",
+  "initial_variables": {
+    "product_exists": true,
+    "cart_items_count": 0,
+    "cart_item_exists": false,
+    "current_qty": 0,
+    "stock": 10,
+    "unit_price": 150000
+  },
+  "default_inputs": {},
+  "step_inputs": {
+    "T01": {"quantity": 2},
+    "T02": {"quantity": 3},
+    "T04": {
+      "ordered_quantity": 2,
+      "payment_method": "MOCK",
+      "customer_name_length": 10,
+      "phone_length": 10,
+      "address_length": 16,
+      "order_items": [{"quantity": 2, "unit_price": 150000}]
+    },
+    "T06": {"payment_result": "SUCCESS"},
+    "T07": {"payment_result": "FAILED"}
+  },
+  "negative_inputs": {
+    "NT01": {"quantity": 0},
+    "NT02": {"quantity": 11},
+    "NT03": {},
+    "NT04": {"ordered_quantity": 11},
+    "NT05": {},
+    "NT06": {},
+    "NT07": {},
+    "NT08": {},
+    "NT09": {},
+    "NT10": {},
+    "NT11": {},
+    "NT12": {"payment_result": "MAYBE"},
+    "NT13": {"payment_method": "PAYPAL"},
+    "NT14": {"customer_name_length": 1, "phone_length": 10, "address_length": 16},
+    "NT15": {},
+    "NT16": {"quantity": 11},
+    "NT17": {"quantity": 0},
+    "NT18": {},
+    "NT19": {"product_exists": false},
+    "NT20": {}
+  }
+}
