@@ -23,6 +23,22 @@ python fault_detection_report.py --out-prefix fault_detection_report
 
 Run these from the project root. The generators only read the EFSM files; they do not call the API or touch `online_shop.db`. `api_test_executor.py` is the only step that sends requests: it runs against a separate temporary SQLite database in-process (FastAPI TestClient) and refuses to run on `online_shop.db`.
 
+## Path feasibility classification (PowerShell, `.venv`)
+
+Classifies every path as `FEASIBLE`, `PROVEN_INFEASIBLE` (logical contradiction, valid for every data/setup/product/input), `SEARCH_EXHAUSTED` (bounded search only, not a proof), `GENERATOR_ERROR` or `MODEL_ERROR`. Outputs go to `experiments\after_fix\`; the delivered files in the project root are not overwritten.
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q tests\test_path_feasibility.py
+.\.venv\Scripts\python.exe guard_evaluator.py efsm_model.json
+.\.venv\Scripts\python.exe feasibility_path_generator.py --model efsm_model.json --strategy both --max-depth 8 --max-paths 200 --include-negative --context test_path_context.bluemoon.json --dfs-feasibility annotate --output experiments\after_fix\test_paths.json --coverage-output experiments\after_fix\test_path_coverage.json
+.\.venv\Scripts\python.exe test_data_generator.py --model efsm_model.json --test-paths experiments\after_fix\test_paths.json --test-cases-output experiments\after_fix\test_cases.json --coverage-output experiments\after_fix\test_data_coverage.json --feasibility-report-output experiments\after_fix\feasibility_report.md
+.\.venv\Scripts\python.exe api_test_executor.py --test-cases experiments\after_fix\test_cases.json --model efsm_model.json --output experiments\after_fix\test_execution_results.json
+.\.venv\Scripts\python.exe result_validator.py --test-cases experiments\after_fix\test_cases.json --execution-results experiments\after_fix\test_execution_results.json --model efsm_model.json --rules security_rules.json --output experiments\after_fix\test_validation_results.json
+.\.venv\Scripts\python.exe experiments\compare_feasibility.py --before experiments\before_fix --after experiments\after_fix --output experiments\comparison.md
+```
+
+`--dfs-feasibility`: `annotate` (default: same paths as `test_path_generator.py`, plus `feasibility_proof`), `prune` (DFS cuts proven-infeasible extensions while traversing; listed in `pruned_infeasible_extensions`), `off`. `test_data_generator.py --max-input-options N` sets how many valid input sets per step the second search phase may try (1 disables data backtracking).
+
 ## Structure
 
 - `app/main.py`: creates the FastAPI app, initializes SQLite, and registers routers.

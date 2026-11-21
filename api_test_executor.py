@@ -595,7 +595,9 @@ class ApiTestExecutor:
                 "execution_status": "SKIPPED",
                 "skip_reason": {"code": item.get("reason_code") or "NOT_CONVERTED",
                                 "message": item.get("reason") or "path không được chuyển thành test case ở Phần 5",
-                                "source": "test_cases.json/unconverted_paths"},
+                                "source": "test_cases.json/unconverted_paths",
+                                # PROVEN_INFEASIBLE / SEARCH_EXHAUSTED / GENERATOR_ERROR / MODEL_ERROR (None với file cũ)
+                                "feasibility_verdict": item.get("feasibility_verdict")},
                 "steps": [], "errors": []}
 
     @staticmethod
