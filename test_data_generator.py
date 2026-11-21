@@ -1292,7 +1292,8 @@ class TestDataGenerator:
     def export_json(data: Mapping[str, Any], output_path: str | Path) -> Path:
         path = Path(output_path)
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps(data, ensure_ascii=False, indent=2, default=str) + "\n", encoding="utf-8")
+        # newline="\n": luôn ghi LF (Windows mặc định đổi \n thành \r\n) để file tái lập được từng byte
+        path.write_text(json.dumps(data, ensure_ascii=False, indent=2, default=str) + "\n", encoding="utf-8", newline="\n")
         return path
 
 
