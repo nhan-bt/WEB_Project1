@@ -1,0 +1,37 @@
+{
+  "columns": {
+    "Trước cải thiện": {
+      "Tổng đường đi": 171,
+      "Test case được sinh": 122,
+      "Unconverted paths": 49,
+      "FEASIBLE": "chưa phân loại",
+      "Proven infeasible": "chưa phân loại",
+      "Search exhausted": "49 (nhãn evidence, không phân biệt chứng minh)",
+      "Generator errors": "chưa xác định",
+      "Model errors": "chưa xác định",
+      "Proof conflicts": "-",
+      "Test case PASS": 122,
+      "Test case FAIL": 0,
+      "Test case SKIPPED": 49,
+      "INCONCLUSIVE": 0,
+      "Assertions passed/total": "6431/6431"
+    },
+    "Sau cải thiện (annotate)": {
+      "Tổng đường đi": 171,
+      "Test case được sinh": 122,
+      "Unconverted paths": 49,
+      "FEASIBLE": 122,
+      "Proven infeasible": 49,
+      "Search exhausted": 0,
+      "Generator errors": 0,
+      "Model errors": 0,
+      "Proof conflicts": 0,
+      "Test case PASS": 122,
+      "Test case FAIL": 0,
+      "Test case SKIPPED": 49,
+      "INCONCLUSIVE": 0,
+      "Assertions passed/total": "6431/6431"
+    }
+  },
+  "test_cases_identical": true
+}

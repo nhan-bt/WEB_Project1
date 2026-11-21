@@ -323,7 +323,9 @@ class ResultValidator:
                 "execution_status": res.get("execution_status"), "assertions": [], "data_errors": []}
         if res.get("execution_status") == "SKIPPED" and res.get("path_id") in self.inputs.unconverted:
             skip = res.get("skip_reason") or {}
-            return {**base, "validation_status": SKIPPED, "reasons": [{"code": skip.get("code", "SKIPPED"), "message": skip.get("message")}],
+            verdict = skip.get("feasibility_verdict") or self.inputs.unconverted[res.get("path_id")].get("feasibility_verdict")
+            return {**base, "validation_status": SKIPPED,
+                    "reasons": [{"code": skip.get("code", "SKIPPED"), "message": skip.get("message"), "feasibility_verdict": verdict}],
                     "assertion_counts": _count([])}
         err = {"code": "MISSING_TEST_CASE_ID", "message": "không liên kết được kết quả với test case gốc"}
         return {**base, "validation_status": INCONCLUSIVE, "reasons": [err], "data_errors": [err], "assertion_counts": _count([])}
@@ -895,6 +897,9 @@ class ResultValidator:
                                "passed": sum(1 for a in all_a if a["status"] == PASS), "failed": sum(1 for a in all_a if a["status"] == FAIL),
                                "not_evaluable": sum(1 for a in all_a if a["status"] == INCONCLUSIVE)},
                 "failures_by_category": dict(sorted(fails.items())),
+                "skipped_by_feasibility": dict(sorted(Counter(
+                    str((r["reasons"][0] if r["reasons"] else {}).get("feasibility_verdict") or "UNCLASSIFIED")
+                    for r in results if r["validation_status"] == SKIPPED).items())),
                 "data_errors": len(data_errors),
                 "note": "PASS chỉ khi mọi assertion bắt buộc được đánh giá và thỏa; COMPLETED ở Phần 6 không có nghĩa là PASS.",
             },

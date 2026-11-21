@@ -1001,9 +1001,22 @@ class TestEdgeCases:
         assert "STATE_MISMATCH" in res["reason"]
 
     def test_no_valid_data_is_bounded_not_proof(self, bm, mapping):
-        res = PathDataGenerator(bm, mapping).convert_path(synthetic_path("T01>T10>T04"))
+        # Không tìm được dữ liệu trong vùng tìm kiếm (catalog hết hàng) nhưng KHÔNG có mâu thuẫn logic trong mô hình
+        # -> chỉ là kết quả tìm kiếm có giới hạn, không phải chứng minh.
+        data = copy.deepcopy(mapping.data)
+        for p in data["catalog"]["products"]:
+            p["stock"] = 0
+        res = PathDataGenerator(bm, ApiMapping(data)).convert_path(synthetic_path("T01>T04"))
         assert res["readiness"] == Readiness.BLOCKED
         assert res["evidence"] == "SEARCH_EXHAUSTED" and "not a proof" in res["proof_scope"]
+        assert res["feasibility_verdict"] == "SEARCH_EXHAUSTED"
+
+    def test_logical_contradiction_is_reported_as_proof(self, bm, mapping):
+        # T10 làm trống giỏ ngay trước T04 (cart_items_count > 0): vô nghiệm với MỌI dữ liệu, có chứng cứ.
+        res = PathDataGenerator(bm, mapping).convert_path(synthetic_path("T01>T10>T04"))
+        assert res["readiness"] == Readiness.BLOCKED and res["reason_code"] == "NO_FEASIBLE_DATA_FOUND"
+        assert res["evidence"] == "PROVEN_INFEASIBLE" and res["feasibility_verdict"] == "PROVEN_INFEASIBLE"
+        assert res["feasibility_report"]["caused_by"] == {"cart_items_count": {"step": 2, "transition_id": "T10"}}
 
     def test_search_budget_is_reported_as_budget_not_unsat(self, bm, mapping):
         res = PathDataGenerator(bm, mapping, max_nodes=2).convert_path(synthetic_path("T01>T01>T04>T05>T07>T07>T06"))
@@ -1132,8 +1145,12 @@ class TestSelectionAndOutput:
     def test_blocked_paths_are_reported_with_reason(self, generated):
         out = generated[0]
         assert out["unconverted_paths"] and all(u["reason_code"] and u["reason"] for u in out["unconverted_paths"])
-        assert all(u["reason_code"] == "NO_FEASIBLE_DATA_FOUND" and u["evidence"] == "SEARCH_EXHAUSTED"
-                   for u in out["unconverted_paths"] if u["readiness"] == "BLOCKED")
+        blocked = [u for u in out["unconverted_paths"] if u["readiness"] == "BLOCKED"]
+        assert all(u["reason_code"] == "NO_FEASIBLE_DATA_FOUND" for u in blocked)
+        # evidence phải khớp verdict: chứng minh logic HOẶC tìm kiếm có giới hạn (không bao giờ trộn lẫn)
+        assert all((u["evidence"], u["feasibility_verdict"]) in {("PROVEN_INFEASIBLE", "PROVEN_INFEASIBLE"),
+                                                                ("SEARCH_EXHAUSTED", "SEARCH_EXHAUSTED")} for u in blocked)
+        assert all(u["feasibility_report"]["failed_step"] for u in blocked)
 
     def test_ids_unique_and_ordered(self, cases):
         ids = [c["test_case_id"] for c in cases]

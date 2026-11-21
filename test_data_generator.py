@@ -37,6 +37,7 @@ from math import ceil, floor
 from pathlib import Path
 from typing import Any, Callable, Iterable, Iterator, Mapping, Sequence
 
+from efsm_feasibility import PROOF_SCOPE, EfsmPathProver, FeasibilityVerdict, render_feasibility_markdown, suggestion_for
 from guard_evaluator import GuardEvaluator, GuardEvaluatorError, GuardStatus
 
 __all__ = [
@@ -1395,6 +1396,11 @@ class ApiMapping:
 class ShadowState:
     """Mô phỏng dữ liệu nghiệp vụ (giỏ, tồn kho, đơn, thanh toán) theo các quy tắc cập nhật có cấu trúc."""
 
+    # Biến EFSM mà ``project`` suy ra từ sản phẩm/dòng hàng đang được chọn (thay đổi khi đổi product_id).
+    # Bộ chứng minh vô nghiệm (efsm_feasibility) coi các biến này là "chưa biết" ở mỗi bước có chọn sản phẩm.
+    LINE_VARIABLES = frozenset({"product_exists", "stock", "unit_price", "current_qty", "cart_item_exists",
+                                "ordered_quantity"})
+
     def __init__(self, products: Mapping[int, Mapping[str, Any]]) -> None:
         self.products = {int(k): dict(v) for k, v in products.items()}
         self.cart: dict[int, int] = {}
@@ -1510,7 +1516,12 @@ class PathDataGenerator:
     __test__ = False
 
     def __init__(self, generator: TestDataGenerator, mapping: ApiMapping, *, max_setup_steps: int = 3,
-                 max_nodes: int = 3000) -> None:
+                 max_nodes: int = 3000, max_input_options: int = 4) -> None:
+        """``max_input_options``: số bộ đầu vào hợp lệ tối đa thử cho một bước ở pha tìm kiếm mở rộng
+        (backtracking theo dữ liệu). Pha 1 luôn chỉ dùng bộ đầu vào đầu tiên (hành vi gốc), nên mọi kế hoạch
+        tìm được trước đây giữ nguyên; pha 2 chỉ chạy khi pha 1 không tìm được và path chưa bị chứng minh vô nghiệm."""
+        if max_input_options < 1:
+            raise ValueError("max_input_options must be >= 1")
         self.g, self.map = generator, mapping
         self.ev = generator.evaluator
         self.model = generator.model
@@ -1519,9 +1530,12 @@ class PathDataGenerator:
         self.vars = generator._vars
         self.states = {s["id"]: s for s in self.model["states"]}
         self.max_setup_steps, self.max_nodes = max_setup_steps, max_nodes
+        self.max_input_options = max_input_options
         self.mapping_issues = mapping.validate(self.model)
+        self.prover = EfsmPathProver.from_api_mapping(self.ev, mapping.data, ShadowState.LINE_VARIABLES)
         self._failures: list[dict[str, Any]] = []
         self._nodes = 0
+        self._extended = False  # True: pha 2 (thử nhiều bộ đầu vào cho mỗi bước)
 
     # ------------------------------------------------------------------
     # Tiện ích
@@ -1532,8 +1546,12 @@ class PathDataGenerator:
     def _view(self, state: str) -> str:
         return "cart" if self.states[state].get("lifecycle") == "cart" else "order"
 
-    def _fail(self, plan: PlanState, tid: str, code: str, detail: str, pid: int | None = None) -> None:
-        self._failures.append({"depth": sum(1 for s in plan.steps if s["role"] == "path"), "transition": tid, "product_id": pid, "code": code, "detail": detail})
+    def _fail(self, plan: PlanState, tid: str, code: str, detail: str, pid: int | None = None,
+              ctx: Mapping[str, Any] | None = None) -> None:
+        record = {"depth": sum(1 for s in plan.steps if s["role"] == "path"), "transition": tid, "product_id": pid, "code": code, "detail": detail}
+        if ctx is not None:
+            record["context_before"] = dict(ctx)
+        self._failures.append(record)
 
     def _vars_in(self, text: str) -> set[str]:
         return {w for w in re.findall(r"[A-Za-z_]\w*", text) if w in self.vars}
@@ -1581,6 +1599,48 @@ class PathDataGenerator:
         assignment = result.assignment or {}
         return {n: assignment.get(n, hints.get(n)) for n in names if n in assignment or n in hints}, "solver"
 
+    def _input_options(self, tid: str, ctx: Mapping[str, Any]) -> tuple[list[dict[str, Any]], str]:
+        """Các bộ đầu vào ứng viên cho một bước. Phần tử đầu luôn là kết quả của ``_valid_inputs`` (hành vi gốc).
+
+        Ở pha mở rộng (``self._extended``) thêm các bộ thay thế: giải lại guard với gợi ý khác cho từng biến
+        request số nguyên (bỏ gợi ý, gợi ý ±1). Mỗi bộ vẫn được kiểm lại bằng GuardEvaluator ở ``_candidates``.
+        Chỉ biến request được thay đổi; biến state/derived luôn cố định từ ShadowState.
+        """
+        primary, how = self._valid_inputs(tid, ctx)
+        if primary is None:
+            return [], how
+        options = [primary]
+        if not self._extended or self.max_input_options <= 1:
+            return options, how
+        names = self._request_vars(tid)
+        guard = self.tr[tid].get("guard")
+        if guard is None or not names:
+            return options, how
+        gvars = set(self.ev.get_guard_variables(guard))
+        mutable = [n for n in names if n in gvars]
+        fixed = {k: v for k, v in ctx.items() if k in gvars and k not in names}
+        base_hints = {n: self.map.hints[n] for n in names if n in self.map.hints}
+        variants: list[dict[str, Any]] = []
+        for n in mutable:
+            if self.vars.get(n, {}).get("type") != "integer" or not isinstance(primary.get(n), int):
+                continue
+            without = {k: v for k, v in base_hints.items() if k != n}
+            variants += [without, {**base_hints, n: primary[n] + 1}, {**base_hints, n: primary[n] - 1}]
+        seen = {json.dumps(primary, sort_keys=True, default=str)}
+        for hints in variants:
+            if len(options) >= self.max_input_options:
+                break
+            result = self.g.solve(guard, fixed=fixed, hints=hints, mutable=mutable)
+            if result.status != SolveStatus.SAT:
+                continue
+            assignment = result.assignment or {}
+            alt = {n: assignment.get(n, base_hints.get(n)) for n in names if n in assignment or n in base_hints}
+            key = json.dumps(alt, sort_keys=True, default=str)
+            if key not in seen:
+                seen.add(key)
+                options.append(alt)
+        return options, how
+
     # ------------------------------------------------------------------
     # Một bước positive
     # ------------------------------------------------------------------
@@ -1593,29 +1653,36 @@ class PathDataGenerator:
             self._fail(plan, tid, "STATE_MISMATCH", f"đang ở {plan.state}, cần {tr['source']}")
             return
         view = self._view(plan.state)
-        for pid in (list(pids) if pids is not None else self._products_for(plan, spec["select_product"])):
+        choices = list(pids) if pids is not None else self._products_for(plan, spec["select_product"])
+        if not choices:
+            # trước đây không ghi nhận gì -> báo cáo sai "không có bước nào khả thi"
+            self._fail(plan, tid, "GUARD_NOT_SATISFIED", "giỏ hàng không có dòng nào để thao tác (không có sản phẩm để chọn)",
+                       None, plan.shadow.project(None, view))
+            return
+        for pid in choices:
             if spec["select_product"] == "cart" and pid is None:
                 self._fail(plan, tid, "GUARD_NOT_SATISFIED", "giỏ hàng không có dòng nào để thao tác", pid)
                 continue
             ctx = plan.shadow.project(pid, view)
-            inputs, how = self._valid_inputs(tid, ctx)
-            if inputs is None:
+            options, how = self._input_options(tid, ctx)
+            if not options:
                 code = "UNSUPPORTED_GUARD" if how.startswith(SolveStatus.UNSUPPORTED) else "GUARD_NOT_SATISFIED"
-                self._fail(plan, tid, code, how, pid)
+                self._fail(plan, tid, code, how, pid, ctx)
                 continue
-            variables = {**ctx, **inputs}
-            check = self.ev.check_transition(tid, plan.state, variables)
-            if check.status is not GuardStatus.GUARD_SATISFIED:
-                conds = [c.get("condition") for c in check.failed_conditions]
-                self._fail(plan, tid, check.status.value, "; ".join(map(str, conds)) or check.reason, pid)
-                continue
-            if spec.get("each_line") and not self._lines_ok(plan, tid, variables):
-                self._fail(plan, tid, "GUARD_NOT_SATISFIED", "một dòng giỏ hàng vi phạm guard", pid)
-                continue
-            try:
-                yield self._advance(plan, tid, role, spec, pid, inputs, variables)
-            except _Unresolved as exc:
-                self._fail(plan, tid, "UNRESOLVED_CONTEXT", str(exc), pid)
+            for inputs in options:
+                variables = {**ctx, **inputs}
+                check = self.ev.check_transition(tid, plan.state, variables)
+                if check.status is not GuardStatus.GUARD_SATISFIED:
+                    conds = [c.get("condition") for c in check.failed_conditions]
+                    self._fail(plan, tid, check.status.value, "; ".join(map(str, conds)) or check.reason, pid, ctx)
+                    continue
+                if spec.get("each_line") and not self._lines_ok(plan, tid, variables):
+                    self._fail(plan, tid, "GUARD_NOT_SATISFIED", "một dòng giỏ hàng vi phạm guard", pid, ctx)
+                    continue
+                try:
+                    yield self._advance(plan, tid, role, spec, pid, inputs, variables)
+                except _Unresolved as exc:
+                    self._fail(plan, tid, "UNRESOLVED_CONTEXT", str(exc), pid, ctx)
 
     def _lines_ok(self, plan: PlanState, tid: str, variables: Mapping[str, Any]) -> bool:
         for pid, qty in sorted(plan.shadow.cart.items()):
@@ -1802,16 +1869,35 @@ class PathDataGenerator:
                 break
         return status
 
+    def _search_phases(self, tids: Sequence[str], final: Callable[[PlanState, tuple[int, ...]], bool],
+                       found: Callable[[], bool]) -> dict[str, Any]:
+        """Pha 1: tìm kiếm gốc (một bộ đầu vào mỗi bước). Pha 2 (backtracking theo dữ liệu): chỉ khi pha 1 duyệt
+        hết mà không thấy nghiệm VÀ path chưa bị chứng minh vô nghiệm; mỗi pha có ngân sách ``max_nodes`` riêng."""
+        self._failures, self._nodes, self._extended = [], 0, False
+        status = self._with_setup(tids, final)
+        phases = [{"phase": 1, "input_options_per_step": 1, "search": status, "nodes": self._nodes}]
+        total = self._nodes
+        if not found() and status == "EXHAUSTED" and self.max_input_options > 1 \
+                and not self.prover.prove(tids).proven_infeasible:
+            self._nodes, self._extended = 0, True
+            try:
+                status = self._with_setup(tids, final)
+            finally:
+                self._extended = False
+            phases.append({"phase": 2, "input_options_per_step": self.max_input_options, "search": status,
+                           "nodes": self._nodes})
+            total += self._nodes
+        return {"search": status, "nodes": total, "phases": phases}
+
     def plan_positive(self, tids: Sequence[str]) -> tuple[PlanState | None, dict[str, Any]]:
-        self._failures, self._nodes = [], 0
         found: list[PlanState] = []
 
         def final(plan: PlanState, variant: tuple[int, ...]) -> bool:
             found.append(plan)
             return True
 
-        status = self._with_setup(tids, final)
-        return (found[0] if found else None), {"search": status, "nodes": self._nodes}
+        meta = self._search_phases(tids, final, lambda: bool(found))
+        return (found[0] if found else None), meta
 
     # ------------------------------------------------------------------
     # Negative: tiền tố positive + một bước vi phạm có chủ đích
@@ -1985,7 +2071,6 @@ class PathDataGenerator:
         return self._append_negative(nxt, neg, spec, cand, None)
 
     def plan_negative(self, prefix: Sequence[str], negative_id: str) -> tuple[PlanState | None, dict[str, Any]]:
-        self._failures, self._nodes = [], 0
         neg = self.neg[negative_id]
         best: list[tuple[int, PlanState]] = []
         reachable = neg.get("api_reachable", True)
@@ -2004,10 +2089,10 @@ class PathDataGenerator:
                 best[:] = [(rank, result)]
             return rank == 0
 
-        status = self._with_setup(prefix, final)
+        meta = self._search_phases(prefix, final, lambda: bool(best))
         if best:
-            status = "FOUND"
-        return (best[0][1] if best else None), {"search": status, "nodes": self._nodes}
+            meta["search"] = "FOUND"
+        return (best[0][1] if best else None), meta
 
     # ------------------------------------------------------------------
     # Test case
@@ -2062,39 +2147,71 @@ class PathDataGenerator:
             unknown.append(str(path.get("negative_transition_id")))
         if unknown:
             return {**base, "readiness": Readiness.UNSUPPORTED, "reason_code": "UNKNOWN_TRANSITION",
-                    "reason": f"EFSM hiện tại không có: {', '.join(unknown)}"}
+                    "reason": f"EFSM hiện tại không có: {', '.join(unknown)}",
+                    **self._verdict(FeasibilityVerdict.MODEL_ERROR, {"reason": f"transition không có trong EFSM: {', '.join(unknown)}"})}
         unmapped = [t for t in path.get("transition_ids", []) if (self.map.transition(t) or {}).get("implemented_by") != "API"]
         if unmapped:
             return {**base, "readiness": Readiness.UNSUPPORTED, "reason_code": "NO_API_MAPPING",
-                    "reason": f"transition chưa có cách gọi API: {', '.join(unmapped)}"}
+                    "reason": f"transition chưa có cách gọi API: {', '.join(unmapped)}",
+                    **self._verdict(FeasibilityVerdict.MODEL_ERROR, {"reason": f"thiếu mapping API: {', '.join(unmapped)}"})}
         try:
             if ptype == "negative":
                 plan, meta = self.plan_negative(path["transition_ids"], path["negative_transition_id"])
             else:
                 plan, meta = self.plan_positive(path["transition_ids"])
         except _Unresolved as exc:
-            return {**base, "readiness": Readiness.BLOCKED, "reason_code": "UNRESOLVED_CONTEXT", "reason": str(exc)}
+            return {**base, "readiness": Readiness.BLOCKED, "reason_code": "UNRESOLVED_CONTEXT", "reason": str(exc),
+                    **self._verdict(FeasibilityVerdict.GENERATOR_ERROR, {"reason": str(exc), "evidence": "SIMULATION_MISMATCH"})}
         if plan is None:
-            return {**base, **self._blocked(meta)}
-        return {**base, "readiness": None, "plan": plan, "meta": meta}
+            return {**base, **self._blocked(meta, path["transition_ids"])}
+        proof = self.prover.prove(path["transition_ids"])
+        return {**base, "readiness": None, "plan": plan, "meta": meta,
+                "proof_conflict": proof.to_dict() if proof.proven_infeasible else None}
 
-    def _blocked(self, meta: Mapping[str, Any]) -> dict[str, Any]:
+    @staticmethod
+    def _verdict(verdict: FeasibilityVerdict, report: Mapping[str, Any]) -> dict[str, Any]:
+        return {"feasibility_verdict": verdict.value,
+                "feasibility_report": {"verdict": verdict.value, **report, "suggestion": suggestion_for(verdict.value)}}
+
+    def _blocked(self, meta: Mapping[str, Any], tids: Sequence[str] = ()) -> dict[str, Any]:
         failures = self._failures
         codes = {f["code"] for f in failures}
         deepest = max(failures, key=lambda f: f["depth"]) if failures else None
         where = (f"bước {deepest['depth'] + 1} của path ({deepest['transition']}): {deepest['code']} - {deepest['detail']}" if deepest else "không có bước nào khả thi")
+        search = {"nodes": meta["nodes"], "max_nodes_per_phase": self.max_nodes, "max_setup_steps": self.max_setup_steps,
+                  "phases": meta.get("phases", [])}
+        observed = ({"failed_step": deepest["depth"] + 1, "transition_id": deepest["transition"], "code": deepest["code"],
+                     "detail": deepest["detail"], "context_before": deepest.get("context_before")} if deepest else None)
         if meta["search"] == "BUDGET":
             return {"readiness": Readiness.BLOCKED, "reason_code": "SEARCH_BUDGET_EXHAUSTED", "evidence": "SEARCH_BUDGET_EXHAUSTED",
-                    "reason": f"hết ngân sách tìm kiếm ({self.max_nodes} nút); {where}", "search_nodes": meta["nodes"]}
+                    "reason": f"hết ngân sách tìm kiếm ({self.max_nodes} nút); {where}", "search_nodes": meta["nodes"],
+                    **self._verdict(FeasibilityVerdict.SEARCH_EXHAUSTED, {
+                        **(observed or {}), "reason": f"hết ngân sách tìm kiếm; {where}",
+                        "evidence": "SEARCH_BUDGET_EXHAUSTED", "search": search})}
         if "UNRESOLVED_CONTEXT" in codes:
+            detail = next(f["detail"] for f in failures if f["code"] == "UNRESOLVED_CONTEXT")
             return {"readiness": Readiness.BLOCKED, "reason_code": "UNRESOLVED_CONTEXT", "evidence": "SIMULATION_MISMATCH",
-                    "reason": next(f["detail"] for f in failures if f["code"] == "UNRESOLVED_CONTEXT")}
+                    "reason": detail,
+                    **self._verdict(FeasibilityVerdict.GENERATOR_ERROR, {"reason": detail, "evidence": "SIMULATION_MISMATCH"})}
         if codes and codes <= {"UNSUPPORTED_GUARD", "UNSUPPORTED_TRANSITION", "UNSUPPORTED_FIXTURE"}:
-            return {"readiness": Readiness.UNSUPPORTED, "reason_code": sorted(codes)[0], "reason": where}
+            verdict = FeasibilityVerdict.GENERATOR_ERROR if codes == {"UNSUPPORTED_GUARD"} else FeasibilityVerdict.MODEL_ERROR
+            return {"readiness": Readiness.UNSUPPORTED, "reason_code": sorted(codes)[0], "reason": where,
+                    **self._verdict(verdict, {**(observed or {}), "reason": where})}
+        proof = self.prover.prove(tids) if tids else None
+        if proof is not None and proof.proven_infeasible:
+            report = proof.to_dict()
+            report.pop("status", None)
+            return {"readiness": Readiness.BLOCKED, "reason_code": "NO_FEASIBLE_DATA_FOUND", "evidence": "PROVEN_INFEASIBLE",
+                    "proof_scope": PROOF_SCOPE, "reason": where, "search_nodes": meta["nodes"],
+                    **self._verdict(FeasibilityVerdict.PROVEN_INFEASIBLE, {
+                        **report, "evidence": "LOGICAL_CONTRADICTION", "observed_by_search": observed, "search": search})}
         return {"readiness": Readiness.BLOCKED, "reason_code": "NO_FEASIBLE_DATA_FOUND", "evidence": "SEARCH_EXHAUSTED",
                 "proof_scope": "bounded search: product choices over the seed catalog and up to "
                                f"{self.max_setup_steps} API setup steps; not a proof that no data exists",
-                "reason": where, "search_nodes": meta["nodes"]}
+                "reason": where, "search_nodes": meta["nodes"],
+                **self._verdict(FeasibilityVerdict.SEARCH_EXHAUSTED, {
+                    **(observed or {}), "reason": where, "evidence": "SEARCH_EXHAUSTED",
+                    "proof_scope": "bounded search; not a proof that no data exists", "search": search})}
 
     def finalize_case(self, converted: Mapping[str, Any], path: Mapping[str, Any], case_id: str) -> dict[str, Any]:
         """Dựng bản ghi test case đầy đủ từ kế hoạch đã tìm được."""
@@ -2189,25 +2306,58 @@ def _select(cases: list[dict[str, Any]], max_cases: int | None) -> tuple[list[di
 
 def generate_test_cases(generator: TestDataGenerator, mapping: ApiMapping, paths_doc: Mapping[str, Any], *,
                         include_negative: bool = True, max_cases: int | None = None, max_setup_steps: int = 3,
-                        max_nodes: int = 3000, paths_file: str | None = None, paths_sha256: str | None = None
-                        ) -> tuple[dict[str, Any], dict[str, Any]]:
+                        max_nodes: int = 3000, paths_file: str | None = None, paths_sha256: str | None = None,
+                        max_input_options: int = 4) -> tuple[dict[str, Any], dict[str, Any]]:
     """Chuyển toàn bộ ``test_paths.json`` thành ``test_cases.json`` và ``test_data_coverage.json`` (dạng dict)."""
-    planner = PathDataGenerator(generator, mapping, max_setup_steps=max_setup_steps, max_nodes=max_nodes)
+    planner = PathDataGenerator(generator, mapping, max_setup_steps=max_setup_steps, max_nodes=max_nodes,
+                                max_input_options=max_input_options)
     paths = [p for p in paths_doc["paths"] if include_negative or p["path_type"] != "negative"]
     unconverted: list[dict[str, Any]] = []
     cases: list[dict[str, Any]] = []
+    feasibility: dict[str, dict[str, Any]] = {}
+    proof_conflicts: list[dict[str, Any]] = []
     for path in paths:
         converted = planner.convert_path(path)
+        row = {"source_path_id": path["path_id"], "path_key": path["path_key"], "type": path["path_type"],
+               "source_feasibility": path.get("feasibility")}
         if converted.get("readiness") in (Readiness.BLOCKED, Readiness.UNSUPPORTED):
             unconverted.append({k: v for k, v in converted.items() if k != "plan"})
+            feasibility[path["path_id"]] = {**row, "feasibility_verdict": converted.get("feasibility_verdict"),
+                                            "test_case_id": None, "feasibility_report": converted.get("feasibility_report")}
             continue
+        if converted.get("proof_conflict"):  # bộ chứng minh và bộ tìm kiếm mâu thuẫn -> lỗi của bộ sinh, không che giấu
+            proof_conflicts.append({"source_path_id": path["path_id"], "path_key": path["path_key"],
+                                    "proof": converted["proof_conflict"]})
+        verdict = FeasibilityVerdict.GENERATOR_ERROR if converted.get("proof_conflict") else FeasibilityVerdict.FEASIBLE
+        feasibility[path["path_id"]] = {**row, "feasibility_verdict": verdict.value, "test_case_id": None,
+                                        "feasibility_report": {"verdict": verdict.value,
+                                                               "evidence": "CONCRETE_PLAN_FOUND_AND_GUARD_CHECKED",
+                                                               "search": {"nodes": converted["meta"]["nodes"],
+                                                                          "phases": converted["meta"].get("phases", [])},
+                                                               "suggestion": suggestion_for(verdict.value)}}
         cases.append(planner.finalize_case(converted, path, "TMP"))
     selected, dropped = _select(cases, max_cases)
     for index, case in enumerate(selected, start=1):
         case["test_case_id"] = f"TC{index:03d}"
         case["selection_rank"] = index
+        feasibility[case["source_path_id"]]["test_case_id"] = case["test_case_id"]
+    for d in dropped:
+        feasibility[d["source_path_id"]]["not_selected_reason"] = d["reason_code"]
     unconverted += [{**d, "type": next((c["type"] for c in cases if c["source_path_id"] == d["source_path_id"]), None),
-                     "readiness": "NOT_SELECTED"} for d in dropped]
+                     "readiness": "NOT_SELECTED", "feasibility_verdict": FeasibilityVerdict.FEASIBLE.value} for d in dropped]
+    feasibility_index = [feasibility[p["path_id"]] for p in paths]
+    verdict_names = [v.value for v in FeasibilityVerdict]
+    feasibility_summary = {
+        "by_verdict": {v: sum(r["feasibility_verdict"] == v for r in feasibility_index) for v in verdict_names},
+        "by_type": {t: {v: sum(r["feasibility_verdict"] == v and r["type"] == t for r in feasibility_index) for v in verdict_names}
+                    for t in ("positive", "negative")},
+        "proof_conflicts": proof_conflicts,
+        "proven_infeasible_scope": PROOF_SCOPE,
+        "search_exhausted_scope": f"bounded search: seed catalog, up to {max_setup_steps} API setup steps, "
+                                  f"{max_nodes} nodes per phase, up to {max_input_options} input options per step",
+        "note": "PROVEN_INFEASIBLE chỉ khi có mâu thuẫn logic được chứng minh (efsm_feasibility); "
+                "SEARCH_EXHAUSTED KHÔNG được coi là vô nghiệm.",
+    }
     rules = {r for c in selected for r in c["security_rule_ids"]}
     index_rules = paths_doc.get("rules_index", {})
     by_readiness = {k: sum(c["readiness"] == k for c in selected) for k in (Readiness.READY, Readiness.PARTIALLY_READY)}
@@ -2239,7 +2389,8 @@ def generate_test_cases(generator: TestDataGenerator, mapping: ApiMapping, paths
                                    "schema_version": paths_doc.get("schema_version"), "total_paths": len(paths_doc["paths"])},
                     "api_mapping": {"file": mapping.source, "sha256": mapping.sha256}},
         "configuration": {"include_negative": include_negative, "max_cases": max_cases, "max_setup_steps": max_setup_steps,
-                          "max_nodes": max_nodes, "mapping_issues": planner.mapping_issues},
+                          "max_nodes": max_nodes, "max_input_options": max_input_options,
+                          "mapping_issues": planner.mapping_issues},
         "conventions": {
             "data_classes": {"input": "giá trị do test chọn và gửi lên (body / path param từ catalog seed)",
                              "derived": "biến EFSM suy ra từ dữ liệu mô phỏng (cart_items_count, stock, order_total...)",
@@ -2248,11 +2399,16 @@ def generate_test_cases(generator: TestDataGenerator, mapping: ApiMapping, paths
             "expected_values": "expected_source cho biết giá trị kỳ vọng lấy từ EFSM hay từ mô phỏng dữ liệu (shadow_state_simulation)",
             "invariants": "invariant_checkpoints.simulated_status chỉ là kết quả trên dữ liệu mô phỏng; runtime_status luôn NOT_VERIFIED_UNTIL_EXECUTION"},
         "summary": summary,
+        "feasibility_summary": feasibility_summary,
         "rules_index": {r: index_rules[r] for r in sorted(rules) if r in index_rules},
         "test_cases": selected,
         "unconverted_paths": unconverted,
+        "feasibility_index": feasibility_index,
     }
-    return output, build_coverage(generator, selected, unconverted, paths, summary)
+    coverage = build_coverage(generator, selected, unconverted, paths, summary)
+    coverage["feasibility"] = {k: v for k, v in feasibility_summary.items() if k != "proof_conflicts"} | {
+        "proof_conflicts": len(proof_conflicts)}
+    return output, coverage
 
 
 def build_coverage(generator: TestDataGenerator, cases: Sequence[Mapping[str, Any]], unconverted: Sequence[Mapping[str, Any]],
@@ -2304,7 +2460,8 @@ def build_coverage(generator: TestDataGenerator, cases: Sequence[Mapping[str, An
                        "never_evaluated_as_satisfied_or_violated": sorted(
                            i for i, v in inv.items() if v["simulated_checkpoints"]["SATISFIED"] + v["simulated_checkpoints"]["VIOLATED"] == 0)},
         "unconverted_paths": [{k: u.get(k) for k in ("source_path_id", "path_key", "type", "readiness", "reason_code", "reason",
-                                                     "evidence", "proof_scope", "source_feasibility")} for u in unconverted],
+                                                     "evidence", "proof_scope", "source_feasibility", "feasibility_verdict")}
+                              for u in unconverted],
     }
 
 
@@ -2338,16 +2495,24 @@ def _run_path_mode(args: argparse.Namespace, model: Path, rules: Path) -> int:
         output, coverage = generate_test_cases(
             generator, mapping, paths_doc, include_negative=not args.no_negative_paths, max_cases=args.max_cases,
             max_setup_steps=args.max_setup_steps, max_nodes=args.max_path_nodes, paths_file=Path(args.test_paths).name,
-            paths_sha256=hashlib.sha256(raw).hexdigest())
+            paths_sha256=hashlib.sha256(raw).hexdigest(), max_input_options=args.max_input_options)
         out = generator.export_json(output, args.test_cases_output)
         cov = generator.export_json(coverage, args.coverage_output)
-    except (DataGeneratorError, KeyError, OSError, json.JSONDecodeError) as exc:
+        report = None
+        if args.feasibility_report_output:
+            report = Path(args.feasibility_report_output)
+            report.parent.mkdir(parents=True, exist_ok=True)
+            report.write_text(render_feasibility_markdown(output["feasibility_index"], output["feasibility_summary"]),
+                              encoding="utf-8")
+    except (DataGeneratorError, KeyError, OSError, json.JSONDecodeError, ValueError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 2
     s = output["summary"]
     print(f"paths={s['input_paths']} test_cases={s['test_cases']} (positive={s['positive_cases']} negative={s['negative_cases']}) "
           f"readiness={s['readiness']} unconverted={s['unconverted_paths']}")
-    print(f"wrote {out} and {cov}")
+    print(f"feasibility={output['feasibility_summary']['by_verdict']} "
+          f"proof_conflicts={len(output['feasibility_summary']['proof_conflicts'])}")
+    print(f"wrote {out} and {cov}" + (f" and {report}" if report else ""))
     return 0
 
 
@@ -2369,6 +2534,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--max-setup-steps", type=int, default=3)
     parser.add_argument("--max-path-nodes", type=int, default=3000, help="ngân sách tìm kiếm kế hoạch dữ liệu cho mỗi path")
     parser.add_argument("--no-negative-paths", action="store_true")
+    parser.add_argument("--max-input-options", type=int, default=4,
+                        help="số bộ đầu vào hợp lệ tối đa mỗi bước ở pha tìm kiếm mở rộng (1 = tắt backtracking theo dữ liệu)")
+    parser.add_argument("--feasibility-report-output", default=None,
+                        help="ghi báo cáo tính khả thi dạng Markdown (FEASIBLE / PROVEN_INFEASIBLE / SEARCH_EXHAUSTED ...)")
     args = parser.parse_args(argv)
     model = Path(args.model)
     rules = Path(args.rules) if args.rules else model.with_name("security_rules.json")
